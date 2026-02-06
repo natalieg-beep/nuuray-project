@@ -23,10 +23,31 @@ class BirthChart extends Equatable {
   final String? baziHourBranch;
   final String? baziElement; // Dominantes Element
 
-  // Numerologie
+  // Numerologie - Kern-Zahlen
   final int? lifePathNumber;
-  final int? expressionNumber;
-  final int? soulUrgeNumber;
+  final int? birthdayNumber;
+  final int? attitudeNumber;
+  final int? personalYear;
+  final int? maturityNumber;
+
+  // Numerologie - Birth Energy (Geburtsname)
+  final int? birthExpressionNumber;
+  final int? birthSoulUrgeNumber;
+  final int? birthPersonalityNumber;
+  final String? birthName;
+
+  // Numerologie - Current Energy (aktueller Name)
+  final int? currentExpressionNumber;
+  final int? currentSoulUrgeNumber;
+  final int? currentPersonalityNumber;
+  final String? currentName;
+
+  // Deprecated - für Backward Compatibility
+  @Deprecated('Use birthExpressionNumber instead')
+  int? get expressionNumber => currentExpressionNumber ?? birthExpressionNumber;
+
+  @Deprecated('Use birthSoulUrgeNumber instead')
+  int? get soulUrgeNumber => currentSoulUrgeNumber ?? birthSoulUrgeNumber;
 
   final DateTime calculatedAt;
 
@@ -48,8 +69,18 @@ class BirthChart extends Equatable {
     this.baziHourBranch,
     this.baziElement,
     this.lifePathNumber,
-    this.expressionNumber,
-    this.soulUrgeNumber,
+    this.birthdayNumber,
+    this.attitudeNumber,
+    this.personalYear,
+    this.maturityNumber,
+    this.birthExpressionNumber,
+    this.birthSoulUrgeNumber,
+    this.birthPersonalityNumber,
+    this.birthName,
+    this.currentExpressionNumber,
+    this.currentSoulUrgeNumber,
+    this.currentPersonalityNumber,
+    this.currentName,
     required this.calculatedAt,
   });
 
@@ -75,8 +106,18 @@ class BirthChart extends Equatable {
       baziHourBranch: json['bazi_hour_branch'] as String?,
       baziElement: json['bazi_element'] as String?,
       lifePathNumber: json['life_path_number'] as int?,
-      expressionNumber: json['expression_number'] as int?,
-      soulUrgeNumber: json['soul_urge_number'] as int?,
+      birthdayNumber: json['birthday_number'] as int?,
+      attitudeNumber: json['attitude_number'] as int?,
+      personalYear: json['personal_year'] as int?,
+      maturityNumber: json['maturity_number'] as int?,
+      birthExpressionNumber: json['birth_expression_number'] as int?,
+      birthSoulUrgeNumber: json['birth_soul_urge_number'] as int?,
+      birthPersonalityNumber: json['birth_personality_number'] as int?,
+      birthName: json['birth_name'] as String?,
+      currentExpressionNumber: json['current_expression_number'] as int?,
+      currentSoulUrgeNumber: json['current_soul_urge_number'] as int?,
+      currentPersonalityNumber: json['current_personality_number'] as int?,
+      currentName: json['current_name'] as String?,
       calculatedAt: DateTime.parse(json['calculated_at'] as String),
     );
   }
@@ -99,8 +140,19 @@ class BirthChart extends Equatable {
     'bazi_hour_branch': baziHourBranch,
     'bazi_element': baziElement,
     'life_path_number': lifePathNumber,
-    'expression_number': expressionNumber,
-    'soul_urge_number': soulUrgeNumber,
+    'birthday_number': birthdayNumber,
+    'attitude_number': attitudeNumber,
+    'personal_year': personalYear,
+    'maturity_number': maturityNumber,
+    'birth_expression_number': birthExpressionNumber,
+    'birth_soul_urge_number': birthSoulUrgeNumber,
+    'birth_personality_number': birthPersonalityNumber,
+    'birth_name': birthName,
+    'current_expression_number': currentExpressionNumber,
+    'current_soul_urge_number': currentSoulUrgeNumber,
+    'current_personality_number': currentPersonalityNumber,
+    'current_name': currentName,
+    'calculated_at': calculatedAt.toIso8601String(),
   };
 
   @override

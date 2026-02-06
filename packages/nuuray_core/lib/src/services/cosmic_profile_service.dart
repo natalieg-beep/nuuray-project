@@ -124,26 +124,27 @@ class CosmicProfileService {
     // 3. NUMEROLOGIE
     // ============================================================
 
-    // Life Path Number (immer berechenbar)
-    final lifePathNumber = NumerologyCalculator.calculateLifePath(birthDate);
-    log('🔢 Life Path Number: $lifePathNumber${NumerologyCalculator.isMasterNumber(lifePathNumber) ? " (Meisterzahl!)" : ""}');
+    // Berechne komplettes Numerologie-Profil
+    // TODO: birthName + currentName getrennt aus User-Profil übergeben
+    // Aktuell nutzen wir fullName als birthName (Backward Compatibility)
+    final numerologyProfile = NumerologyCalculator.calculateCompleteProfile(
+      birthDate: birthDate,
+      birthName: fullName,
+      currentName: null, // TODO: Später aus User-Profil
+    );
 
-    // Expression Number (benötigt vollständigen Namen)
-    int? expressionNumber;
-    if (fullName != null && fullName.trim().isNotEmpty) {
-      expressionNumber = NumerologyCalculator.calculateExpression(fullName);
-      log('🔢 Expression Number: $expressionNumber${expressionNumber != null && NumerologyCalculator.isMasterNumber(expressionNumber) ? " (Meisterzahl!)" : ""}');
-    } else {
-      log('🔢 Expression Number: Nicht berechnet (kein Name)');
+    log('🔢 Life Path: ${numerologyProfile.lifePathNumber}${NumerologyCalculator.isMasterNumber(numerologyProfile.lifePathNumber) ? " ✨" : ""}');
+    log('🔢 Birthday: ${numerologyProfile.birthdayNumber}');
+    log('🔢 Attitude: ${numerologyProfile.attitudeNumber}');
+    log('🔢 Personal Year: ${numerologyProfile.personalYear}');
+    if (numerologyProfile.maturityNumber != null) {
+      log('🔢 Maturity: ${numerologyProfile.maturityNumber}');
     }
-
-    // Soul Urge Number (benötigt vollständigen Namen)
-    int? soulUrgeNumber;
-    if (fullName != null && fullName.trim().isNotEmpty) {
-      soulUrgeNumber = NumerologyCalculator.calculateSoulUrge(fullName);
-      log('🔢 Soul Urge Number: $soulUrgeNumber${soulUrgeNumber != null && NumerologyCalculator.isMasterNumber(soulUrgeNumber) ? " (Meisterzahl!)" : ""}');
-    } else {
-      log('🔢 Soul Urge Number: Nicht berechnet (kein Name)');
+    if (numerologyProfile.birthName != null) {
+      log('🔢 Birth Energy (${numerologyProfile.birthName}):');
+      log('   Expression: ${numerologyProfile.birthExpressionNumber}${numerologyProfile.birthExpressionNumber != null && NumerologyCalculator.isMasterNumber(numerologyProfile.birthExpressionNumber!) ? " ✨" : ""}');
+      log('   Soul Urge: ${numerologyProfile.birthSoulUrgeNumber}${numerologyProfile.birthSoulUrgeNumber != null && NumerologyCalculator.isMasterNumber(numerologyProfile.birthSoulUrgeNumber!) ? " ✨" : ""}');
+      log('   Personality: ${numerologyProfile.birthPersonalityNumber}');
     }
 
     // ============================================================
@@ -169,10 +170,22 @@ class CosmicProfileService {
       baziHourStem: hourPillar?['stem'],
       baziHourBranch: hourPillar?['branch'],
       baziElement: dominantElement,
-      // Numerologie
-      lifePathNumber: lifePathNumber,
-      expressionNumber: expressionNumber,
-      soulUrgeNumber: soulUrgeNumber,
+      // Numerologie - Kern-Zahlen
+      lifePathNumber: numerologyProfile.lifePathNumber,
+      birthdayNumber: numerologyProfile.birthdayNumber,
+      attitudeNumber: numerologyProfile.attitudeNumber,
+      personalYear: numerologyProfile.personalYear,
+      maturityNumber: numerologyProfile.maturityNumber,
+      // Numerologie - Birth Energy
+      birthExpressionNumber: numerologyProfile.birthExpressionNumber,
+      birthSoulUrgeNumber: numerologyProfile.birthSoulUrgeNumber,
+      birthPersonalityNumber: numerologyProfile.birthPersonalityNumber,
+      birthName: numerologyProfile.birthName,
+      // Numerologie - Current Energy
+      currentExpressionNumber: numerologyProfile.currentExpressionNumber,
+      currentSoulUrgeNumber: numerologyProfile.currentSoulUrgeNumber,
+      currentPersonalityNumber: numerologyProfile.currentPersonalityNumber,
+      currentName: numerologyProfile.currentName,
       calculatedAt: DateTime.now(),
     );
 
