@@ -9,7 +9,7 @@ import '../../profile/providers/user_profile_provider.dart';
 import '../../../core/config/app_config.dart';
 import 'onboarding_name_screen.dart';
 import 'onboarding_birthdate_screen.dart';
-import 'onboarding_birthplace_simple_screen.dart';
+import 'onboarding_birthplace_geocoding_screen.dart';
 
 /// Onboarding-Flow: 3 Schritte (Name → Geburtsdatum → Geburtsort)
 class OnboardingFlowScreen extends ConsumerStatefulWidget {
@@ -205,16 +205,18 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen> {
                   onBack: _previousPage,
                 ),
 
-                // Schritt 3: Geburtsort (Simple Version - manuell)
-                OnboardingBirthplaceSimpleScreen(
+                // Schritt 3: Geburtsort (mit Geocoding)
+                OnboardingBirthplaceGeocodingScreen(
                   initialBirthPlace: _birthPlace,
-                  onComplete: (place) {
+                  initialLatitude: _birthLatitude,
+                  initialLongitude: _birthLongitude,
+                  initialTimezone: _birthTimezone,
+                  onComplete: (place, latitude, longitude, timezone) {
                     setState(() {
                       _birthPlace = place;
-                      // Koordinaten holen wir später über Backend/Geocoding
-                      _birthLatitude = null;
-                      _birthLongitude = null;
-                      _birthTimezone = 'Europe/Berlin'; // Default
+                      _birthLatitude = latitude;
+                      _birthLongitude = longitude;
+                      _birthTimezone = timezone;
                     });
                     _saveProfile();
                   },

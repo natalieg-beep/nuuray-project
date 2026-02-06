@@ -1,7 +1,7 @@
 # NUURAY GLOW — TODO Liste
 
 > Letzte Aktualisierung: 2025-02-06
-> Stand: Auth ✅, Onboarding ✅, Basic Home ✅, Cosmic Profile Dashboard 🔨
+> Stand: Auth ✅, Onboarding ✅, Basic Home ✅, **Cosmic Profile Dashboard ✅**
 
 ---
 
@@ -35,90 +35,125 @@
   - Horoskop-Card (Hardcoded Schütze)
   - Quick Actions (Coming Soon)
   - Logout Button
+- ✅ Cosmic Profile Dashboard (inline auf Home Screen)
+  - Western Astrology Card (Sonne/Mond/Aszendent)
+  - Bazi Card (Vier Säulen + Day Master)
+  - Numerology Card (9 Kern-Zahlen + Dual-Profil)
 
 ---
 
 ## 🔨 IN ARBEIT
 
 ### Cosmic Profile Dashboard
-**Status:** Spezifikation vorhanden, Implementierung steht bevor
+**Status:** ✅ FERTIG (Stand: 2025-02-06)
 
 **Komponenten:**
 1. **Datenmodell** (nuuray_core)
-   - [ ] CosmicProfile (freezed) mit drei Subsystemen
-   - [ ] WesternAstrology Model (Sonne/Mond/Aszendent mit Graden)
-   - [ ] Bazi Model (Vier Säulen, Day Master, Element Balance)
-   - [ ] Numerology Model (Life Path, Expression, Soul Urge)
-   - [ ] Enums: ZodiacSign, BaziElement, HeavenlyStem, EarthlyBranch
+   - ✅ BirthChart Model (Equatable) mit drei Subsystemen
+   - ✅ WesternAstrology Felder (sunSign, moonSign, ascendantSign mit Graden)
+   - ✅ Bazi Felder (Vier Säulen: Year/Month/Day/Hour Stem+Branch, Day Master, Element)
+   - ✅ NumerologyProfile Model (Life Path, Birthday, Attitude, Personal Year, Maturity)
+   - ✅ Birth Energy + Current Energy (Dual-Profil für Namenswechsel)
+   - ✅ Enums: ZodiacSign (mit Symbolen + i18n), BaziElement, Stems, Branches
 
 2. **Calculator Services** (nuuray_core)
-   - [ ] WesternAstrologyCalculator
-     - Sonnenzeichen aus Geburtsdatum
-     - Mondzeichen aus Geburtsdatum + Zeit (Vereinfachte Berechnung für MVP)
-     - Aszendent aus Geburtsdatum + Zeit + Ort (oder null)
-   - [ ] BaziCalculator
-     - Vier Säulen (Jahr, Monat, Tag, Stunde) aus Geburtsdatum + Zeit
-     - Day Master identifizieren
-     - Dominantes Element berechnen
-     - Chinesischer Kalender korrekt (Lichun-Grenze beachten)
-   - [ ] NumerologyCalculator
-     - Life Path Number aus Geburtsdatum (Meisterzahlen 11, 22, 33 beachten)
-     - Expression Number aus vollständigem Namen
-     - Soul Urge Number aus Vokalen des Namens
+   - ✅ WesternAstrologyCalculator
+     - ✅ Sonnenzeichen aus Geburtsdatum (VSOP87 Präzision)
+     - ✅ Mondzeichen aus Geburtsdatum + Zeit (ELP2000 Algorithmus)
+     - ✅ Aszendent aus Geburtsdatum + Zeit + Koordinaten (Meeus Algorithmus)
+   - ✅ BaziCalculator
+     - ✅ Vier Säulen (Jahr, Monat, Tag, Stunde) mit Solar Terms
+     - ✅ Day Master identifizieren
+     - ✅ Dominantes Element berechnen
+     - ✅ Chinesischer Kalender korrekt (Lichun-Grenze, Hsia Calendar)
+   - ✅ NumerologyCalculator
+     - ✅ Life Path Number (Meisterzahlen 11, 22, 33)
+     - ✅ Birthday, Attitude, Personal Year, Maturity Numbers
+     - ✅ Expression Number aus vollständigem Namen (Methode B: Gesamt-Addition)
+     - ✅ Soul Urge Number aus Vokalen (Methode B: Meisterzahlen-erhaltend!)
+     - ✅ Personality Number aus Konsonanten (Methode B)
+     - ✅ Dual-Profil: Birth Energy (Geburtsname) + Current Energy (aktueller Name)
+     - ✅ Umlaut-Normalisierung (Ü→UE für deutsche Namen)
 
 3. **Supabase**
-   - [ ] Migration: cosmic_profiles Tabelle erstellen
-     - id (UUID, FK zu profiles)
-     - western_astrology (JSONB)
-     - bazi (JSONB)
-     - numerology (JSONB)
-     - calculated_at (Timestamp)
-     - RLS Policies (User sieht nur eigenes Profil)
-   - [ ] CosmicProfileService (CRUD + Cache-Logik)
+   - ✅ Migration 004: birth_chart Tabelle erstellt (JSONB für alle drei Systeme)
+   - ✅ RLS Policies (User sieht nur eigenes Chart)
+   - ✅ CosmicProfileService (CRUD + Cache-Logik)
+   - ✅ BirthChartService (berechnet + speichert Chart aus UserProfile)
 
 4. **UI Widgets** (apps/glow)
-   - [ ] CosmicProfileDashboard Screen
-   - [ ] WesternAstrologyCard Widget
-     - Gradient: Gold/Orange
-     - Sonne/Mond/Aszendent mit Symbolen + Graden
-     - "Mehr erfahren" Button
-   - [ ] BaziCard Widget
-     - Gradient: Rot/Braun
-     - Vier Säulen Visualisierung
-     - Day Master prominent
-     - Element Balance Diagramm
-     - "Mehr erfahren" Button
-   - [ ] NumerologyCard Widget
-     - Gradient: Lila/Pink
-     - Drei Zahlen mit Bedeutung
-     - "Mehr erfahren" Button
+   - ✅ Inline Dashboard auf Home Screen (kein separater Screen)
+   - ✅ WesternAstrologyCard Widget
+     - ✅ Gradient: Gold/Orange
+     - ✅ Sonne/Mond/Aszendent mit Symbolen + Graden
+     - ✅ Placeholder für fehlenden Aszendent (Koordinaten erforderlich)
+     - ✅ "Mehr erfahren" Button (TODO: Navigation)
+   - ✅ BaziCard Widget
+     - ✅ Gradient: Rot/Braun
+     - ✅ Vier Säulen Visualisierung (Jahr/Monat/Tag/Stunde)
+     - ✅ Day Master prominent (Stem-Branch Kombination)
+     - ✅ Element Badge mit Emoji
+     - ✅ "Mehr erfahren" Button (TODO: Navigation)
+   - ✅ NumerologyCard Widget
+     - ✅ Gradient: Lila/Pink
+     - ✅ Life Path Number prominent (großer Kreis)
+     - ✅ Kleine Zahlen: Birthday, Attitude, Personal Year, Maturity
+     - ✅ Expandable Sections: Birth Energy (Urenergie) + Current Energy
+     - ✅ Master Numbers mit ✨ Highlight
+     - ✅ "Mehr erfahren" Button (TODO: Navigation)
 
-5. **i18n** (nuuray_ui)
-   - [ ] Sternzeichen-Namen (DE + EN)
-   - [ ] Bazi-Elemente + Stems/Branches (DE + EN)
-   - [ ] Numerologie-Beschreibungen (DE + EN)
+5. **i18n**
+   - ✅ Alle UI-Labels auf Deutsch (Lebensweg, Seelenwunsch, Ausdruck, etc.)
+   - ✅ Sternzeichen-Namen (DE: nameDe Property in ZodiacSign)
+   - ✅ Bazi-Elemente übersetzt (Holz, Feuer, Erde, Metall, Wasser)
+   - ✅ Branches übersetzt (Ratte, Büffel, Tiger, etc.)
+   - ⏳ Stems: Aktuell ohne Übersetzung (Jia, Yi, etc. bleiben)
+   - ⏳ ARB-Dateien: Noch nicht migriert (TODO für echte i18n)
 
 6. **Integration**
-   - [ ] Provider: cosmicProfileProvider (berechnet + cached Profil)
-   - [ ] Home Screen: Link zum Cosmic Profile Dashboard
-   - [ ] Onboarding: Nach Abschluss Profil berechnen
+   - ✅ Provider: cosmicProfileProvider (cached BirthChart)
+   - ✅ Home Screen: Cosmic Profile Dashboard inline integriert
+   - ✅ Loading/Error/Empty States
+   - ⏳ Onboarding: Chart-Berechnung nach Abschluss (TODO)
+
+---
+
+## 🐛 AKTUELLE PROBLEME
+
+### Aszendent fehlt
+- **Problem:** Ascendant wird nicht berechnet, weil `birth_latitude` + `birth_longitude` null
+- **Ursache:** Onboarding speichert nur Text-Input für Geburtsort, keine Koordinaten
+- **UI-Lösung:** Placeholder "Geburtsort-Koordinaten erforderlich" angezeigt
+- **Nächster Schritt:** Google Places API Integration (siehe unten)
 
 ---
 
 ## ⏳ TODO (Nächste Schritte nach Dashboard)
 
-### Geburtsdaten-Engine vervollständigen
-- [ ] Mondzeichen-Berechnung verfeinern (Astronomische Bibliothek oder API evaluieren)
-- [ ] Aszendent-Berechnung implementieren (Geburtszeit + Ort → Längen-/Breitengrad)
-- [ ] Bazi: Stundensäule korrekt berechnen (nur mit Geburtszeit)
-- [ ] Tests für alle Berechnungen (kritisch für Genauigkeit)
+### Cosmic Profile: Verbesserungen
+- [ ] **Detail-Ansichten** für jedes System (klickbar auf "Mehr erfahren")
+  - Western Astrology: Alle Planeten + Häuser (Premium)
+  - Bazi: Luck Pillars, Hidden Stems, Element Balance Chart (Premium)
+  - Numerology: Alle 30+ Zahlen + Lebensphasen (Premium)
+- [ ] **Premium-Gating** für erweiterte Berechnungen
+- [ ] **Supabase Migration:** Neue Spalten für erweiterte Daten
 
-### Geburtsort Geocoding
-- [ ] Google Places API Integration (aktuell: Text-Input)
-  - Option 1: Client-seitig mit google_places_flutter (API Key: AIzaSyBG207MVH8bkIjk_zNAKplAaB1H45HjndM)
-  - Option 2: Server-seitig über Supabase Edge Function (sicherer)
-- [ ] Latitude/Longitude Felder im UserProfile nutzen
-- [ ] Timezone-Berechnung aus Geburtsort
+### Geburtsdaten-Engine vervollständigen
+- [x] Mondzeichen-Berechnung (✅ ELP2000 Algorithmus implementiert)
+- [x] Aszendent-Berechnung (✅ Meeus Algorithmus, aber Koordinaten fehlen)
+- [x] Bazi: Stundensäule (✅ implementiert, aber nur mit Geburtszeit)
+- [ ] **Tests für alle Berechnungen** (kritisch für Genauigkeit!)
+  - [ ] Western Astrology: Test Cases für bekannte Geburtsdaten
+  - [ ] Bazi: Solar Terms Grenzen prüfen
+  - [ ] Numerology: Meisterzahlen-Fälle testen
+
+### Geburtsort Geocoding (PRIORITÄT: Aszendent fehlt!)
+- [ ] **Google Places API Integration** (aktuell: Text-Input → keine Koordinaten)
+  - Option 1: Client-seitig mit google_places_flutter (API Key vorhanden)
+  - Option 2: Server-seitig über Supabase Edge Function (sicherer, bevorzugt)
+- [ ] **Latitude/Longitude in Onboarding speichern** (birth_latitude, birth_longitude)
+- [ ] Timezone-Berechnung aus Geburtsort (für präzise Bazi-Stunde)
+- [ ] **Nach Geocoding:** Chart neu berechnen (Aszendent + präzise Bazi-Stunde)
 
 ### Tageshoroskop
 - [ ] daily_content Tabelle (Supabase)
@@ -236,6 +271,15 @@
 ---
 
 ## 💡 ENTSCHEIDUNGEN & LEARNINGS
+
+### Numerologie Berechnungs-Methode
+- **Problem:** Zwei valide Methoden für Name-basierte Zahlen (Expression, Soul Urge, Personality)
+  - **Methode A:** Pro Namensteil reduzieren, dann summieren (z.B. "Natalie Günes" → 7+8 = 15 → 6)
+  - **Methode B:** Alle Buchstaben summieren, dann EINMAL reduzieren (z.B. → 16+8 = 24 → 6)
+- **Entscheidung:** **Methode B** implementiert
+- **Grund:** Erhält Meisterzahlen (11, 22, 33) in der Gesamtenergie besser
+- **Beispiel:** "Natalie Frauke Günes" Soul Urge = **33** ✨ (statt 2 bei Methode A)
+- **Learning:** Spirituelle Bedeutung von Meisterzahlen ist wichtiger als Namensteil-Reduktion
 
 ### Google Places API
 - **Entscheidung:** Text-Input für MVP statt sofortige Places-Integration

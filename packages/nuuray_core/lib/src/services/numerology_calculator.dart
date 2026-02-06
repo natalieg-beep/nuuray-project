@@ -52,13 +52,14 @@ class NumerologyCalculator {
   /// Repräsentiert natürliche Talente, Fähigkeiten und die Art,
   /// wie man sich der Welt präsentiert.
   ///
-  /// Berechnung: WICHTIG - Pro Namensteil erst reduzieren, DANN summieren!
+  /// Berechnung: METHODE B - Gesamt-Addition (Meisterzahlen-erhaltend!)
+  /// WICHTIG: ALLE Buchstaben summieren, DANN einmal reduzieren!
   ///
   /// Beispiel: "Natalie Frauke Günes"
-  /// → Natalie: N+A+T+A+L+I+E = 5+1+2+1+3+9+5 = 26 → 8
-  /// → Frauke: F+R+A+U+K+E = 6+9+1+3+2+5 = 26 → 8
-  /// → Günes: G+U+E+N+E+S = 7+3+5+5+5+1 = 26 → 8
-  /// → SUMME: 8+8+8 = 24 → 6
+  /// → Natalie: N+A+T+A+L+I+E = 5+1+2+1+3+9+5 = 26
+  /// → Frauke: F+R+A+U+K+E = 6+9+1+3+2+5 = 26
+  /// → Günes: G+U+E+N+E+S = 7+3+5+5+5+1 = 26
+  /// → GESAMT: 26+26+26 = 78 → 7+8 = 15 → 1+5 = 6
   static int? calculateExpression(String fullName) {
     if (fullName.trim().isEmpty) return null;
 
@@ -69,35 +70,31 @@ class NumerologyCalculator {
 
     if (nameParts.isEmpty) return null;
 
-    // Berechne für jeden Namensteil die Summe und reduziere
-    int totalSum = 0;
+    // METHODE B: Addiere ALLE Buchstaben ohne Zwischenreduktion
+    int totalLetterSum = 0;
     for (final part in nameParts) {
-      final partSum = _sumLetters(part);
-      final reducedPart = _reduceToSingleDigit(partSum);
-      totalSum += reducedPart;
+      totalLetterSum += _sumLetters(part);
     }
 
-    // Jetzt die Gesamtsumme reduzieren (dabei Meisterzahlen beachten!)
-    return _reduceToSingleDigit(totalSum);
+    // Nur EINE Reduktion am Ende (erhält Meisterzahlen!)
+    return _reduceToSingleDigit(totalLetterSum);
   }
 
   /// Berechnet die Seelenzahl (Soul Urge Number)
   ///
   /// Repräsentiert innere Motivationen, Wünsche und was die Seele wirklich will.
   ///
-  /// Berechnung: WICHTIG - Pro Namensteil erst reduzieren, DANN summieren!
+  /// Berechnung: METHODE B - Gesamt-Addition (Meisterzahlen-erhaltend!)
+  /// WICHTIG: ALLE Vokale summieren, DANN einmal reduzieren!
   ///
-  /// Beispiel: "Natalie Frauke Pawlowski"
-  /// → Natalie: A+A+I+E = 1+1+9+5 = 16 → 7
+  /// Beispiel: "Natalie Frauke Günes"
+  /// → Natalie: A+A+I+E = 1+1+9+5 = 16
   /// → Frauke: A+U+E = 1+3+5 = 9
-  /// → Pawlowski: A+O+I = 1+6+9 = 16 → 7
-  /// → SUMME: 7+9+7 = 23 → 5
+  /// → Günes: U+E = 3+5 = 8
+  /// → GESAMT: 16+9+8 = 33 ✨ (Meisterzahl!)
   ///
-  /// ABER: Bei Meisterzahlen-Zwischenergebnissen:
-  /// → Natalie: 15 → 6
-  /// → Frauke: 9
-  /// → Pawlowski: 16 → 7
-  /// → SUMME: 6+9+7 = 22 ✨ (Meisterzahl!)
+  /// vs. Methode A (alt): Pro Teil reduzieren = 7+9+8 = 24 → 6
+  /// Methode B ist genauer, weil sie Meisterzahlen in der Gesamtenergie bewahrt!
   static int? calculateSoulUrge(String fullName) {
     if (fullName.trim().isEmpty) return null;
 
@@ -108,32 +105,31 @@ class NumerologyCalculator {
 
     if (nameParts.isEmpty) return null;
 
-    // Berechne für jeden Namensteil die Vokalsumme und reduziere
-    int totalSum = 0;
+    // METHODE B: Addiere ALLE Vokale ohne Zwischenreduktion
+    int totalVowelSum = 0;
     for (final part in nameParts) {
       final vowelsInPart = part.split('').where((c) => _vowels.contains(c)).join('');
       if (vowelsInPart.isNotEmpty) {
-        final partSum = _sumLetters(vowelsInPart);
-        final reducedPart = _reduceToSingleDigit(partSum);
-        totalSum += reducedPart;
+        totalVowelSum += _sumLetters(vowelsInPart);
       }
     }
 
-    // Jetzt die Gesamtsumme reduzieren (dabei Meisterzahlen beachten!)
-    return _reduceToSingleDigit(totalSum);
+    // Nur EINE Reduktion am Ende (erhält Meisterzahlen!)
+    return _reduceToSingleDigit(totalVowelSum);
   }
 
   /// Berechnet die Persönlichkeitszahl (Personality Number)
   ///
   /// Repräsentiert die äußere Persönlichkeit, wie andere einen wahrnehmen.
   ///
-  /// Berechnung: WICHTIG - Pro Namensteil erst reduzieren, DANN summieren!
+  /// Berechnung: METHODE B - Gesamt-Addition (Meisterzahlen-erhaltend!)
+  /// WICHTIG: ALLE Konsonanten summieren, DANN einmal reduzieren!
   ///
   /// Beispiel: "Natalie Frauke Günes"
-  /// → Natalie (Konsonanten): N+T+L = 5+2+3 = 10 → 1
-  /// → Frauke (Konsonanten): F+R+K = 6+9+2 = 17 → 8
-  /// → Günes (Konsonanten): G+N+S = 7+5+1 = 13 → 4
-  /// → SUMME: 1+8+4 = 13 → 4
+  /// → Natalie (Konsonanten): N+T+L = 5+2+3 = 10
+  /// → Frauke (Konsonanten): F+R+K = 6+9+2 = 17
+  /// → Günes (Konsonanten): G+N+S = 7+5+1 = 13
+  /// → GESAMT: 10+17+13 = 40 → 4+0 = 4
   static int? calculatePersonality(String fullName) {
     if (fullName.trim().isEmpty) return null;
 
@@ -144,19 +140,17 @@ class NumerologyCalculator {
 
     if (nameParts.isEmpty) return null;
 
-    // Berechne für jeden Namensteil die Konsonantensumme und reduziere
-    int totalSum = 0;
+    // METHODE B: Addiere ALLE Konsonanten ohne Zwischenreduktion
+    int totalConsonantSum = 0;
     for (final part in nameParts) {
       final consonantsInPart = part.split('').where((c) => !_vowels.contains(c) && _letterValues.containsKey(c)).join('');
       if (consonantsInPart.isNotEmpty) {
-        final partSum = _sumLetters(consonantsInPart);
-        final reducedPart = _reduceToSingleDigit(partSum);
-        totalSum += reducedPart;
+        totalConsonantSum += _sumLetters(consonantsInPart);
       }
     }
 
-    // Jetzt die Gesamtsumme reduzieren (dabei Meisterzahlen beachten!)
-    return _reduceToSingleDigit(totalSum);
+    // Nur EINE Reduktion am Ende (erhält Meisterzahlen!)
+    return _reduceToSingleDigit(totalConsonantSum);
   }
 
   /// Berechnet die Geburtstagszahl (Birthday Number)
