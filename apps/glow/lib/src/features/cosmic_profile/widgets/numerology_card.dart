@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:nuuray_core/nuuray_core.dart';
 
-/// Numerology Card
+/// Numerology Card - Erweitert mit Dual-Profil System
 ///
-/// Zeigt Life Path, Expression und Soul Urge Numbers.
+/// Zeigt alle numerologischen Zahlen in einem kompakten, schönen Design:
+/// - Kern-Zahlen: Life Path, Birthday, Attitude, Personal Year, Maturity
+/// - Birth Energy (Geburtsname): Expression, Soul Urge, Personality
+/// - Current Energy (aktueller Name): Expression, Soul Urge, Personality
+///
 /// Lila-Gradient für spirituelle, mystische Energie.
-class NumerologyCard extends StatelessWidget {
+class NumerologyCard extends StatefulWidget {
   final BirthChart birthChart;
 
   const NumerologyCard({
@@ -14,10 +18,35 @@ class NumerologyCard extends StatelessWidget {
   });
 
   @override
+  State<NumerologyCard> createState() => _NumerologyCardState();
+}
+
+class _NumerologyCardState extends State<NumerologyCard> {
+  bool _showBirthEnergy = false;
+  bool _showCurrentEnergy = false;
+
+  @override
   Widget build(BuildContext context) {
-    final lifePathNumber = birthChart.lifePathNumber;
-    final expressionNumber = birthChart.expressionNumber;
-    final soulUrgeNumber = birthChart.soulUrgeNumber;
+    // Extract numbers from BirthChart
+    final lifePathNumber = widget.birthChart.lifePathNumber;
+    final birthdayNumber = widget.birthChart.birthdayNumber;
+    final attitudeNumber = widget.birthChart.attitudeNumber;
+    final personalYear = widget.birthChart.personalYear;
+    final maturityNumber = widget.birthChart.maturityNumber;
+
+    // Birth Energy
+    final birthExpression = widget.birthChart.birthExpressionNumber;
+    final birthSoulUrge = widget.birthChart.birthSoulUrgeNumber;
+    final birthPersonality = widget.birthChart.birthPersonalityNumber;
+    final birthName = widget.birthChart.birthName;
+
+    // Current Energy
+    final currentExpression = widget.birthChart.currentExpressionNumber;
+    final currentSoulUrge = widget.birthChart.currentSoulUrgeNumber;
+    final currentPersonality = widget.birthChart.currentPersonalityNumber;
+    final currentName = widget.birthChart.currentName;
+
+    final hasNameChange = currentName != null && currentName != birthName;
 
     return Container(
       decoration: BoxDecoration(
@@ -112,6 +141,8 @@ class NumerologyCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
 
+                  // === KERN-ZAHLEN (immer sichtbar) ===
+
                   // Life Path Number (prominent)
                   if (lifePathNumber != null)
                     Container(
@@ -150,7 +181,7 @@ class NumerologyCard extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Life Path Number',
+                                  'Life Path',
                                   style: TextStyle(
                                     color: Colors.white.withOpacity(0.8),
                                     fontSize: 12,
@@ -175,32 +206,150 @@ class NumerologyCard extends StatelessWidget {
 
                   const SizedBox(height: 16),
 
-                  // Expression & Soul Urge (Side by Side)
-                  Row(
-                    children: [
-                      if (expressionNumber != null)
-                        Expanded(
-                          child: _buildNumberBox(
-                            'Expression',
-                            expressionNumber,
-                            NumerologyCalculator.isMasterNumber(expressionNumber),
-                          ),
-                        ),
-                      if (expressionNumber != null && soulUrgeNumber != null)
-                        const SizedBox(width: 12),
-                      if (soulUrgeNumber != null)
-                        Expanded(
-                          child: _buildNumberBox(
-                            'Soul Urge',
-                            soulUrgeNumber,
-                            NumerologyCalculator.isMasterNumber(soulUrgeNumber),
-                          ),
-                        ),
-                    ],
-                  ),
+                  // Weitere Kern-Zahlen (Grid)
+                  if (birthdayNumber != null || attitudeNumber != null || personalYear != null || maturityNumber != null)
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        if (birthdayNumber != null)
+                          _buildSmallNumberBox('Birthday', birthdayNumber),
+                        if (attitudeNumber != null)
+                          _buildSmallNumberBox('Attitude', attitudeNumber),
+                        if (personalYear != null)
+                          _buildSmallNumberBox('Jahr ${DateTime.now().year}', personalYear),
+                        if (maturityNumber != null)
+                          _buildSmallNumberBox('Maturity', maturityNumber),
+                      ],
+                    ),
 
-                  // Hinweis wenn keine Namen-Zahlen
-                  if (expressionNumber == null && soulUrgeNumber == null)
+                  const SizedBox(height: 20),
+
+                  // === NAME ENERGIES (expandable) ===
+
+                  // Birth Energy Section
+                  if (birthName != null && birthName.isNotEmpty) ...[
+                    InkWell(
+                      onTap: () => setState(() => _showBirthEnergy = !_showBirthEnergy),
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.2),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            const Text('🌟', style: TextStyle(fontSize: 20)),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Birth Energy',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    birthName,
+                                    style: TextStyle(
+                                      color: Colors.white.withOpacity(0.7),
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Icon(
+                              _showBirthEnergy ? Icons.expand_less : Icons.expand_more,
+                              color: Colors.white,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    if (_showBirthEnergy) ...[
+                      const SizedBox(height: 8),
+                      _buildEnergyDetails(
+                        expression: birthExpression,
+                        soulUrge: birthSoulUrge,
+                        personality: birthPersonality,
+                      ),
+                    ],
+                  ],
+
+                  // Current Energy Section (nur wenn Name geändert)
+                  if (hasNameChange) ...[
+                    const SizedBox(height: 12),
+                    InkWell(
+                      onTap: () => setState(() => _showCurrentEnergy = !_showCurrentEnergy),
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.3),
+                            width: 1.5,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            const Text('✨', style: TextStyle(fontSize: 20)),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Current Energy',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    currentName!,
+                                    style: TextStyle(
+                                      color: Colors.white.withOpacity(0.7),
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Icon(
+                              _showCurrentEnergy ? Icons.expand_less : Icons.expand_more,
+                              color: Colors.white,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    if (_showCurrentEnergy) ...[
+                      const SizedBox(height: 8),
+                      _buildEnergyDetails(
+                        expression: currentExpression,
+                        soulUrge: currentSoulUrge,
+                        personality: currentPersonality,
+                      ),
+                    ],
+                  ],
+
+                  // Placeholder wenn keine Namen-Daten
+                  if (birthName == null || birthName.isEmpty) ...[
+                    const SizedBox(height: 12),
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
@@ -227,6 +376,7 @@ class NumerologyCard extends StatelessWidget {
                         ],
                       ),
                     ),
+                  ],
 
                   const SizedBox(height: 24),
 
@@ -278,12 +428,14 @@ class NumerologyCard extends StatelessWidget {
     );
   }
 
-  Widget _buildNumberBox(String label, int number, bool isMaster) {
+  Widget _buildSmallNumberBox(String label, int number) {
+    final isMaster = NumerologyCalculator.isMasterNumber(number);
+
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         children: [
@@ -291,33 +443,104 @@ class NumerologyCard extends StatelessWidget {
             label,
             style: TextStyle(
               color: Colors.white.withOpacity(0.8),
-              fontSize: 11,
+              fontSize: 10,
               fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 4),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 '$number',
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 28,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               if (isMaster) ...[
-                const SizedBox(width: 4),
-                const Text(
-                  '✨',
-                  style: TextStyle(fontSize: 16),
-                ),
+                const SizedBox(width: 2),
+                const Text('✨', style: TextStyle(fontSize: 12)),
               ],
             ],
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildEnergyDetails({
+    required int? expression,
+    required int? soulUrge,
+    required int? personality,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        children: [
+          if (expression != null)
+            _buildNumberRow('Expression', expression, 'Talent & Ausdruck'),
+          if (expression != null && soulUrge != null) const SizedBox(height: 12),
+          if (soulUrge != null)
+            _buildNumberRow('Soul Urge', soulUrge, 'Innere Sehnsucht'),
+          if (soulUrge != null && personality != null) const SizedBox(height: 12),
+          if (personality != null)
+            _buildNumberRow('Personality', personality, 'Äußere Wirkung'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNumberRow(String label, int number, String meaning) {
+    final isMaster = NumerologyCalculator.isMasterNumber(number);
+
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                meaning,
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.7),
+                  fontSize: 10,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Row(
+          children: [
+            Text(
+              '$number',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            if (isMaster) ...[
+              const SizedBox(width: 4),
+              const Text('✨', style: TextStyle(fontSize: 16)),
+            ],
+          ],
+        ),
+      ],
     );
   }
 
