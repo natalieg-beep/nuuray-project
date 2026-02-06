@@ -145,6 +145,37 @@ class WesternAstrologyCard extends StatelessWidget {
                       label: 'Aszendent',
                       sign: ascendantSign.nameDe,
                       degree: birthChart.ascendantDegree,
+                    )
+                  else
+                    // Placeholder wenn Aszendent fehlt (keine Geburtsort-Koordinaten)
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.2),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.location_off_outlined,
+                            color: Colors.white.withOpacity(0.7),
+                            size: 20,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'Aszendent: Geburtsort-Koordinaten erforderlich',
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.8),
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
 
                   const SizedBox(height: 24),

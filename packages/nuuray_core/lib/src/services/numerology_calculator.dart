@@ -52,55 +52,111 @@ class NumerologyCalculator {
   /// Repräsentiert natürliche Talente, Fähigkeiten und die Art,
   /// wie man sich der Welt präsentiert.
   ///
-  /// Berechnung: Summe ALLER Buchstaben des vollständigen Geburtsnamens
+  /// Berechnung: WICHTIG - Pro Namensteil erst reduzieren, DANN summieren!
   ///
-  /// Beispiel: "NATALIE GABRYS"
-  /// → N(5)+A(1)+T(2)+A(1)+L(3)+I(9)+E(5) = 26 → 2+6 = 8
-  /// → G(7)+A(1)+B(2)+R(9)+Y(7)+S(1) = 27 → 2+7 = 9
-  /// → 8+9 = 17 → 1+7 = 8
+  /// Beispiel: "Natalie Frauke Günes"
+  /// → Natalie: N+A+T+A+L+I+E = 5+1+2+1+3+9+5 = 26 → 8
+  /// → Frauke: F+R+A+U+K+E = 6+9+1+3+2+5 = 26 → 8
+  /// → Günes: G+U+E+N+E+S = 7+3+5+5+5+1 = 26 → 8
+  /// → SUMME: 8+8+8 = 24 → 6
   static int? calculateExpression(String fullName) {
     if (fullName.trim().isEmpty) return null;
 
     final normalizedName = _normalizeName(fullName);
-    final sum = _sumLetters(normalizedName);
 
-    return _reduceToSingleDigit(sum);
+    // Trenne Namen in Teile (Leerzeichen-getrennt)
+    final nameParts = normalizedName.split(' ').where((p) => p.isNotEmpty).toList();
+
+    if (nameParts.isEmpty) return null;
+
+    // Berechne für jeden Namensteil die Summe und reduziere
+    int totalSum = 0;
+    for (final part in nameParts) {
+      final partSum = _sumLetters(part);
+      final reducedPart = _reduceToSingleDigit(partSum);
+      totalSum += reducedPart;
+    }
+
+    // Jetzt die Gesamtsumme reduzieren (dabei Meisterzahlen beachten!)
+    return _reduceToSingleDigit(totalSum);
   }
 
   /// Berechnet die Seelenzahl (Soul Urge Number)
   ///
   /// Repräsentiert innere Motivationen, Wünsche und was die Seele wirklich will.
   ///
-  /// Berechnung: Summe NUR der VOKALE des vollständigen Geburtsnamens
+  /// Berechnung: WICHTIG - Pro Namensteil erst reduzieren, DANN summieren!
   ///
-  /// Beispiel: "NATALIE GABRYS"
-  /// → Vokale: A, A, I, E, A
-  /// → A(1)+A(1)+I(9)+E(5)+A(1) = 17 → 1+7 = 8
+  /// Beispiel: "Natalie Frauke Pawlowski"
+  /// → Natalie: A+A+I+E = 1+1+9+5 = 16 → 7
+  /// → Frauke: A+U+E = 1+3+5 = 9
+  /// → Pawlowski: A+O+I = 1+6+9 = 16 → 7
+  /// → SUMME: 7+9+7 = 23 → 5
+  ///
+  /// ABER: Bei Meisterzahlen-Zwischenergebnissen:
+  /// → Natalie: 15 → 6
+  /// → Frauke: 9
+  /// → Pawlowski: 16 → 7
+  /// → SUMME: 6+9+7 = 22 ✨ (Meisterzahl!)
   static int? calculateSoulUrge(String fullName) {
     if (fullName.trim().isEmpty) return null;
 
     final normalizedName = _normalizeName(fullName);
-    final sum = _sumVowels(normalizedName);
 
-    return _reduceToSingleDigit(sum);
+    // Trenne Namen in Teile (Leerzeichen-getrennt)
+    final nameParts = normalizedName.split(' ').where((p) => p.isNotEmpty).toList();
+
+    if (nameParts.isEmpty) return null;
+
+    // Berechne für jeden Namensteil die Vokalsumme und reduziere
+    int totalSum = 0;
+    for (final part in nameParts) {
+      final vowelsInPart = part.split('').where((c) => _vowels.contains(c)).join('');
+      if (vowelsInPart.isNotEmpty) {
+        final partSum = _sumLetters(vowelsInPart);
+        final reducedPart = _reduceToSingleDigit(partSum);
+        totalSum += reducedPart;
+      }
+    }
+
+    // Jetzt die Gesamtsumme reduzieren (dabei Meisterzahlen beachten!)
+    return _reduceToSingleDigit(totalSum);
   }
 
   /// Berechnet die Persönlichkeitszahl (Personality Number)
   ///
   /// Repräsentiert die äußere Persönlichkeit, wie andere einen wahrnehmen.
   ///
-  /// Berechnung: Summe NUR der KONSONANTEN des vollständigen Geburtsnamens
+  /// Berechnung: WICHTIG - Pro Namensteil erst reduzieren, DANN summieren!
   ///
-  /// Beispiel: "NATALIE GABRYS"
-  /// → Konsonanten: N, T, L, G, B, R, Y, S
-  /// → N(5)+T(2)+L(3)+G(7)+B(2)+R(9)+Y(7)+S(1) = 36 → 3+6 = 9
+  /// Beispiel: "Natalie Frauke Günes"
+  /// → Natalie (Konsonanten): N+T+L = 5+2+3 = 10 → 1
+  /// → Frauke (Konsonanten): F+R+K = 6+9+2 = 17 → 8
+  /// → Günes (Konsonanten): G+N+S = 7+5+1 = 13 → 4
+  /// → SUMME: 1+8+4 = 13 → 4
   static int? calculatePersonality(String fullName) {
     if (fullName.trim().isEmpty) return null;
 
     final normalizedName = _normalizeName(fullName);
-    final sum = _sumConsonants(normalizedName);
 
-    return _reduceToSingleDigit(sum);
+    // Trenne Namen in Teile (Leerzeichen-getrennt)
+    final nameParts = normalizedName.split(' ').where((p) => p.isNotEmpty).toList();
+
+    if (nameParts.isEmpty) return null;
+
+    // Berechne für jeden Namensteil die Konsonantensumme und reduziere
+    int totalSum = 0;
+    for (final part in nameParts) {
+      final consonantsInPart = part.split('').where((c) => !_vowels.contains(c) && _letterValues.containsKey(c)).join('');
+      if (consonantsInPart.isNotEmpty) {
+        final partSum = _sumLetters(consonantsInPart);
+        final reducedPart = _reduceToSingleDigit(partSum);
+        totalSum += reducedPart;
+      }
+    }
+
+    // Jetzt die Gesamtsumme reduzieren (dabei Meisterzahlen beachten!)
+    return _reduceToSingleDigit(totalSum);
   }
 
   /// Berechnet die Geburtstagszahl (Birthday Number)

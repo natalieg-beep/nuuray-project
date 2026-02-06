@@ -181,7 +181,7 @@ class _NumerologyCardState extends State<NumerologyCard> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Life Path',
+                                  'Lebensweg',
                                   style: TextStyle(
                                     color: Colors.white.withOpacity(0.8),
                                     fontSize: 12,
@@ -213,13 +213,13 @@ class _NumerologyCardState extends State<NumerologyCard> {
                       runSpacing: 8,
                       children: [
                         if (birthdayNumber != null)
-                          _buildSmallNumberBox('Birthday', birthdayNumber),
+                          _buildSmallNumberBox('Geburtstag', birthdayNumber),
                         if (attitudeNumber != null)
-                          _buildSmallNumberBox('Attitude', attitudeNumber),
+                          _buildSmallNumberBox('Haltung', attitudeNumber),
                         if (personalYear != null)
                           _buildSmallNumberBox('Jahr ${DateTime.now().year}', personalYear),
                         if (maturityNumber != null)
-                          _buildSmallNumberBox('Maturity', maturityNumber),
+                          _buildSmallNumberBox('Reife', maturityNumber),
                       ],
                     ),
 
@@ -249,7 +249,7 @@ class _NumerologyCardState extends State<NumerologyCard> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const Text(
-                                    'Birth Energy',
+                                    'Urenergie',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 14,
@@ -310,7 +310,7 @@ class _NumerologyCardState extends State<NumerologyCard> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const Text(
-                                    'Current Energy',
+                                    'Aktuelle Energie',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 14,
@@ -484,13 +484,13 @@ class _NumerologyCardState extends State<NumerologyCard> {
       child: Column(
         children: [
           if (expression != null)
-            _buildNumberRow('Expression', expression, 'Talent & Ausdruck'),
+            _buildNumberRow('Ausdruck', expression, 'Talent & Fähigkeiten'),
           if (expression != null && soulUrge != null) const SizedBox(height: 12),
           if (soulUrge != null)
-            _buildNumberRow('Soul Urge', soulUrge, 'Innere Sehnsucht'),
+            _buildNumberRow('Seelenwunsch', soulUrge, 'Innere Sehnsucht'),
           if (soulUrge != null && personality != null) const SizedBox(height: 12),
           if (personality != null)
-            _buildNumberRow('Personality', personality, 'Äußere Wirkung'),
+            _buildNumberRow('Persönlichkeit', personality, 'Äußere Wirkung'),
         ],
       ),
     );
