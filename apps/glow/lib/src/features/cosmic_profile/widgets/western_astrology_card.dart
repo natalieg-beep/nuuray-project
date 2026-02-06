@@ -249,7 +249,7 @@ class WesternAstrologyCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
-              '${degree.toStringAsFixed(0)}°',
+              '${degree.toStringAsFixed(2)}°',
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 16,

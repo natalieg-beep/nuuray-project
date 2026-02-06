@@ -13,6 +13,19 @@ class BaziCard extends StatelessWidget {
     required this.birthChart,
   });
 
+  // TODO: i18n - später aus ARB-Dateien
+  static const Map<String, String> _stemsDE = {
+    'Jia': 'Jia', 'Yi': 'Yi', 'Bing': 'Bing', 'Ding': 'Ding',
+    'Wu': 'Wu', 'Ji': 'Ji', 'Geng': 'Geng', 'Xin': 'Xin',
+    'Ren': 'Ren', 'Gui': 'Gui',
+  };
+
+  static const Map<String, String> _branchesDE = {
+    'Rat': 'Ratte', 'Ox': 'Büffel', 'Tiger': 'Tiger', 'Rabbit': 'Hase',
+    'Dragon': 'Drache', 'Snake': 'Schlange', 'Horse': 'Pferd', 'Goat': 'Ziege',
+    'Monkey': 'Affe', 'Rooster': 'Hahn', 'Dog': 'Hund', 'Pig': 'Schwein',
+  };
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -109,7 +122,7 @@ class BaziCard extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          'Day Master',
+                          'Tages-Meister',
                           style: TextStyle(
                             color: Colors.white.withOpacity(0.8),
                             fontSize: 12,
@@ -118,7 +131,7 @@ class BaziCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          '${birthChart.baziDayStem}-${birthChart.baziDayBranch}',
+                          '${_translateStem(birthChart.baziDayStem ?? 'N/A')}-${_translateBranch(birthChart.baziDayBranch ?? 'N/A')}',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 24,
@@ -138,21 +151,21 @@ class BaziCard extends StatelessWidget {
                       Expanded(
                         child: _buildPillarColumn(
                           'Jahr',
-                          '${birthChart.baziYearStem}-${birthChart.baziYearBranch}',
+                          '${_translateStem(birthChart.baziYearStem ?? 'N/A')}-${_translateBranch(birthChart.baziYearBranch ?? 'N/A')}',
                         ),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: _buildPillarColumn(
                           'Monat',
-                          '${birthChart.baziMonthStem}-${birthChart.baziMonthBranch}',
+                          '${_translateStem(birthChart.baziMonthStem ?? 'N/A')}-${_translateBranch(birthChart.baziMonthBranch ?? 'N/A')}',
                         ),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: _buildPillarColumn(
                           'Tag',
-                          '${birthChart.baziDayStem}-${birthChart.baziDayBranch}',
+                          '${_translateStem(birthChart.baziDayStem ?? 'N/A')}-${_translateBranch(birthChart.baziDayBranch ?? 'N/A')}',
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -160,7 +173,7 @@ class BaziCard extends StatelessWidget {
                         child: _buildPillarColumn(
                           'Stunde',
                           birthChart.baziHourStem != null
-                              ? '${birthChart.baziHourStem}-${birthChart.baziHourBranch}'
+                              ? '${_translateStem(birthChart.baziHourStem!)}-${_translateBranch(birthChart.baziHourBranch!)}'
                               : '?',
                         ),
                       ),
@@ -192,7 +205,7 @@ class BaziCard extends StatelessWidget {
                         child: Text(
                           _getElementEmoji(birthChart.baziElement ?? 'Wood') +
                               ' ' +
-                              (birthChart.baziElement ?? 'Wood'),
+                              _getElementName(birthChart.baziElement ?? 'Wood'),
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 14,
@@ -287,17 +300,48 @@ class BaziCard extends StatelessWidget {
   String _getElementEmoji(String element) {
     switch (element.toLowerCase()) {
       case 'wood':
+      case 'holz':
         return '🌳';
       case 'fire':
+      case 'feuer':
         return '🔥';
       case 'earth':
+      case 'erde':
         return '🏔️';
       case 'metal':
+      case 'metall':
         return '⚙️';
       case 'water':
+      case 'wasser':
         return '💧';
       default:
         return '🌟';
     }
+  }
+
+  String _getElementName(String element) {
+    // TODO: i18n - später aus ARB-Dateien
+    switch (element.toLowerCase()) {
+      case 'wood':
+        return 'Holz';
+      case 'fire':
+        return 'Feuer';
+      case 'earth':
+        return 'Erde';
+      case 'metal':
+        return 'Metall';
+      case 'water':
+        return 'Wasser';
+      default:
+        return element;
+    }
+  }
+
+  String _translateStem(String stem) {
+    return _stemsDE[stem] ?? stem;
+  }
+
+  String _translateBranch(String branch) {
+    return _branchesDE[branch] ?? branch;
   }
 }

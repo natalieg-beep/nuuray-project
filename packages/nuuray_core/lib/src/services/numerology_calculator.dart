@@ -103,13 +103,27 @@ class NumerologyCalculator {
     return _reduceToSingleDigit(sum);
   }
 
+  /// Berechnet die Geburtstagszahl (Birthday Number)
+  ///
+  /// Der Tag deiner Geburt zeigt spezifische Begabungen und Werkzeuge,
+  /// die dir in die Wiege gelegt wurden.
+  ///
+  /// Berechnung: Einfach der Tag reduziert auf eine Ziffer (1-31 → 1-9/11/22)
+  ///
+  /// Beispiel: 30 → 3+0 = 3 (Kommunikation & Kreativität)
+  static int calculateBirthday(DateTime birthDate) {
+    return _reduceToSingleDigit(birthDate.day);
+  }
+
   /// Berechnet die Schicksalszahl / Reifezahl (Destiny/Maturity Number)
   ///
   /// Repräsentiert die Richtung, in die man im Leben reift.
-  /// Wird oft in der zweiten Lebenshälfte relevanter.
+  /// Wird oft in der zweiten Lebenshälfte relevanter (ab 35-45 Jahre).
   ///
   /// Berechnung: Lebensweg + Ausdruckszahl
-  static int? calculateDestiny({
+  ///
+  /// Beispiel: Life Path 8 + Expression 6 = 14 → 1+4 = 5
+  static int? calculateMaturity({
     required int lifePath,
     required int? expression,
   }) {
@@ -117,6 +131,15 @@ class NumerologyCalculator {
 
     final sum = lifePath + expression;
     return _reduceToSingleDigit(sum);
+  }
+
+  /// Alias für calculateMaturity (älterer Name)
+  @Deprecated('Use calculateMaturity instead')
+  static int? calculateDestiny({
+    required int lifePath,
+    required int? expression,
+  }) {
+    return calculateMaturity(lifePath: lifePath, expression: expression);
   }
 
   // ============================================================
@@ -275,8 +298,19 @@ class NumerologyCalculator {
       currentPersonality = calculatePersonality(currentName);
     }
 
+    // Birthday Number (immer berechenbar)
+    final birthdayNumber = calculateBirthday(birthDate);
+
+    // Maturity Number (nur wenn Expression vorhanden)
+    final activeExpression = hasNameChange ? currentExpression : birthExpression;
+    final maturityNumber = activeExpression != null
+        ? calculateMaturity(lifePath: lifePathNumber, expression: activeExpression)
+        : null;
+
     return NumerologyProfile(
       lifePathNumber: lifePathNumber,
+      birthdayNumber: birthdayNumber,
+      maturityNumber: maturityNumber,
       birthExpressionNumber: birthExpression,
       birthSoulUrgeNumber: birthSoulUrge,
       birthPersonalityNumber: birthPersonality,

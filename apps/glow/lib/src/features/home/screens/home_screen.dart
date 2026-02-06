@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../shared/constants/app_colors.dart';
 import '../../profile/providers/user_profile_provider.dart';
 import '../../auth/providers/auth_provider.dart';
+import '../../cosmic_profile/providers/cosmic_profile_provider.dart';
+import '../../cosmic_profile/widgets/western_astrology_card.dart';
+import '../../cosmic_profile/widgets/bazi_card.dart';
+import '../../cosmic_profile/widgets/numerology_card.dart';
 
 /// Home-Screen: Hauptansicht mit Tageshoroskop, Mondphase, etc.
 class HomeScreen extends ConsumerWidget {
@@ -41,11 +44,12 @@ class HomeScreen extends ConsumerWidget {
 
                   // Tageshoroskop-Card
                   _buildHoroscopeCard(context),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 24),
 
-                  // Cosmic Profile Card
-                  _buildCosmicProfileCard(context),
-                  const SizedBox(height: 16),
+                  // === COSMIC PROFILE DASHBOARD ===
+                  _buildCosmicProfileSection(context, ref),
+
+                  const SizedBox(height: 24),
 
                   // Quick Actions
                   _buildQuickActions(context),
@@ -247,80 +251,132 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildCosmicProfileCard(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        context.go('/cosmic-profile');
-      },
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              const Color(0xFF9B59B6),
-              const Color(0xFF8E44AD).withOpacity(0.8),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF9B59B6).withOpacity(0.3),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
-        child: Row(
+  Widget _buildCosmicProfileSection(BuildContext context, WidgetRef ref) {
+    final cosmicProfileAsync = ref.watch(cosmicProfileProvider);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Section Header
+        Row(
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.auto_awesome,
-                        color: Colors.white,
-                        size: 32,
-                      ),
-                      const SizedBox(width: 12),
-                      Text(
-                        'Dein Cosmic Profile',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Entdecke deine kosmische DNA aus Western Astrology, Bazi und Numerologie',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.white.withOpacity(0.9),
-                        ),
-                  ),
-                ],
-              ),
+            const Icon(
+              Icons.auto_awesome,
+              color: AppColors.primary,
+              size: 28,
             ),
             const SizedBox(width: 12),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.arrow_forward_ios,
-                color: Colors.white,
-                size: 20,
-              ),
+            Text(
+              'Dein Cosmic Profile',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
           ],
         ),
+        const SizedBox(height: 16),
+
+        // Cosmic Profile Cards
+        cosmicProfileAsync.when(
+          data: (birthChart) {
+            if (birthChart == null) {
+              return _buildCosmicProfilePlaceholder(context);
+            }
+
+            return Column(
+              children: [
+                // Western Astrology Card
+                WesternAstrologyCard(birthChart: birthChart),
+                const SizedBox(height: 16),
+
+                // Bazi Card
+                BaziCard(birthChart: birthChart),
+                const SizedBox(height: 16),
+
+                // Numerology Card
+                NumerologyCard(birthChart: birthChart),
+              ],
+            );
+          },
+          loading: () => const Center(
+            child: Padding(
+              padding: EdgeInsets.all(40),
+              child: CircularProgressIndicator(color: AppColors.primary),
+            ),
+          ),
+          error: (error, stack) => _buildCosmicProfileError(context, error),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCosmicProfilePlaceholder(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.surfaceDark),
+      ),
+      child: Column(
+        children: [
+          const Icon(
+            Icons.auto_awesome_outlined,
+            size: 48,
+            color: AppColors.textTertiary,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Geburtsdaten unvollständig',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Bitte vervollständige deine Geburtsdaten im Onboarding, um dein Cosmic Profile zu berechnen.',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCosmicProfileError(BuildContext context, Object error) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: AppColors.error.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.error.withOpacity(0.3)),
+      ),
+      child: Column(
+        children: [
+          const Icon(
+            Icons.error_outline,
+            size: 48,
+            color: AppColors.error,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Fehler beim Laden',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.error,
+                ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            error.toString(),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
