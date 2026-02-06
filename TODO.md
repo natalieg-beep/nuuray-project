@@ -1,7 +1,7 @@
 # NUURAY GLOW — TODO Liste
 
-> Letzte Aktualisierung: 2025-02-06
-> Stand: Auth ✅, Onboarding ✅, Basic Home ✅, **Cosmic Profile Dashboard ✅**
+> Letzte Aktualisierung: 2025-02-06 (Abend)
+> Stand: Auth ✅, Onboarding ✅ (mit Geocoding Backend), Basic Home ✅, **Cosmic Profile Dashboard ✅** (Code komplett, Testing ausstehend)
 
 ---
 
@@ -19,13 +19,19 @@
 - ✅ 3-Schritte Onboarding-Flow
   - Schritt 1: Name-Felder (displayName, fullFirstNames, lastName, birthName)
   - Schritt 2: Geburtsdatum (Pflicht) + Geburtszeit (Optional)
-  - Schritt 3: Geburtsort (Text-Input)
-- ✅ UserProfile Model mit allen Feldern
+  - Schritt 3: Geburtsort mit **Geocoding** ✨
+    - Text-Input + "Ort suchen"-Button
+    - Google Places API via Supabase Edge Function
+    - Koordinaten (lat/lng) + Timezone werden gespeichert
+    - "Überspringen"-Option (dann kein Aszendent)
+- ✅ UserProfile Model mit allen Feldern (inkl. birth_latitude, birth_longitude, birth_timezone)
 - ✅ UserProfileService (CRUD + Upsert-Logik)
+- ✅ GeocodingService (`nuuray_api/services/geocoding_service.dart`)
 - ✅ Supabase Migrations:
   - 001_initial_schema.sql (profiles Tabelle)
   - 002_add_onboarding_fields.sql (Name-Felder, Onboarding-Status, Geburtsort-Felder)
   - 003_cleanup_profile_columns.sql (Alte Spalten entfernen)
+- ✅ Supabase Edge Function: `geocode-place` (deployed)
 
 ### Basic UI
 - ✅ Splash Screen mit Auth/Onboarding Routing
@@ -42,10 +48,24 @@
 
 ---
 
-## 🔨 IN ARBEIT
+## ⏳ NÄCHSTE SCHRITTE
+
+### 🧪 TESTING (DRINGEND!)
+**Status:** Code ist fertig, aber **noch nicht getestet**
+
+**Was muss getestet werden:**
+- [ ] App starten und durch Home Screen navigieren
+- [ ] Cosmic Profile Dashboard visuell prüfen (alle 3 Cards)
+- [ ] Numerologie: Soul Urge = 33 verifizieren (statt 2)
+- [ ] Neues Onboarding mit Geocoding durchspielen
+- [ ] Aszendent erscheint nach Geocoding (oder Placeholder)
+
+---
+
+## ✅ IMPLEMENTIERT (Code fertig, Testing ausstehend)
 
 ### Cosmic Profile Dashboard
-**Status:** ✅ FERTIG (Stand: 2025-02-06)
+**Status:** ✅ CODE KOMPLETT (Stand: 2025-02-06), ⏳ Testing morgen
 
 **Komponenten:**
 1. **Datenmodell** (nuuray_core)
@@ -118,17 +138,9 @@
 
 ---
 
-## 🐛 AKTUELLE PROBLEME
-
-### Aszendent fehlt
-- **Problem:** Ascendant wird nicht berechnet, weil `birth_latitude` + `birth_longitude` null
-- **Ursache:** Onboarding speichert nur Text-Input für Geburtsort, keine Koordinaten
-- **UI-Lösung:** Placeholder "Geburtsort-Koordinaten erforderlich" angezeigt
-- **Nächster Schritt:** Google Places API Integration (siehe unten)
-
 ---
 
-## ⏳ TODO (Nächste Schritte nach Dashboard)
+## 📋 BACKLOG (Nach Testing)
 
 ### Cosmic Profile: Verbesserungen
 - [ ] **Detail-Ansichten** für jedes System (klickbar auf "Mehr erfahren")
@@ -147,13 +159,16 @@
   - [ ] Bazi: Solar Terms Grenzen prüfen
   - [ ] Numerology: Meisterzahlen-Fälle testen
 
-### Geburtsort Geocoding (PRIORITÄT: Aszendent fehlt!)
-- [ ] **Google Places API Integration** (aktuell: Text-Input → keine Koordinaten)
-  - Option 1: Client-seitig mit google_places_flutter (API Key vorhanden)
-  - Option 2: Server-seitig über Supabase Edge Function (sicherer, bevorzugt)
-- [ ] **Latitude/Longitude in Onboarding speichern** (birth_latitude, birth_longitude)
-- [ ] Timezone-Berechnung aus Geburtsort (für präzise Bazi-Stunde)
-- [ ] **Nach Geocoding:** Chart neu berechnen (Aszendent + präzise Bazi-Stunde)
+### Geburtsort Geocoding
+- [x] **Google Places API Integration** ✅ (Server-seitig über Supabase Edge Function)
+  - [x] Edge Function `/geocode-place` deployed
+  - [x] GeocodingService in `nuuray_api` implementiert
+  - [x] Google Cloud: 4 APIs aktiviert (Places, Geocoding, Timezone)
+  - [x] API Key als Secret in Supabase hinterlegt
+  - [ ] **⏳ MORGEN:** Onboarding mit echtem Geburtsort durchspielen
+- [x] **Latitude/Longitude in Onboarding speichern** ✅ (birth_latitude, birth_longitude, birth_timezone)
+- [x] Timezone-Berechnung aus Geburtsort ✅ (Google Timezone API)
+- [x] Chart neu berechnen (Aszendent + präzise Bazi-Stunde) - Automatisch beim Profil-Load ✅
 
 ### Tageshoroskop
 - [ ] daily_content Tabelle (Supabase)
@@ -198,14 +213,29 @@
 
 ---
 
-## 🐛 BEKANNTE PROBLEME
+---
 
-### Geburtsort-Eingabe
-- **Problem:** Google Places API liefert "Forbidden" Error
-- **API Key:** AIzaSyBG207MVH8bkIjk_zNAKplAaB1H45HjndM
-- **Status:** Beide APIs aktiviert (Places API + Places API New), korrekte Config
-- **Workaround:** Text-Input für MVP
-- **Langfristig:** Server-seitige Geocoding über Supabase Edge Function
+## ℹ️ HINWEISE FÜR MORGEN
+
+### Aszendent-Problem beheben (Alternative)
+Wenn Geocoding morgen nicht funktioniert, **Profil manuell updaten**:
+1. Gehe zu: https://supabase.com/dashboard/project/ykkayjbplutdodummcte/editor
+2. Tabelle: `profiles`
+3. User: natalie.guenes.tr@gmail.com
+4. Setze:
+   - `birth_latitude`: 47.6546609
+   - `birth_longitude`: 9.4798766
+   - `birth_timezone`: Europe/Berlin
+5. Chart wird automatisch neu berechnet beim nächsten App-Start
+
+### Google Places Testing
+- Google API Aktivierung kann 5-10 Min dauern
+- App Hot Restart nötig: `R` in Terminal
+- Mit eingelogtem User testen
+
+---
+
+## 🐛 BEKANNTE PROBLEME
 
 ### macOS Testing
 - **Problem:** "Connection failed (OS Error: Operation not permitted)" bei macOS Runner
@@ -303,4 +333,45 @@
 
 ---
 
-**Nächster Fokus:** Cosmic Profile Dashboard implementieren — die drei Calculator-Services sind die Basis für alle weiteren Features.
+## 📅 CHANGELOG — Letzte Sessions
+
+### Session 2026-02-06 (Nachmittag) — Numerologie Methode B
+**Was wurde gemacht:**
+- ✅ Numerologie-Berechnung auf **Methode B** umgestellt (Gesamt-Addition statt per-Teil)
+- ✅ Soul Urge für "Natalie Frauke Günes": **33** ✨ (statt 2)
+- ✅ Alle UI-Labels auf Deutsch übersetzt
+- ✅ TODO.md komplett aktualisiert mit Status aller Features
+
+**Ergebnis:** Meisterzahlen werden jetzt spirituell korrekt berechnet!
+
+### Session 2026-02-06 (Vormittag) — Google Places Integration
+**Was wurde gemacht:**
+- ✅ Supabase Edge Function `/geocode-place` implementiert & deployed
+- ✅ GeocodingService in `nuuray_api` erstellt
+- ✅ Neuer Onboarding-Screen mit Geocoding
+- ✅ Google Cloud: 4 APIs aktiviert (Places, Geocoding, Timezone)
+- ✅ Vollständige Dokumentation + Deploy-Scripts
+- ✅ Git Commits: 1.718 LOC (14 Dateien)
+
+**Status:** ⏳ 90% fertig, wartet auf finales Testing (Google API Aktivierung)
+
+### Session 2026-02-05 — Cosmic Profile Dashboard
+**Was wurde gemacht:**
+- ✅ Western Astrology Calculator (VSOP87, ELP2000, Meeus)
+- ✅ Bazi Calculator (Solar Terms, Hsia Calendar)
+- ✅ Numerology Calculator (9 Kern-Zahlen, Dual-Profil)
+- ✅ Drei Dashboard-Cards mit Gradients & expandable Sections
+- ✅ BirthChart Model & Service
+- ✅ Supabase Migration 004
+
+**Ergebnis:** Vollständiges Cosmic Profile auf Home Screen!
+
+---
+
+---
+
+**Nächster Fokus (MORGEN):**
+1. 🧪 **Testing:** App starten, Cosmic Profile prüfen, Soul Urge = 33 verifizieren
+2. 🧪 **Testing:** Geocoding im Onboarding testen (oder manuelles DB-Update)
+3. 📸 **Screenshots:** Dashboard dokumentieren
+4. 🎯 **Dann:** Tageshoroskop mit Claude API implementieren
