@@ -142,28 +142,7 @@ serve(async (req) => {
   }
 
   try {
-    // Auth prüfen
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      return new Response(
-        JSON.stringify({ error: "Keine Authentifizierung" }),
-        { status: 401, headers: { "Content-Type": "application/json" } }
-      );
-    }
-
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      global: { headers: { Authorization: authHeader } },
-    });
-
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
-      return new Response(
-        JSON.stringify({ error: "Ungültiger Token" }),
-        { status: 401, headers: { "Content-Type": "application/json" } }
-      );
-    }
-
-    // Request-Body parsen
+    // Request-Body parsen (KEINE AUTH ERFORDERLICH für Onboarding!)
     const { query } = await req.json();
 
     if (!query || typeof query !== "string") {

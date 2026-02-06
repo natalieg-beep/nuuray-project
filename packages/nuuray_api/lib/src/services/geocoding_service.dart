@@ -15,6 +15,8 @@ class GeocodingService {
   /// oder null bei Fehler.
   Future<GeocodingResult?> geocodePlace(String query) async {
     try {
+      // OPTIONAL: Auth-Header wird mitgesendet falls vorhanden
+      // Edge Function funktioniert auch ohne (für Onboarding)
       final response = await _supabase.functions.invoke(
         'geocode-place',
         body: {'query': query},

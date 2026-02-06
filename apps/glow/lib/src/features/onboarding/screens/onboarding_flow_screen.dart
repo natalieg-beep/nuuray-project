@@ -9,7 +9,7 @@ import '../../profile/providers/user_profile_provider.dart';
 import '../../../core/config/app_config.dart';
 import 'onboarding_name_screen.dart';
 import 'onboarding_birthdate_screen.dart';
-import 'onboarding_birthplace_geocoding_screen.dart';
+import 'onboarding_birthplace_autocomplete_screen.dart';
 
 /// Onboarding-Flow: 3 Schritte (Name → Geburtsdatum → Geburtsort)
 class OnboardingFlowScreen extends ConsumerStatefulWidget {
@@ -205,8 +205,8 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen> {
                   onBack: _previousPage,
                 ),
 
-                // Schritt 3: Geburtsort (mit Geocoding)
-                OnboardingBirthplaceGeocodingScreen(
+                // Schritt 3: Geburtsort (mit Autocomplete)
+                OnboardingBirthplaceAutocompleteScreen(
                   initialBirthPlace: _birthPlace,
                   initialLatitude: _birthLatitude,
                   initialLongitude: _birthLongitude,

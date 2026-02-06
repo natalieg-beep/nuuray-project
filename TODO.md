@@ -1,7 +1,7 @@
 # NUURAY GLOW — TODO Liste
 
-> Letzte Aktualisierung: 2025-02-06 (Abend)
-> Stand: Auth ✅, Onboarding ✅ (mit Geocoding Backend), Basic Home ✅, **Cosmic Profile Dashboard ✅** (Code komplett, Testing ausstehend)
+> Letzte Aktualisierung: 2025-02-06 (Spätabend)
+> Stand: Auth ✅, Onboarding ✅ (mit Geocoding ✅ FUNKTIONIERT!), Basic Home ✅, **Cosmic Profile Dashboard ✅** (Code komplett, Testing ausstehend)
 
 ---
 
@@ -48,17 +48,32 @@
 
 ---
 
-## ⏳ NÄCHSTE SCHRITTE
+## ⏳ NÄCHSTE SCHRITTE (MORGEN)
 
-### 🧪 TESTING (DRINGEND!)
+### 🐛 BUGS ZU FIXEN
+**PRIORITÄT 1:**
+- [ ] **Aszendent-Berechnung prüfen**
+  - Erwartet: Krebs (für Ravensburg-Geburtsort)
+  - Aktuell: Zwillinge wird angezeigt
+  - Geocoding funktioniert ✅ (Koordinaten + Timezone werden gespeichert)
+  - Problem: Wahrscheinlich in WesternAstrologyCalculator.calculateAscendant()
+  - Debugging: Birth latitude/longitude/timezone aus DB lesen und prüfen
+
+- [ ] **Tageshoroskop zeigt falsches Sternzeichen**
+  - Problem: Home Screen zeigt Schütze-Horoskop statt User-Sternzeichen (Krebs)
+  - Hardcoded Placeholder muss durch echtes User-Sternzeichen ersetzt werden
+  - File: `apps/glow/lib/src/features/home/screens/home_screen.dart`
+  - Fix: `cosmicProfileProvider` nutzen statt hardcoded "Schütze"
+
+### 🧪 TESTING
 **Status:** Code ist fertig, aber **noch nicht getestet**
 
 **Was muss getestet werden:**
 - [ ] App starten und durch Home Screen navigieren
 - [ ] Cosmic Profile Dashboard visuell prüfen (alle 3 Cards)
 - [ ] Numerologie: Soul Urge = 33 verifizieren (statt 2)
-- [ ] Neues Onboarding mit Geocoding durchspielen
-- [ ] Aszendent erscheint nach Geocoding (oder Placeholder)
+- [ ] Neues Onboarding mit Geocoding durchspielen (✅ Geocoding FUNKTIONIERT!)
+- [ ] Aszendent-Berechnung nach Bug-Fix verifizieren
 
 ---
 
@@ -160,15 +175,22 @@
   - [ ] Numerology: Meisterzahlen-Fälle testen
 
 ### Geburtsort Geocoding
-- [x] **Google Places API Integration** ✅ (Server-seitig über Supabase Edge Function)
-  - [x] Edge Function `/geocode-place` deployed
-  - [x] GeocodingService in `nuuray_api` implementiert
-  - [x] Google Cloud: 4 APIs aktiviert (Places, Geocoding, Timezone)
+- [x] **Google Places API Integration** ✅ ✅ ✅ (FUNKTIONIERT!)
+  - [x] Edge Function `/geocode-place` deployed mit `--no-verify-jwt` Flag
+  - [x] Supabase Edge Function akzeptiert Requests ohne User-JWT
+  - [x] Flutter-Code nutzt globalen Supabase-Client (authentifiziert)
+  - [x] Google Cloud: 4 APIs aktiviert (Places, Autocomplete, Details, Timezone)
   - [x] API Key als Secret in Supabase hinterlegt
-  - [ ] **⏳ MORGEN:** Onboarding mit echtem Geburtsort durchspielen
+  - [x] **ERFOLGREICH GETESTET:** "Ravensburg" findet Stadt + Koordinaten + Timezone ✅
+- [x] **Autocomplete-UI mit Debouncing** ✅
+  - [x] Suche startet nach 3+ Zeichen + 800ms Delay
+  - [x] Loading-Indicator während Suche
+  - [x] Grüne Success-Box mit Koordinaten + Timezone
+  - [x] Fehlerbehandlung mit hilfreichen Meldungen
 - [x] **Latitude/Longitude in Onboarding speichern** ✅ (birth_latitude, birth_longitude, birth_timezone)
 - [x] Timezone-Berechnung aus Geburtsort ✅ (Google Timezone API)
 - [x] Chart neu berechnen (Aszendent + präzise Bazi-Stunde) - Automatisch beim Profil-Load ✅
+- [ ] **⚠️ MORGEN:** Aszendent-Berechnung debuggen (zeigt Zwillinge statt Krebs)
 
 ### Tageshoroskop
 - [ ] daily_content Tabelle (Supabase)
@@ -344,16 +366,23 @@ Wenn Geocoding morgen nicht funktioniert, **Profil manuell updaten**:
 
 **Ergebnis:** Meisterzahlen werden jetzt spirituell korrekt berechnet!
 
-### Session 2026-02-06 (Vormittag) — Google Places Integration
+### Session 2026-02-06 (Vormittag + Spätabend) — Google Places Integration
 **Was wurde gemacht:**
 - ✅ Supabase Edge Function `/geocode-place` implementiert & deployed
-- ✅ GeocodingService in `nuuray_api` erstellt
-- ✅ Neuer Onboarding-Screen mit Geocoding
-- ✅ Google Cloud: 4 APIs aktiviert (Places, Geocoding, Timezone)
+- ✅ JWT-Problem gelöst: `--no-verify-jwt` Flag beim Deployment
+- ✅ Flutter-Code angepasst: Globaler Supabase-Client statt direkter HTTP-Calls
+- ✅ Autocomplete-UI mit Debouncing (800ms, 3+ Zeichen)
+- ✅ Google Cloud: 4 APIs aktiviert (Places Autocomplete, Place Details, Geocoding, Timezone)
 - ✅ Vollständige Dokumentation + Deploy-Scripts
-- ✅ Git Commits: 1.718 LOC (14 Dateien)
+- ✅ **ERFOLGREICH GETESTET:** "Ravensburg" → Koordinaten + Timezone ✅
 
-**Status:** ⏳ 90% fertig, wartet auf finales Testing (Google API Aktivierung)
+**Technische Learnings:**
+- Supabase Edge Functions verlangen standardmäßig JWT-Validierung
+- `--no-verify-jwt` Flag deaktiviert JWT-Check (für Onboarding vor Login)
+- CORS-Problem beim direkten Google Places API Call vom Browser
+- Lösung: Edge Function als Proxy, authentifizierter Supabase-Client
+
+**Status:** ✅ 100% FUNKTIONIERT! (Aber: Aszendent-Berechnung noch zu prüfen)
 
 ### Session 2026-02-05 — Cosmic Profile Dashboard
 **Was wurde gemacht:**

@@ -48,6 +48,7 @@ dependencies:
 
   # Utilities (version locked by flutter_localizations)
   intl: any
+  http: ^1.6.0
 
 dev_dependencies:
   flutter_test:
