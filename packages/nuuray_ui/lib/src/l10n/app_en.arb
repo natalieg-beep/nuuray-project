@@ -1,0 +1,72 @@
+{
+  "@@locale": "en",
+  "@@last_modified": "2026-02-05",
+
+  "appNameGlow": "Nuuray Glow",
+  "appNameTide": "Nuuray Tide",
+  "appNamePath": "Nuuray Path",
+  "appTagline": "Your moonlight",
+
+  "onboardingWelcome": "Welcome to Nuuray",
+  "onboardingSubtitle": "Discover what the stars have in store for you.",
+  "onboardingBirthDate": "When were you born?",
+  "onboardingBirthTime": "Do you know your birth time?",
+  "onboardingBirthTimeOptional": "Optional — enables more precise analysis",
+  "onboardingBirthCity": "Where were you born?",
+  "onboardingBirthCityOptional": "Optional — for ascendant calculation",
+  "onboardingComplete": "Your cosmic profile is ready!",
+  "onboardingContinue": "Continue",
+  "onboardingSkip": "Skip",
+
+  "tabToday": "Today",
+  "tabMoon": "Moon",
+  "tabPartner": "Partner",
+  "tabProfile": "Profile",
+
+  "todayHoroscope": "Your Daily Horoscope",
+  "todayEnergy": "Daily Energy",
+  "todayMoonPhase": "Moon Phase",
+
+  "moonCalendar": "Moon Calendar",
+  "moonCurrentPhase": "Current Phase",
+  "moonNextFullMoon": "Next Full Moon",
+  "moonNextNewMoon": "Next New Moon",
+
+  "partnerCheckTitle": "Partner Check",
+  "partnerCheckSubtitle": "How well do you match?",
+  "partnerAddNew": "Add person",
+  "partnerBirthDate": "Date of birth",
+  "partnerRelationship": "Relationship",
+  "partnerRelationshipPartner": "Partner",
+  "partnerRelationshipFriend": "Friend",
+  "partnerRelationshipFamily": "Family",
+  "partnerRelationshipColleague": "Colleague",
+
+  "premiumTitle": "Nuuray Premium",
+  "premiumSubtitle": "Deeper insights, more clarity.",
+  "premiumFeature1": "Detailed daily synthesis",
+  "premiumFeature2": "Weekly & monthly overview",
+  "premiumFeature3": "Extended partner check",
+  "premiumFeature4": "PDF reports",
+  "premiumSubscribe": "Unlock Premium",
+  "premiumRestore": "Restore purchases",
+
+  "weekOverview": "Weekly Overview",
+  "monthOverview": "Monthly Overview",
+
+  "settingsTitle": "Settings",
+  "settingsLanguage": "Language",
+  "settingsNotifications": "Notifications",
+  "settingsDailyReminder": "Daily reminder",
+  "settingsPrivacy": "Privacy",
+  "settingsTerms": "Terms of use",
+  "settingsAbout": "About Nuuray",
+  "settingsLogout": "Sign out",
+
+  "generalLoading": "Loading...",
+  "generalError": "Something went wrong.",
+  "generalRetry": "Try again",
+  "generalSave": "Save",
+  "generalCancel": "Cancel",
+  "generalDone": "Done"
+}

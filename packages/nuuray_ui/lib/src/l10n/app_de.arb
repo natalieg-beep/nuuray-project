@@ -1,0 +1,72 @@
+{
+  "@@locale": "de",
+  "@@last_modified": "2026-02-05",
+
+  "appNameGlow": "Nuuray Glow",
+  "appNameTide": "Nuuray Tide",
+  "appNamePath": "Nuuray Path",
+  "appTagline": "Dein Mondlicht",
+
+  "onboardingWelcome": "Willkommen bei Nuuray",
+  "onboardingSubtitle": "Entdecke, was die Sterne für dich bereithalten.",
+  "onboardingBirthDate": "Wann bist du geboren?",
+  "onboardingBirthTime": "Weißt du deine Geburtszeit?",
+  "onboardingBirthTimeOptional": "Optional — ermöglicht genauere Analyse",
+  "onboardingBirthCity": "Wo bist du geboren?",
+  "onboardingBirthCityOptional": "Optional — für Aszendent-Berechnung",
+  "onboardingComplete": "Dein kosmisches Profil ist bereit!",
+  "onboardingContinue": "Weiter",
+  "onboardingSkip": "Überspringen",
+
+  "tabToday": "Heute",
+  "tabMoon": "Mond",
+  "tabPartner": "Partner",
+  "tabProfile": "Profil",
+
+  "todayHoroscope": "Dein Tageshoroskop",
+  "todayEnergy": "Tagesenergie",
+  "todayMoonPhase": "Mondphase",
+
+  "moonCalendar": "Mondkalender",
+  "moonCurrentPhase": "Aktuelle Phase",
+  "moonNextFullMoon": "Nächster Vollmond",
+  "moonNextNewMoon": "Nächster Neumond",
+
+  "partnerCheckTitle": "Partner-Check",
+  "partnerCheckSubtitle": "Wie gut harmoniert ihr?",
+  "partnerAddNew": "Person hinzufügen",
+  "partnerBirthDate": "Geburtsdatum",
+  "partnerRelationship": "Beziehung",
+  "partnerRelationshipPartner": "Partner/in",
+  "partnerRelationshipFriend": "Freund/in",
+  "partnerRelationshipFamily": "Familie",
+  "partnerRelationshipColleague": "Kolleg/in",
+
+  "premiumTitle": "Nuuray Premium",
+  "premiumSubtitle": "Tiefere Einblicke, mehr Klarheit.",
+  "premiumFeature1": "Ausführliche Tages-Synthese",
+  "premiumFeature2": "Wochen- & Monatsüberblick",
+  "premiumFeature3": "Erweiterter Partner-Check",
+  "premiumFeature4": "PDF-Reports",
+  "premiumSubscribe": "Premium freischalten",
+  "premiumRestore": "Käufe wiederherstellen",
+
+  "weekOverview": "Wochenüberblick",
+  "monthOverview": "Monatsüberblick",
+
+  "settingsTitle": "Einstellungen",
+  "settingsLanguage": "Sprache",
+  "settingsNotifications": "Benachrichtigungen",
+  "settingsDailyReminder": "Tägliche Erinnerung",
+  "settingsPrivacy": "Datenschutz",
+  "settingsTerms": "Nutzungsbedingungen",
+  "settingsAbout": "Über Nuuray",
+  "settingsLogout": "Abmelden",
+
+  "generalLoading": "Wird geladen...",
+  "generalError": "Etwas ist schiefgelaufen.",
+  "generalRetry": "Erneut versuchen",
+  "generalSave": "Speichern",
+  "generalCancel": "Abbrechen",
+  "generalDone": "Fertig"
+}

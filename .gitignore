@@ -1,0 +1,34 @@
+# Flutter
+**/build/
+**/.dart_tool/
+**/.packages
+**/.pub-cache/
+**/.pub/
+**/pubspec.lock
+
+# IDE
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# Supabase
+supabase/.env
+supabase/.temp/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Generated
+**/*.g.dart
+**/*.freezed.dart
+**/l10n/generated/
+
+# Platform-spezifisch
+**/ios/Pods/
+**/ios/.symlinks/
+**/android/.gradle/
+**/android/local.properties
+**/web/favicon.png

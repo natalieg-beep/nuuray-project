@@ -1,0 +1,24 @@
+# NUURAY GLOW — TODO Liste
+# Stand: 2026-02-05
+
+## 🔨 In Progress
+Aktuell nichts in Bearbeitung.
+
+## 📋 Next Steps (MVP Features in Reihenfolge)
+- [ ] Auth-Setup mit Supabase (Email + Apple Sign-In + Google Sign-In)
+- [ ] Onboarding-Flow: Geburtsdaten-Eingabe implementieren
+- [ ] Geburtsdaten-Engine: Chart-Berechnung (Astrologie + Bazi + Numerologie)
+- [ ] Tageshoroskop-Ansicht mit gecachtem Content aufbauen
+- [ ] Mondphasen-Kalender implementieren
+- [ ] Wochen- und Monatsüberblick hinzufügen
+- [ ] Basic Partner-Check entwickeln
+- [ ] Premium-Gating + In-App Purchase integrieren
+- [ ] Push-Notifications für tägliches Horoskop einrichten
+
+## ✅ Completed
+- [x] Flutter-App Setup und Dependencies konfigurieren
+- [x] App-Struktur aufbauen (Ordner, Riverpod, GoRouter, Theme)
+
+## 📝 Notizen
+- Auth wird nach der grundlegenden App-Struktur implementiert
+- Alle Features folgen der Reihenfolge aus CLAUDE.md
