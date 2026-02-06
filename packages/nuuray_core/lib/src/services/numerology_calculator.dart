@@ -142,6 +142,36 @@ class NumerologyCalculator {
     return calculateMaturity(lifePath: lifePath, expression: expression);
   }
 
+  /// Berechnet die Attitude Number (Einstellungszahl)
+  ///
+  /// Zeigt deine grundlegende Einstellung zum Leben und wie du auf andere wirkst.
+  /// Wird oft in der ersten Begegnung sichtbar.
+  ///
+  /// Berechnung: Tag + Monat
+  ///
+  /// Beispiel: 30.11. → 3+0+1+1 = 5
+  static int calculateAttitude(DateTime birthDate) {
+    final day = _reduceToSingleDigit(birthDate.day);
+    final month = _reduceToSingleDigit(birthDate.month);
+    return _reduceToSingleDigit(day + month);
+  }
+
+  /// Berechnet das Persönliche Jahr (Personal Year)
+  ///
+  /// Zeigt die Energie und Themen des aktuellen Jahres für dich.
+  /// Ändert sich jedes Jahr am Geburtstag.
+  ///
+  /// Berechnung: Tag + Monat + Aktuelles Jahr
+  ///
+  /// Beispiel: 30.11. in 2026 → 3+0+1+1+2+0+2+6 = 15 → 6
+  static int calculatePersonalYear(DateTime birthDate, {DateTime? forDate}) {
+    final referenceDate = forDate ?? DateTime.now();
+    final day = _reduceToSingleDigit(birthDate.day);
+    final month = _reduceToSingleDigit(birthDate.month);
+    final year = _reduceToSingleDigit(_sumDigits(referenceDate.year));
+    return _reduceToSingleDigit(day + month + year);
+  }
+
   // ============================================================
   // HELPER METHODS
   // ============================================================
@@ -301,6 +331,12 @@ class NumerologyCalculator {
     // Birthday Number (immer berechenbar)
     final birthdayNumber = calculateBirthday(birthDate);
 
+    // Attitude Number (immer berechenbar)
+    final attitudeNumber = calculateAttitude(birthDate);
+
+    // Personal Year (immer berechenbar)
+    final personalYear = calculatePersonalYear(birthDate);
+
     // Maturity Number (nur wenn Expression vorhanden)
     final activeExpression = hasNameChange ? currentExpression : birthExpression;
     final maturityNumber = activeExpression != null
@@ -310,6 +346,8 @@ class NumerologyCalculator {
     return NumerologyProfile(
       lifePathNumber: lifePathNumber,
       birthdayNumber: birthdayNumber,
+      attitudeNumber: attitudeNumber,
+      personalYear: personalYear,
       maturityNumber: maturityNumber,
       birthExpressionNumber: birthExpression,
       birthSoulUrgeNumber: birthSoulUrge,

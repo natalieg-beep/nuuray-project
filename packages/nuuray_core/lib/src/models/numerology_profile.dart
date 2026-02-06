@@ -15,8 +15,14 @@ class NumerologyProfile extends Equatable {
   /// Birthday Number (Tag der Geburt, zeigt spezifische Begabungen)
   final int birthdayNumber;
 
+  /// Attitude Number (Tag + Monat, erste Einstellung/Wirkung)
+  final int attitudeNumber;
+
   /// Maturity Number (Life Path + Expression, wird ab 35-45 Jahren aktiv)
   final int? maturityNumber;
+
+  /// Personal Year (aktuelles Jahr, ändert sich jährlich)
+  final int personalYear;
 
   // ============================================================
   // BIRTH ENERGY (Geburtsname = Urenergie)
@@ -59,6 +65,8 @@ class NumerologyProfile extends Equatable {
   const NumerologyProfile({
     required this.lifePathNumber,
     required this.birthdayNumber,
+    required this.attitudeNumber,
+    required this.personalYear,
     this.maturityNumber,
     this.birthExpressionNumber,
     this.birthSoulUrgeNumber,
@@ -93,6 +101,8 @@ class NumerologyProfile extends Equatable {
   List<Object?> get props => [
         lifePathNumber,
         birthdayNumber,
+        attitudeNumber,
+        personalYear,
         maturityNumber,
         birthExpressionNumber,
         birthSoulUrgeNumber,
@@ -109,6 +119,8 @@ class NumerologyProfile extends Equatable {
     final buffer = StringBuffer('NumerologyProfile(\n');
     buffer.writeln('  Life Path: $lifePathNumber');
     buffer.writeln('  Birthday: $birthdayNumber');
+    buffer.writeln('  Attitude: $attitudeNumber');
+    buffer.writeln('  Personal Year: $personalYear');
     if (maturityNumber != null) {
       buffer.writeln('  Maturity: $maturityNumber');
     }
@@ -136,6 +148,8 @@ class NumerologyProfile extends Equatable {
     return NumerologyProfile(
       lifePathNumber: json['life_path_number'] as int,
       birthdayNumber: json['birthday_number'] as int,
+      attitudeNumber: json['attitude_number'] as int,
+      personalYear: json['personal_year'] as int,
       maturityNumber: json['maturity_number'] as int?,
       birthExpressionNumber: json['birth_expression_number'] as int?,
       birthSoulUrgeNumber: json['birth_soul_urge_number'] as int?,
@@ -151,6 +165,8 @@ class NumerologyProfile extends Equatable {
   Map<String, dynamic> toJson() => {
         'life_path_number': lifePathNumber,
         'birthday_number': birthdayNumber,
+        'attitude_number': attitudeNumber,
+        'personal_year': personalYear,
         'maturity_number': maturityNumber,
         'birth_expression_number': birthExpressionNumber,
         'birth_soul_urge_number': birthSoulUrgeNumber,
