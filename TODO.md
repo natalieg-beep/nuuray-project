@@ -1,11 +1,12 @@
 # NUURAY GLOW — TODO Liste
 
-> Letzte Aktualisierung: 2026-02-08 (Onboarding 2-Schritte fertig!)
-> Stand: Auth ✅, **Onboarding ✅ (2-Schritte FERTIG mit Autocomplete!)**, Geocoding ✅, Basic Home ✅, Cosmic Profile ✅, **Claude API ✅** (getestet!)
+> Letzte Aktualisierung: 2026-02-08 (Erweiterte Numerologie UI fertig!)
+> Stand: Auth ✅, **Onboarding ✅ (REVERT zu 4 Feldern!)**, Geocoding ✅, Basic Home ✅, Deine Signatur ✅, Claude API ✅, **Erweiterte Numerologie ✅**
 >
 > **📚 Neue Dokumentation:**
 > - `docs/glow/GLOW_SPEC_V2.md` — Aktualisierte vollständige Projektbeschreibung (2-Schritte Onboarding, Deine Signatur, Sprachen)
 > - `docs/glow/SPEC_CHANGELOG.md` — Changelog der konzeptionellen Änderungen
+> - `docs/daily-logs/2026-02-08_erweiterte-numerologie-ui.md` — Session-Log: Erweiterte Numerologie UI
 
 ---
 
@@ -21,10 +22,14 @@
 
 ### Onboarding
 - ✅ **2-Schritte Onboarding-Flow** (**FERTIG 2026-02-08!**) 🎉
-  - **Schritt 1:** Name & Identität (3 Felder)
-    - Rufname/Username (Pflicht)
-    - Voller Geburtsname (Optional, für Numerologie)
-    - Nachname aktuell (Optional, für aktuelle Energie)
+  - **Schritt 1:** Name & Identität (**4 FELDER** - zurück zu ursprünglichem Design)
+    - Rufname/Username (Pflicht) → `displayName`
+    - Vornamen lt. Geburtsurkunde (Optional) → `fullFirstNames`
+    - Geburtsname / Maiden Name (Optional) → `birthName`
+    - Aktueller Nachname (Optional) → `lastName`
+    - **Numerologie-Konzept:**
+      - **Birth Energy (Urenergie):** `fullFirstNames + birthName` (z.B. "Natalie Frauke Pawlowski")
+      - **Current Energy (Aktuelle Energie):** `fullFirstNames + lastName` (z.B. "Natalie Frauke Günes")
   - **Schritt 2:** Geburtsdaten KOMBINIERT auf einem Screen
     - Geburtsdatum (Pflicht) → Date Picker
     - Geburtszeit (Optional) → Time Picker + Checkbox "unbekannt"
@@ -35,9 +40,8 @@
       - Error-Anzeige: Rote Box mit Hilfetext
       - "Geburtsort überspringen" Button wenn nicht gefunden
       - Gefundener Ort erscheint im TextField
-  - **Spec-konform:** Entspricht GLOW_SPEC_V2.md
-  - **File:** `onboarding_birthdata_combined_screen.dart` (neu erstellt)
-- ✅ UserProfile Model mit allen Feldern (inkl. birth_latitude, birth_longitude, birth_timezone)
+  - **File:** `onboarding_name_screen.dart` (4 Felder), `onboarding_birthdata_combined_screen.dart`
+- ✅ UserProfile Model mit allen Feldern (inkl. `fullFirstNames`, `birthName`, `lastName`, `birth_latitude`, `birth_longitude`, `birth_timezone`)
 - ✅ UserProfileService (CRUD + Upsert-Logik)
 - ✅ GeocodingService (`nuuray_api/services/geocoding_service.dart`)
 - ✅ Supabase Migrations:
@@ -51,14 +55,23 @@
 - ✅ Home Screen mit Placeholder-Content
   - Header mit personalisierter Begrüßung
   - Tagesenergie-Card (Gradient, Placeholder)
-  - Horoskop-Card (Hardcoded Schütze)
+  - Horoskop-Card (zeigt User-Sternzeichen aus Cosmic Profile)
   - Quick Actions (Coming Soon)
   - Logout Button
-- ✅ Cosmic Profile Dashboard (inline auf Home Screen)
+- ✅ **"Deine Signatur" Dashboard** (inline auf Home Screen) — **FERTIG 2026-02-08!**
   - Western Astrology Card (Sonne/Mond/Aszendent)
   - Bazi Card (Vier Säulen + Day Master)
-  - Numerology Card (9 Kern-Zahlen + Dual-Profil)
-  - ⚠️ **GEPLANT:** Umbenennung zu "Deine Signatur" Dashboard (siehe SPEC_CHANGELOG.md)
+  - **Numerology Card (ERWEITERT 2026-02-08!):**
+    - Kern-Zahlen: Life Path, Birthday, Attitude, Personal Year, Maturity
+    - Name Energies: Birth Energy (expandable), Current Energy (expandable)
+    - **NEU: Erweiterte Numerologie:**
+      - ⚡ Karmic Debt Numbers (13/14/16/19) mit Bedeutungen
+      - 🎯 Challenge Numbers (4 Phasen als Chips)
+      - 📚 Karmic Lessons (fehlende Zahlen 1-9 als Badges)
+      - 🌉 Bridge Numbers (Life Path ↔ Expression, Soul ↔ Personality)
+  - Einheitliches Design mit AppColors (keine Gradients)
+  - Provider: `signatureProvider` (vorher: `cosmicProfileProvider`)
+  - Folder: `features/signature/` (vorher: `cosmic_profile/`)
 
 ### Claude API Integration
 - ✅ ClaudeApiService implementiert (`apps/glow/lib/src/core/services/claude_api_service.dart`)
@@ -113,12 +126,14 @@
 ### 🐛 BUGS ZU FIXEN
 **PRIORITÄT 1:**
 - [x] **Numerologie-Berechnung reparieren** ✅ **GELÖST 2026-02-08!**
-  - **Problem:** `UserProfile` Model in `nuuray_core` hatte veraltete Felder
+  - **Problem:** Name-Felder waren verwirrend (3 Felder mit unklarer Zuordnung)
   - **Fix implementiert:**
-    1. ✅ `UserProfile` Model komplett aktualisiert (alle neuen Onboarding-Felder)
-    2. ✅ Numerologie massiv erweitert (4 neue Feature-Bereiche!)
-    3. ✅ Migration bereits vorhanden (`002_add_onboarding_fields.sql`)
-  - **Status**: ✅ Bereit zum Testen!
+    1. ✅ Onboarding Name-Screen: REVERT zu 4 Feldern (displayName, fullFirstNames, birthName, lastName)
+    2. ✅ `UserProfile` Model komplett aktualisiert (alle neuen Onboarding-Felder)
+    3. ✅ Numerologie massiv erweitert (4 neue Feature-Bereiche: Karmic Debt, Challenges, Lessons, Bridges)
+    4. ✅ Migration bereits vorhanden (`002_add_onboarding_fields.sql`)
+    5. ✅ **UI erweitert:** Numerologie-Card zeigt jetzt alle erweiterten Features
+  - **Status**: ✅ Produktionsreif! (UI komplett)
 
 - [x] **Aszendent-Berechnung prüfen** ✅ **GELÖST!**
   - Problem identifiziert: UTC-Konvertierung in `_calculateJulianDay()`
@@ -137,14 +152,20 @@
   - **Status**: ✅ Produktionsreif!
 
 ### 🧪 TESTING
-**Status:** Code ist fertig, aber **noch nicht getestet**
+**Status:** Code ist fertig, aber **noch nicht visuell getestet**
 
 **Was muss getestet werden:**
 - [ ] App starten und durch Home Screen navigieren
-- [ ] Cosmic Profile Dashboard visuell prüfen (alle 3 Cards)
-- [ ] Numerologie: Soul Urge = 33 verifizieren (statt 2)
-- [ ] Neues Onboarding mit Geocoding durchspielen (✅ Geocoding FUNKTIONIERT!)
-- [ ] Aszendent-Berechnung nach Bug-Fix verifizieren
+- [ ] **"Deine Signatur" Dashboard visuell prüfen (alle 3 Cards)**
+- [ ] **Numerologie: Erweiterte Features visuell prüfen:**
+  - [ ] Karmic Debt Numbers sichtbar (⚡)
+  - [ ] Challenge Numbers als 4 Chips (🎯), Challenge 0 grün
+  - [ ] Karmic Lessons als Warning-Badges (📚)
+  - [ ] Bridge Numbers mit Erklärungen (🌉)
+  - [ ] Soul Urge = 33 verifizieren (Meisterzahl ✨)
+- [ ] Neues Onboarding mit 4 Name-Feldern durchspielen
+- [ ] Geocoding Autocomplete testen (✅ Funktioniert grundsätzlich!)
+- [ ] Aszendent-Berechnung verifizieren (✅ Code korrekt!)
 
 ---
 
@@ -471,18 +492,56 @@ Wenn Geocoding morgen nicht funktioniert, **Profil manuell updaten**:
 ---
 
 **Nächster Fokus (JETZT):**
-1. 🧪 **Testing:** App starten und Numerologie prüfen
-   - Soul Urge = 33 verifizieren
-   - Neue Features testen: Karmic Debt, Challenges, Lessons, Bridges
+1. 🧪 **Testing:** App starten und "Deine Signatur" Dashboard visuell prüfen
+   - Erweiterte Numerologie-Card testen (⚡🎯📚🌉)
+   - Soul Urge = 33 verifizieren (Meisterzahl)
+   - Challenge 0 grüne Hervorhebung prüfen
 2. 📸 **Screenshots:** Dashboard dokumentieren
-3. 🎯 **Dann:** Tageshoroskop mit Claude API implementieren
+3. 📝 **Dokumentation finalisieren:**
+   - GLOW_SPEC_V2.md anpassen (Name-Felder: 4 statt 3)
+   - Session-Log verifizieren
+4. 🎯 **Dann:** Tageshoroskop mit Claude API implementieren
 
-**Was wurde heute gemacht (2026-02-08 Nachmittag):**
+---
+
+### Session 2026-02-08 (Abend) — Erweiterte Numerologie UI
+
+**Was wurde gemacht:**
+- ✅ **BirthChart Model erweitert:** 7 neue Felder für erweiterte Numerologie
+- ✅ **CosmicProfileService aktualisiert:** Überträgt alle erweiterten Felder
+- ✅ **Numerologie-Card UI komplett erweitert:**
+  - ⚡ Karmic Debt Numbers (13/14/16/19) mit Bedeutungen
+  - 🎯 Challenge Numbers (4 Phasen als Chips, Challenge 0 grün)
+  - 📚 Karmic Lessons (fehlende Zahlen 1-9 als Warning-Badges)
+  - 🌉 Bridge Numbers (Life Path ↔ Expression, Soul ↔ Personality)
+- ✅ **Onboarding Name-Screen:** REVERT zu 4 Feldern (displayName, fullFirstNames, birthName, lastName)
+- ✅ **Git Commit:** `c7fc7b5` — feat: Erweiterte Numerologie in UI anzeigen
+- ✅ **Dokumentation:** Session-Log erstellt (`docs/daily-logs/2026-02-08_erweiterte-numerologie-ui.md`)
+
+**Design:**
+- Einheitliche Sections mit Icons (⚡, 🎯, 📚, 🌉)
+- Responsive Wrap-Layout für Chips/Badges
+- Farbcodierung: Primary (Karmic Debt), Success (Challenge 0), Warning (Lessons)
+
+**Technische Highlights:**
+- Vollständiger Datenfluss: NumerologyProfile → CosmicProfileService → BirthChart → UI
+- 4 neue Widget-Builder-Methoden für modularen Code
+- Conditional Rendering: Nur Sections anzeigen die Daten haben
+
+**Status:** ✅ Code komplett, bereit zum Testing!
+
+---
+
+**Was wurde heute gemacht (2026-02-08 — Kompletter Tag):**
 - ✅ "Cosmic Profile" → "Deine Signatur" Umbenennung komplett
 - ✅ Card-Design vereinheitlicht (alle Gradients entfernt)
+- ✅ Onboarding Name-Screen: REVERT zu 4 Feldern
 - ✅ UserProfile Model in nuuray_core aktualisiert
 - ✅ **NUMEROLOGIE MASSIV ERWEITERT:**
-  - Karmic Debt Numbers (13, 14, 16, 19)
-  - Challenge Numbers (4 Lebensphasen)
-  - Karmic Lessons (Fehlende Zahlen)
-  - Bridge Numbers (Verbindungen zwischen Kernzahlen)
+  - ⚡ Karmic Debt Numbers (13, 14, 16, 19) — Berechnung + UI
+  - 🎯 Challenge Numbers (4 Lebensphasen) — Berechnung + UI
+  - 📚 Karmic Lessons (Fehlende Zahlen) — Berechnung + UI
+  - 🌉 Bridge Numbers (Verbindungen) — Berechnung + UI
+- ✅ BirthChart Model erweitert (7 neue Felder)
+- ✅ Numerologie-Card UI komplett (Icons, Chips, Badges, Sections)
+- ✅ Dokumentation aktualisiert (TODO.md, Session-Log)
