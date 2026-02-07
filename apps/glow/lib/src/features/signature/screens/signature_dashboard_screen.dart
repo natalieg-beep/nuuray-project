@@ -3,23 +3,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/western_astrology_card.dart';
 import '../widgets/bazi_card.dart';
 import '../widgets/numerology_card.dart';
-import '../providers/cosmic_profile_provider.dart';
+import '../providers/signature_provider.dart';
 
-/// Cosmic Profile Dashboard Screen
+/// Signature Dashboard Screen
 ///
-/// Zeigt die drei Systeme (Western Astrology, Bazi, Numerology) in Cards an.
-class CosmicProfileDashboardScreen extends ConsumerWidget {
-  const CosmicProfileDashboardScreen({super.key});
+/// Zeigt "Deine Signatur" - die drei Systeme (Western Astrology, Bazi, Numerology) in Cards.
+class SignatureDashboardScreen extends ConsumerWidget {
+  const SignatureDashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cosmicProfileAsync = ref.watch(cosmicProfileProvider);
+    final signatureAsync = ref.watch(signatureProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFFAF9F6), // Warmer Off-White
       appBar: AppBar(
         title: const Text(
-          'Dein Cosmic Profile',
+          'Deine Signatur',
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 20,
@@ -29,7 +29,7 @@ class CosmicProfileDashboardScreen extends ConsumerWidget {
         elevation: 0,
         foregroundColor: const Color(0xFF2C2C2C),
       ),
-      body: cosmicProfileAsync.when(
+      body: signatureAsync.when(
         data: (birthChart) {
           if (birthChart == null) {
             return Center(
@@ -148,7 +148,7 @@ class CosmicProfileDashboardScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 8),
               TextButton(
-                onPressed: () => ref.refresh(cosmicProfileProvider),
+                onPressed: () => ref.refresh(signatureProvider),
                 child: const Text('Erneut versuchen'),
               ),
             ],

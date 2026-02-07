@@ -10,7 +10,7 @@ import '../../features/auth/providers/auth_provider.dart';
 import '../../features/onboarding/screens/onboarding_flow_screen.dart';
 import '../../features/splash/splash_screen.dart';
 import '../../features/home/screens/home_screen.dart';
-import '../../features/cosmic_profile/screens/cosmic_profile_dashboard_screen.dart';
+import '../../features/signature/screens/signature_dashboard_screen.dart';
 
 /// Router Provider
 final routerProvider = Provider<GoRouter>((ref) {
@@ -46,9 +46,9 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const HomeScreen(),
       ),
       GoRoute(
-        path: '/cosmic-profile',
-        name: 'cosmic-profile',
-        builder: (context, state) => const CosmicProfileDashboardScreen(),
+        path: '/signature',
+        name: 'signature',
+        builder: (context, state) => const SignatureDashboardScreen(),
       ),
     ],
     redirect: (context, state) {

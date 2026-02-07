@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nuuray_core/nuuray_core.dart';
 
 import '../../../shared/constants/app_colors.dart';
-import '../../cosmic_profile/providers/cosmic_profile_provider.dart';
+import '../../signature/providers/signature_provider.dart';
 import '../../horoscope/providers/daily_horoscope_provider.dart';
 import '../../horoscope/widgets/personal_insight_card.dart';
 import '../../horoscope/utils/personal_insights.dart';
@@ -19,9 +19,9 @@ class DailyHoroscopeSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cosmicProfileAsync = ref.watch(cosmicProfileProvider);
+    final signatureAsync = ref.watch(signatureProvider);
 
-    return cosmicProfileAsync.when(
+    return signatureAsync.when(
       data: (birthChart) {
         if (birthChart == null) {
           return _buildPlaceholder(context);
