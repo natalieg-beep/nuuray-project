@@ -23,7 +23,9 @@ class CosmicProfileService {
   /// - [birthLatitude]: Breitengrad des Geburtsortes (Optional - für Aszendent)
   /// - [birthLongitude]: Längengrad des Geburtsortes (Optional - für Aszendent)
   /// - [birthTimezone]: IANA Timezone ID (z.B. "Europe/Berlin") - für UTC-Konvertierung
-  /// - [fullName]: Vollständiger Name (Optional - für Expression & Soul Urge Numbers)
+  /// - [birthName]: Geburtsname (Optional - für Birth Energy Numerologie)
+  /// - [currentName]: Aktueller Name (Optional - für Current Energy Numerologie)
+  /// - [fullName]: DEPRECATED - Legacy Parameter, nutze birthName stattdessen
   ///
   /// Gibt ein [BirthChart] zurück mit allen berechneten Werten.
   static Future<BirthChart> calculateCosmicProfile({
@@ -33,13 +35,19 @@ class CosmicProfileService {
     double? birthLatitude,
     double? birthLongitude,
     String? birthTimezone,
-    String? fullName,
+    String? birthName,
+    String? currentName,
+    @Deprecated('Use birthName instead') String? fullName,
   }) async {
+    // Legacy Support: Wenn fullName gesetzt, aber birthName nicht, verwende fullName
+    final effectiveBirthName = birthName ?? fullName;
+
     log('📊 Berechne Cosmic Profile für User: $userId');
     log('   Geburtsdatum: ${birthDate.toIso8601String()}');
     log('   Hat Geburtszeit: ${birthTime != null}');
     log('   Hat Geburtsort: ${birthLatitude != null && birthLongitude != null}');
-    log('   Hat vollständigen Namen: ${fullName?.isNotEmpty ?? false}');
+    log('   Birth Name: ${effectiveBirthName ?? "nicht vorhanden"}');
+    log('   Current Name: ${currentName ?? "nicht vorhanden"}');
 
     // ============================================================
     // 1. WESTERN ASTROLOGY
@@ -188,13 +196,11 @@ class CosmicProfileService {
     // 3. NUMEROLOGIE
     // ============================================================
 
-    // Berechne komplettes Numerologie-Profil
-    // TODO: birthName + currentName getrennt aus User-Profil übergeben
-    // Aktuell nutzen wir fullName als birthName (Backward Compatibility)
+    // Berechne komplettes Numerologie-Profil mit Dual-Energy Support
     final numerologyProfile = NumerologyCalculator.calculateCompleteProfile(
       birthDate: birthDate,
-      birthName: fullName,
-      currentName: null, // TODO: Später aus User-Profil
+      birthName: effectiveBirthName,
+      currentName: currentName,
     );
 
     log('🔢 Life Path: ${numerologyProfile.lifePathNumber}${NumerologyCalculator.isMasterNumber(numerologyProfile.lifePathNumber) ? " ✨" : ""}');

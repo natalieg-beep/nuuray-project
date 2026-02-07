@@ -37,16 +37,33 @@ final signatureProvider = FutureProvider<BirthChart?>((ref) async {
       // Timezone für UTC-Konvertierung
       final birthTimezone = userProfile.birthTimezone ?? 'Europe/Berlin'; // Fallback
 
-      // Vollständiger Name für Numerologie
-      // TODO: Später birthName + currentName unterscheiden
-      String? fullName;
+      // Namen für Numerologie zusammenbauen
+      // Birth Energy (Urenergie) = Vornamen + Geburtsname
+      // Current Energy (Aktuelle Energie) = Vornamen + aktueller Nachname
+      String? birthName;
+      String? currentName;
+
       if (userProfile.fullFirstNames != null && userProfile.fullFirstNames!.isNotEmpty) {
-        fullName = userProfile.fullFirstNames!;
+        // Birth Energy: Vornamen + Geburtsname
+        if (userProfile.birthName != null && userProfile.birthName!.isNotEmpty) {
+          birthName = '${userProfile.fullFirstNames} ${userProfile.birthName}';
+        } else {
+          // Fallback: Nur Vornamen (falls kein Geburtsname vorhanden)
+          birthName = userProfile.fullFirstNames;
+        }
+
+        // Current Energy: Vornamen + aktueller Nachname (nur wenn unterschiedlich)
         if (userProfile.lastName != null && userProfile.lastName!.isNotEmpty) {
-          fullName += ' ${userProfile.lastName}';
+          currentName = '${userProfile.fullFirstNames} ${userProfile.lastName}';
+
+          // Wenn aktueller Name gleich Geburtsname, kein Current Name
+          if (currentName == birthName) {
+            currentName = null;
+          }
         }
       } else if (userProfile.displayName.isNotEmpty) {
-        fullName = userProfile.displayName;
+        // Fallback: Nur Rufname
+        birthName = userProfile.displayName;
       }
 
       // Kosmische Signatur berechnen
@@ -56,8 +73,9 @@ final signatureProvider = FutureProvider<BirthChart?>((ref) async {
         birthTime: birthTime,
         birthLatitude: birthLatitude,
         birthLongitude: birthLongitude,
-        birthTimezone: birthTimezone,  // NEU: Timezone für UTC-Konvertierung!
-        fullName: fullName,
+        birthTimezone: birthTimezone,
+        birthName: birthName,
+        currentName: currentName,
       );
 
       return birthChart;

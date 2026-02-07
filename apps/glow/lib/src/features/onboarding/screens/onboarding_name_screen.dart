@@ -2,20 +2,37 @@ import 'package:flutter/material.dart';
 
 import '../../../shared/constants/app_colors.dart';
 
-/// Onboarding Schritt 1: Name-Eingabe (3 Felder gemäß GLOW_SPEC_V2)
+/// Onboarding Schritt 1: Name-Eingabe (4 Felder)
+///
+/// **Konzept für Numerologie:**
+/// - **Birth Energy** (Urenergie): fullFirstNames + birthName
+/// - **Current Energy** (aktuelle Energie): fullFirstNames + lastName
+///
+/// **Beispiel:**
+/// - Rufname: "Natalie"
+/// - Vornamen: "Natalie Frauke"
+/// - Geburtsname: "Pawlowski"
+/// - Aktueller Nachname: "Günes"
+/// → Birth Energy: "Natalie Frauke Pawlowski"
+/// → Current Energy: "Natalie Frauke Günes"
 class OnboardingNameScreen extends StatefulWidget {
   final String? initialDisplayName;
-  final String? initialFullFirstNames; // War: fullBirthName (Geburtsname lt. Geburtsurkunde)
-  final String? initialLastName; // War: currentLastName (aktueller Nachname)
-  final String? initialBirthName; // Wird nicht mehr verwendet, behalten für Migration
-  final Function(String displayName, String? fullBirthName, String? currentLastName, String? deprecated) onNext;
+  final String? initialFullFirstNames;
+  final String? initialBirthName;
+  final String? initialLastName;
+  final Function(
+    String displayName,
+    String? fullFirstNames,
+    String? birthName,
+    String? lastName,
+  ) onNext;
 
   const OnboardingNameScreen({
     super.key,
     this.initialDisplayName,
     this.initialFullFirstNames,
-    this.initialLastName,
     this.initialBirthName,
+    this.initialLastName,
     required this.onNext,
   });
 
@@ -25,23 +42,26 @@ class OnboardingNameScreen extends StatefulWidget {
 
 class _OnboardingNameScreenState extends State<OnboardingNameScreen> {
   final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _displayNameController; // Rufname/Username (PFLICHT)
-  late final TextEditingController _fullBirthNameController; // Voller Geburtsname (OPTIONAL)
-  late final TextEditingController _currentLastNameController; // Aktueller Nachname (OPTIONAL)
+  late final TextEditingController _displayNameController;
+  late final TextEditingController _fullFirstNamesController;
+  late final TextEditingController _birthNameController;
+  late final TextEditingController _lastNameController;
 
   @override
   void initState() {
     super.initState();
     _displayNameController = TextEditingController(text: widget.initialDisplayName);
-    _fullBirthNameController = TextEditingController(text: widget.initialFullFirstNames);
-    _currentLastNameController = TextEditingController(text: widget.initialLastName);
+    _fullFirstNamesController = TextEditingController(text: widget.initialFullFirstNames);
+    _birthNameController = TextEditingController(text: widget.initialBirthName);
+    _lastNameController = TextEditingController(text: widget.initialLastName);
   }
 
   @override
   void dispose() {
     _displayNameController.dispose();
-    _fullBirthNameController.dispose();
-    _currentLastNameController.dispose();
+    _fullFirstNamesController.dispose();
+    _birthNameController.dispose();
+    _lastNameController.dispose();
     super.dispose();
   }
 
@@ -50,13 +70,15 @@ class _OnboardingNameScreenState extends State<OnboardingNameScreen> {
 
     widget.onNext(
       _displayNameController.text.trim(),
-      _fullBirthNameController.text.trim().isEmpty
+      _fullFirstNamesController.text.trim().isEmpty
           ? null
-          : _fullBirthNameController.text.trim(),
-      _currentLastNameController.text.trim().isEmpty
+          : _fullFirstNamesController.text.trim(),
+      _birthNameController.text.trim().isEmpty
           ? null
-          : _currentLastNameController.text.trim(),
-      null, // birthName (deprecated)
+          : _birthNameController.text.trim(),
+      _lastNameController.text.trim().isEmpty
+          ? null
+          : _lastNameController.text.trim(),
     );
   }
 
@@ -81,7 +103,7 @@ class _OnboardingNameScreenState extends State<OnboardingNameScreen> {
 
             // Untertitel
             Text(
-              'Dein Name hilft uns, deine Energie zu verstehen.',
+              'Dein vollständiger Name hilft uns, deine numerologische Energie zu verstehen.',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 32),
@@ -106,38 +128,50 @@ class _OnboardingNameScreenState extends State<OnboardingNameScreen> {
             ),
             const SizedBox(height: 20),
 
-            // 2. Voller Geburtsname (optional)
+            // 2. Vollständige Vornamen (optional, aber empfohlen)
             TextFormField(
-              controller: _fullBirthNameController,
+              controller: _fullFirstNamesController,
               textInputAction: TextInputAction.next,
               textCapitalization: TextCapitalization.words,
               decoration: const InputDecoration(
-                labelText: 'Voller Geburtsname (optional)',
-                hintText: 'z.B. Natalie Frauke Günes',
+                labelText: 'Vornamen lt. Geburtsurkunde (optional)',
+                hintText: 'z.B. Natalie Frauke',
                 prefixIcon: Icon(Icons.badge_outlined),
-                helperText: 'Lt. Geburtsurkunde, für präzise Numerologie',
+                helperText: 'Alle Vornamen aus der Geburtsurkunde',
               ),
             ),
             const SizedBox(height: 20),
 
-            // 3. Nachname aktuell (optional)
+            // 3. Geburtsname / Maiden Name (optional)
             TextFormField(
-              controller: _currentLastNameController,
+              controller: _birthNameController,
+              textInputAction: TextInputAction.next,
+              textCapitalization: TextCapitalization.words,
+              decoration: const InputDecoration(
+                labelText: 'Geburtsname (optional)',
+                hintText: 'z.B. Pawlowski',
+                prefixIcon: Icon(Icons.family_restroom_outlined),
+                helperText: 'Nachname bei Geburt (Maiden Name)',
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // 4. Aktueller Nachname (optional)
+            TextFormField(
+              controller: _lastNameController,
               textInputAction: TextInputAction.done,
               textCapitalization: TextCapitalization.words,
               decoration: const InputDecoration(
                 labelText: 'Nachname aktuell (optional)',
-                hintText: 'z.B. Schmidt',
+                hintText: 'z.B. Günes',
                 prefixIcon: Icon(Icons.person_outline),
-                helperText: 'Falls geändert nach Heirat/Namensänderung',
+                helperText: 'Aktueller Nachname (falls geändert)',
               ),
               onFieldSubmitted: (_) => _handleNext(),
             ),
             const SizedBox(height: 24),
 
-            const SizedBox(height: 8),
-
-            // Hinweis (gekürzt)
+            // Hinweis
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
@@ -152,17 +186,16 @@ class _OnboardingNameScreenState extends State<OnboardingNameScreen> {
                 children: [
                   Icon(
                     Icons.info_outline,
-                    size: 18,
                     color: AppColors.primary,
+                    size: 20,
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Dein voller Geburtsname wird für präzise Numerologie-Berechnungen verwendet. '
-                      'Der aktuelle Nachname beeinflusst deine gegenwärtige Energie.',
+                      'Für präzise Numerologie empfehlen wir, alle Felder auszufüllen. '
+                      'Besonders wichtig: Vornamen + Geburtsname zeigen deine Urenergie.',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: AppColors.textSecondary,
-                            fontSize: 12,
                           ),
                     ),
                   ),

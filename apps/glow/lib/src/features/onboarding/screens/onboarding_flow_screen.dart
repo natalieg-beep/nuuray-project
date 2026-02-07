@@ -174,14 +174,14 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen> {
                 OnboardingNameScreen(
                   initialDisplayName: _displayName,
                   initialFullFirstNames: _fullFirstNames,
-                  initialLastName: _lastName,
                   initialBirthName: _birthName,
-                  onNext: (displayName, fullFirstNames, lastName, birthName) {
+                  initialLastName: _lastName,
+                  onNext: (displayName, fullFirstNames, birthName, lastName) {
                     setState(() {
                       _displayName = displayName;
                       _fullFirstNames = fullFirstNames;
-                      _lastName = lastName;
                       _birthName = birthName;
+                      _lastName = lastName;
                     });
                     _nextPage();
                   },

@@ -112,19 +112,13 @@
 
 ### 🐛 BUGS ZU FIXEN
 **PRIORITÄT 1:**
-- [ ] **Numerologie-Berechnung reparieren** 🔴 **KRITISCH!**
-  - **Problem:** Name-Felder im Onboarding wurden geändert (displayName, fullFirstNames, lastName)
-  - **Aber:** `UserProfile` Model (`packages/nuuray_core`) nutzt noch alte Felder
-  - **Folge:** `signature_provider.dart` findet die Felder nicht → Numerologie-Berechnung schlägt fehl
-  - **Fix erforderlich:**
-    1. `UserProfile` Model in `nuuray_core` aktualisieren (neue Felder hinzufügen)
-    2. Migration prüfen ob Felder in DB vorhanden sind
-    3. `signature_provider.dart` Mapping korrigieren
-    4. Onboarding-Flow prüft ob Daten korrekt gespeichert werden
-  - **Betroffene Dateien:**
-    - `packages/nuuray_core/lib/src/models/user_profile.dart` (Model)
-    - `apps/glow/lib/src/features/signature/providers/signature_provider.dart` (Provider)
-    - `apps/glow/lib/src/features/profile/services/user_profile_service.dart` (Service)
+- [x] **Numerologie-Berechnung reparieren** ✅ **GELÖST 2026-02-08!**
+  - **Problem:** `UserProfile` Model in `nuuray_core` hatte veraltete Felder
+  - **Fix implementiert:**
+    1. ✅ `UserProfile` Model komplett aktualisiert (alle neuen Onboarding-Felder)
+    2. ✅ Numerologie massiv erweitert (4 neue Feature-Bereiche!)
+    3. ✅ Migration bereits vorhanden (`002_add_onboarding_fields.sql`)
+  - **Status**: ✅ Bereit zum Testen!
 
 - [x] **Aszendent-Berechnung prüfen** ✅ **GELÖST!**
   - Problem identifiziert: UTC-Konvertierung in `_calculateJulianDay()`
@@ -476,8 +470,19 @@ Wenn Geocoding morgen nicht funktioniert, **Profil manuell updaten**:
 
 ---
 
-**Nächster Fokus (MORGEN):**
-1. 🧪 **Testing:** App starten, Cosmic Profile prüfen, Soul Urge = 33 verifizieren
-2. 🧪 **Testing:** Geocoding im Onboarding testen (oder manuelles DB-Update)
-3. 📸 **Screenshots:** Dashboard dokumentieren
-4. 🎯 **Dann:** Tageshoroskop mit Claude API implementieren
+**Nächster Fokus (JETZT):**
+1. 🧪 **Testing:** App starten und Numerologie prüfen
+   - Soul Urge = 33 verifizieren
+   - Neue Features testen: Karmic Debt, Challenges, Lessons, Bridges
+2. 📸 **Screenshots:** Dashboard dokumentieren
+3. 🎯 **Dann:** Tageshoroskop mit Claude API implementieren
+
+**Was wurde heute gemacht (2026-02-08 Nachmittag):**
+- ✅ "Cosmic Profile" → "Deine Signatur" Umbenennung komplett
+- ✅ Card-Design vereinheitlicht (alle Gradients entfernt)
+- ✅ UserProfile Model in nuuray_core aktualisiert
+- ✅ **NUMEROLOGIE MASSIV ERWEITERT:**
+  - Karmic Debt Numbers (13, 14, 16, 19)
+  - Challenge Numbers (4 Lebensphasen)
+  - Karmic Lessons (Fehlende Zahlen)
+  - Bridge Numbers (Verbindungen zwischen Kernzahlen)
