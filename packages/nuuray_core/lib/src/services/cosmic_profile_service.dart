@@ -3,6 +3,7 @@ import '../models/birth_chart.dart';
 import 'zodiac_calculator.dart';
 import 'bazi_calculator.dart';
 import 'numerology_calculator.dart';
+import 'timezone_converter_simple.dart';
 
 /// Cosmic Profile Service
 ///
@@ -21,6 +22,7 @@ class CosmicProfileService {
   /// - [birthTime]: Geburtszeit (Optional - für Aszendent, Mondzeichen, Stundensäule)
   /// - [birthLatitude]: Breitengrad des Geburtsortes (Optional - für Aszendent)
   /// - [birthLongitude]: Längengrad des Geburtsortes (Optional - für Aszendent)
+  /// - [birthTimezone]: IANA Timezone ID (z.B. "Europe/Berlin") - für UTC-Konvertierung
   /// - [fullName]: Vollständiger Name (Optional - für Expression & Soul Urge Numbers)
   ///
   /// Gibt ein [BirthChart] zurück mit allen berechneten Werten.
@@ -30,6 +32,7 @@ class CosmicProfileService {
     DateTime? birthTime,
     double? birthLatitude,
     double? birthLongitude,
+    String? birthTimezone,
     String? fullName,
   }) async {
     log('📊 Berechne Cosmic Profile für User: $userId');
@@ -49,21 +52,47 @@ class CosmicProfileService {
 
     log('☀️ Sonnenzeichen: ${sunSign.key} (${sunDegree.toStringAsFixed(2)}°)');
 
-    // Mondzeichen (benötigt Geburtszeit, sonst null)
+    // Mondzeichen (benötigt Geburtszeit + Timezone, sonst null)
     String? moonSignKey;
     double? moonDegree;
 
     if (birthTime != null) {
-      final moonSign = ZodiacCalculator.calculateMoonSign(birthTime);
+      // Kombiniere Datum + Zeit (wie beim Aszendenten)
+      final birthDateTimeLocal = DateTime(
+        birthDate.year,
+        birthDate.month,
+        birthDate.day,
+        birthTime.hour,
+        birthTime.minute,
+        birthTime.second,
+      );
+
+      // UTC-Konvertierung für präzise Mondposition
+      DateTime birthDateTimeUTC;
+      if (birthTimezone != null && birthTimezone.isNotEmpty) {
+        try {
+          birthDateTimeUTC = TimezoneConverterSimple.toUTC(
+            localDateTime: birthDateTimeLocal,
+            timezoneId: birthTimezone,
+          );
+        } catch (e) {
+          log('⚠️  Timezone-Konvertierung fehlgeschlagen (Mond): $e');
+          birthDateTimeUTC = birthDateTimeLocal;
+        }
+      } else {
+        birthDateTimeUTC = birthDateTimeLocal;
+      }
+
+      final moonSign = ZodiacCalculator.calculateMoonSign(birthDateTimeUTC);
       moonSignKey = moonSign.key;
-      moonDegree = _calculateDegreeInSign(birthTime, isForSun: false);
+      moonDegree = _calculateDegreeInSign(birthDateTimeUTC, isForSun: false);
 
       log('🌙 Mondzeichen: $moonSignKey (${moonDegree.toStringAsFixed(2)}°)');
     } else {
       log('🌙 Mondzeichen: Nicht berechnet (keine Geburtszeit)');
     }
 
-    // Aszendent (benötigt Geburtszeit + Geburtsort, sonst null)
+    // Aszendent (benötigt Geburtszeit + Geburtsort + Timezone, sonst null)
     String? ascendantSignKey;
     double? ascendantDegree;
 
@@ -82,8 +111,29 @@ class CosmicProfileService {
 
       log('🕐 Kombiniere Datum + Zeit: ${birthDateTimeLocal.toIso8601String()}');
 
+      // NEU: UTC-Konvertierung mit historisch korrektem Timezone-Offset!
+      // Astrologie-Berechnungen benötigen Universal Time (UT), nicht lokale Zeit.
+      DateTime birthDateTimeUTC;
+
+      if (birthTimezone != null && birthTimezone.isNotEmpty) {
+        try {
+          birthDateTimeUTC = TimezoneConverterSimple.toUTC(
+            localDateTime: birthDateTimeLocal,
+            timezoneId: birthTimezone,
+          );
+          log('🌍 UTC-Konvertierung: ${birthDateTimeLocal.toIso8601String()} → ${birthDateTimeUTC.toIso8601String()}');
+        } catch (e) {
+          log('⚠️  Timezone-Konvertierung fehlgeschlagen: $e');
+          log('   Fallback: Nutze lokale Zeit ohne Konvertierung');
+          birthDateTimeUTC = birthDateTimeLocal;
+        }
+      } else {
+        log('⚠️  Keine Timezone angegeben, nutze lokale Zeit (kann ungenau sein!)');
+        birthDateTimeUTC = birthDateTimeLocal;
+      }
+
       final ascendantSign = ZodiacCalculator.calculateAscendant(
-        birthDateTime: birthDateTimeLocal,
+        birthDateTime: birthDateTimeUTC,  // ← UTC-Zeit!
         latitude: birthLatitude,
         longitude: birthLongitude,
       );
@@ -92,7 +142,7 @@ class CosmicProfileService {
         ascendantSignKey = ascendantSign.key;
         // Für Aszendent können wir die Grad-Position approximieren
         // Basierend auf der Zeit und dem Zeichen
-        ascendantDegree = _approximateAscendantDegree(birthDateTimeLocal, ascendantSign.key);
+        ascendantDegree = _approximateAscendantDegree(birthDateTimeUTC, ascendantSign.key);
 
         log('⬆️ Aszendent: $ascendantSignKey (${ascendantDegree.toStringAsFixed(2)}°)');
       }
@@ -227,6 +277,7 @@ class CosmicProfileService {
       birthTime: birthTime,
       birthLatitude: 47.6542,
       birthLongitude: 9.4815,
+      birthTimezone: 'Europe/Berlin',  // NEU: Timezone für UTC-Konvertierung
       fullName: 'Natalie Frauke Günes',
     );
   }

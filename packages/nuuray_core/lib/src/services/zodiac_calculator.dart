@@ -194,11 +194,11 @@ class ZodiacCalculator {
   ///
   /// Basiert auf Meeus-Formel für gregorianischen Kalender.
   ///
-  /// WICHTIG: Verwendet die übergebene Zeit OHNE UTC-Konvertierung.
-  /// Für Aszendent-Berechnungen ist die lokale Zeit entscheidend,
-  /// da die Longitude-Korrektur über die Sidereal Time erfolgt.
+  /// WICHTIG: dateTime MUSS bereits in UTC sein!
+  /// Astrologie-Berechnungen benötigen Universal Time (UT).
+  /// Die Konvertierung von lokaler Zeit → UTC erfolgt in TimezoneConverter.
   static double _calculateJulianDay(DateTime dateTime) {
-    // KEINE UTC-Konvertierung! Lokale Zeit ist wichtig für Aszendent
+    // dateTime sollte bereits UTC sein (konvertiert mit TimezoneConverter)
     int year = dateTime.year;
     int month = dateTime.month;
     final day = dateTime.day;
