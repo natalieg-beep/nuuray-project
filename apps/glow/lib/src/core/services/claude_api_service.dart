@@ -103,7 +103,7 @@ class ClaudeApiService {
 
     final body = jsonEncode({
       'model': model,
-      'max_tokens': 1024,
+      'max_tokens': 2048, // Erhöht für längere Profile-Interpretationen
       'system': systemPrompt,
       'messages': [
         {
@@ -203,11 +203,12 @@ ${lifePathNumber != null ? '**Numerologie:**\n- Life Path Number: $lifePathNumbe
 Synthese der drei Systeme zu EINEM stimmigen Text über die Persönlichkeit.
 
 **Anforderungen:**
-- Länge: 400-500 Wörter
+- Länge: MINDESTENS 450 Wörter (wichtig!)
 - Ton: Warm, einfühlsam, empowernd
-- Struktur: Einleitung, Stärken, Herausforderungen, Lebensweg
+- Struktur: 4 Absätze (Einleitung, Stärken, Herausforderungen, Lebensweg)
 - Keine Auflistungen, sondern fließender Text
 - Zeige die Verbindungen zwischen den Systemen auf
+- Nimm dir Zeit für Details und Tiefe
 
 **Format:**
 Fließtext in Absätzen, keine Überschriften.
@@ -229,11 +230,12 @@ ${lifePathNumber != null ? '**Numerology:**\n- Life Path Number: $lifePathNumber
 Synthesize the three systems into ONE coherent text about the personality.
 
 **Requirements:**
-- Length: 400-500 words
+- Length: MINIMUM 450 words (important!)
 - Tone: Warm, empathetic, empowering
-- Structure: Introduction, Strengths, Challenges, Life Path
+- Structure: 4 paragraphs (Introduction, Strengths, Challenges, Life Path)
 - No bullet points, flowing text
 - Show the connections between the systems
+- Take time for details and depth
 
 **Format:**
 Flowing text in paragraphs, no headings.
