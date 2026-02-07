@@ -8,12 +8,13 @@ class AppConfig {
   static const String appName = 'Nuuray Glow';
   static const String appVersion = '0.1.0';
 
-  // Supabase Config (wird aus .env geladen)
+  // Supabase Config (wird aus .env geladen, mit Fallback für Development)
   static String get supabaseUrl =>
-      dotenv.get('SUPABASE_URL', fallback: '');
+      dotenv.env['SUPABASE_URL'] ?? 'https://ykkayjbplutdodummcte.supabase.co';
 
   static String get supabaseAnonKey =>
-      dotenv.get('SUPABASE_ANON_KEY', fallback: '');
+      dotenv.env['SUPABASE_ANON_KEY'] ??
+      'sb_publishable_kcM8qKBrYN2xqOrevEHQGA_DdtvgmBb';
 
   // Google Places API
   static String get googlePlacesApiKey =>

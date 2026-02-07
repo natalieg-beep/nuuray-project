@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:nuuray_glow/src/core/services/claude_api_service.dart';
 
@@ -35,6 +36,11 @@ class DailyHoroscopeService {
     final targetDate = date ?? DateTime.now();
     final dateString = targetDate.toIso8601String().split('T')[0];
 
+    developer.log(
+      '🔍 Suche Horoskop: $zodiacSign, $language, $dateString',
+      name: 'DailyHoroscopeService',
+    );
+
     // 1. Versuche gecachtes Horoskop zu laden
     final response = await _supabase
         .from('daily_horoscopes')
@@ -46,32 +52,45 @@ class DailyHoroscopeService {
 
     if (response != null && response['content_text'] != null) {
       // Cache Hit! (Normalfall)
+      developer.log('✅ Cache Hit! Horoskop gefunden', name: 'DailyHoroscopeService');
       return response['content_text'] as String;
     }
+
+    developer.log('❌ Cache Miss! Fallback zu Claude API', name: 'DailyHoroscopeService');
 
     // 2. Cache Miss → Fallback: Generiere neues Horoskop
     // (sollte nur passieren, wenn Cron Job fehlgeschlagen ist)
     if (_claudeService != null) {
-      final horoscope = await _claudeService!.generateDailyHoroscope(
-        zodiacSign: zodiacSign,
-        language: language,
-        date: targetDate,
-      );
+      developer.log('🤖 ClaudeService vorhanden, generiere Horoskop...', name: 'DailyHoroscopeService');
 
-      // Cache für nächstes Mal
-      await _cacheHoroscope(
-        zodiacSign: zodiacSign,
-        language: language,
-        date: targetDate,
-        contentText: horoscope.text,
-        tokensUsed: horoscope.totalTokens,
-        modelUsed: horoscope.model,
-      );
+      try {
+        final horoscope = await _claudeService!.generateDailyHoroscope(
+          zodiacSign: zodiacSign,
+          language: language,
+          date: targetDate,
+        );
 
-      return horoscope.text;
+        developer.log('✅ Horoskop generiert (${horoscope.totalTokens} tokens)', name: 'DailyHoroscopeService');
+
+        // Cache für nächstes Mal
+        await _cacheHoroscope(
+          zodiacSign: zodiacSign,
+          language: language,
+          date: targetDate,
+          contentText: horoscope.text,
+          tokensUsed: horoscope.totalTokens,
+          modelUsed: horoscope.model,
+        );
+
+        return horoscope.text;
+      } catch (e) {
+        developer.log('❌ Fehler bei Claude API: $e', name: 'DailyHoroscopeService', error: e);
+        return _getFallbackHoroscope(zodiacSign, language);
+      }
     }
 
     // 3. Kein Service verfügbar → Fallback-Text
+    developer.log('⚠️ Kein ClaudeService verfügbar → Fallback-Text', name: 'DailyHoroscopeService');
     return _getFallbackHoroscope(zodiacSign, language);
   }
 

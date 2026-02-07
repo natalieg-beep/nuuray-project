@@ -120,12 +120,22 @@ class ClaudeApiService {
         final data = jsonDecode(response.body);
         return ClaudeResponse.fromJson(data);
       } else {
+        // Parse Error Details
+        String errorDetail = response.body;
+        try {
+          final errorData = jsonDecode(response.body);
+          errorDetail = errorData['error']?['message'] ?? response.body;
+        } catch (_) {
+          // Ignore JSON parse error
+        }
+
         throw ClaudeApiException(
           'Claude API Error: ${response.statusCode}',
-          response.body,
+          errorDetail,
         );
       }
     } catch (e) {
+      if (e is ClaudeApiException) rethrow;
       throw ClaudeApiException('Network Error', e.toString());
     }
   }

@@ -11,20 +11,59 @@ import 'src/shared/constants/app_colors.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // .env Datei laden
-  await dotenv.load(fileName: '.env');
+  try {
+    // .env Datei laden
+    print('📦 Loading .env...');
+    await dotenv.load(fileName: '.env');
+    print('✅ .env loaded');
 
-  // Supabase initialisieren
-  await Supabase.initialize(
-    url: AppConfig.supabaseUrl,
-    anonKey: AppConfig.supabaseAnonKey,
-  );
+    // Supabase initialisieren
+    print('🔌 Initializing Supabase...');
+    await Supabase.initialize(
+      url: AppConfig.supabaseUrl,
+      anonKey: AppConfig.supabaseAnonKey,
+    );
+    print('✅ Supabase initialized');
 
-  runApp(
-    const ProviderScope(
-      child: NuurayGlowApp(),
-    ),
-  );
+    print('🚀 Starting app...');
+    runApp(
+      const ProviderScope(
+        child: NuurayGlowApp(),
+      ),
+    );
+  } catch (e, stackTrace) {
+    print('❌ FATAL ERROR in main(): $e');
+    print('Stack trace: $stackTrace');
+    // Zeige Error-Screen statt zu crashen
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error, size: 64, color: Colors.red),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'App Start Failed',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    e.toString(),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class NuurayGlowApp extends ConsumerWidget {

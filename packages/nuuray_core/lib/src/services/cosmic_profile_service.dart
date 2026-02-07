@@ -68,8 +68,22 @@ class CosmicProfileService {
     double? ascendantDegree;
 
     if (birthTime != null && birthLatitude != null && birthLongitude != null) {
+      // WICHTIG: birthTime kombiniert mit echtem Geburtsdatum für korrekte Berechnung!
+      // birthTime hat Dummy-Datum (2000-01-01), wir brauchen aber das echte Datum
+      // für die Julian Day Berechnung (JD hängt vom Datum ab!)
+      final birthDateTimeLocal = DateTime(
+        birthDate.year,
+        birthDate.month,
+        birthDate.day,
+        birthTime.hour,
+        birthTime.minute,
+        birthTime.second,
+      );
+
+      log('🕐 Kombiniere Datum + Zeit: ${birthDateTimeLocal.toIso8601String()}');
+
       final ascendantSign = ZodiacCalculator.calculateAscendant(
-        birthDateTime: birthTime,
+        birthDateTime: birthDateTimeLocal,
         latitude: birthLatitude,
         longitude: birthLongitude,
       );
@@ -78,7 +92,7 @@ class CosmicProfileService {
         ascendantSignKey = ascendantSign.key;
         // Für Aszendent können wir die Grad-Position approximieren
         // Basierend auf der Zeit und dem Zeichen
-        ascendantDegree = _approximateAscendantDegree(birthTime, ascendantSign.key);
+        ascendantDegree = _approximateAscendantDegree(birthDateTimeLocal, ascendantSign.key);
 
         log('⬆️ Aszendent: $ascendantSignKey (${ascendantDegree.toStringAsFixed(2)}°)');
       }

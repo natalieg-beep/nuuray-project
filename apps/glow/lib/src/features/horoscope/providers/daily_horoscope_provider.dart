@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/providers/app_providers.dart';
 import '../services/daily_horoscope_service.dart';
@@ -7,10 +6,11 @@ import '../services/daily_horoscope_service.dart';
 /// Provider für DailyHoroscopeService
 final dailyHoroscopeServiceProvider = Provider<DailyHoroscopeService>((ref) {
   final supabase = ref.watch(supabaseClientProvider);
+  final claudeService = ref.watch(claudeApiServiceProvider);
 
   return DailyHoroscopeService(
     supabase: supabase,
-    claudeService: null, // Für MVP (Variante A) nicht nötig
+    claudeService: claudeService, // Kann null sein (dann nur gecachte Horoskope)
   );
 });
 
