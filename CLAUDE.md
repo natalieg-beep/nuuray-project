@@ -1,5 +1,14 @@
 # NUURAY — Projektanweisung
 
+> **📚 Weitere Dokumentation:**
+> - [`docs/architecture/PROJECT_BRIEF.md`](docs/architecture/PROJECT_BRIEF.md) — Vollständige Architektur (alle 3 Apps)
+> - [`docs/glow/GLOW_SPEC.md`](docs/glow/GLOW_SPEC.md) — Glow-spezifische Detailbeschreibung
+> - [`docs/glow/CHANGELOG.md`](docs/glow/CHANGELOG.md) — Entwicklungs-History
+> - [`docs/daily-logs/`](docs/daily-logs/) — Tägliche Arbeits-Logs
+> - [`TODO.md`](TODO.md) — Aktuelle Aufgabenliste
+
+---
+
 ## Was ist NUURAY?
 
 NUURAY (arabisch *nur* = Licht + türkisch *ay* = Mond → "Mondlicht") ist eine Markenfamilie aus drei eigenständigen Apps für Frauen. Alle drei teilen sich ein gemeinsames Backend, werden aber sequenziell entwickelt.
