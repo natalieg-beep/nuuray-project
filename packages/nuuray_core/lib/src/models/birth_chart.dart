@@ -42,6 +42,15 @@ class BirthChart extends Equatable {
   final int? currentPersonalityNumber;
   final String? currentName;
 
+  // Numerologie - Erweitert (Karmic Debt, Challenges, Lessons, Bridges)
+  final int? karmicDebtLifePath;
+  final int? karmicDebtExpression;
+  final int? karmicDebtSoulUrge;
+  final List<int>? challengeNumbers;
+  final List<int>? karmicLessons;
+  final int? bridgeLifePathExpression;
+  final int? bridgeSoulUrgePersonality;
+
   // Deprecated - für Backward Compatibility
   @Deprecated('Use birthExpressionNumber instead')
   int? get expressionNumber => currentExpressionNumber ?? birthExpressionNumber;
@@ -81,6 +90,13 @@ class BirthChart extends Equatable {
     this.currentSoulUrgeNumber,
     this.currentPersonalityNumber,
     this.currentName,
+    this.karmicDebtLifePath,
+    this.karmicDebtExpression,
+    this.karmicDebtSoulUrge,
+    this.challengeNumbers,
+    this.karmicLessons,
+    this.bridgeLifePathExpression,
+    this.bridgeSoulUrgePersonality,
     required this.calculatedAt,
   });
 
@@ -118,6 +134,13 @@ class BirthChart extends Equatable {
       currentSoulUrgeNumber: json['current_soul_urge_number'] as int?,
       currentPersonalityNumber: json['current_personality_number'] as int?,
       currentName: json['current_name'] as String?,
+      karmicDebtLifePath: json['karmic_debt_life_path'] as int?,
+      karmicDebtExpression: json['karmic_debt_expression'] as int?,
+      karmicDebtSoulUrge: json['karmic_debt_soul_urge'] as int?,
+      challengeNumbers: (json['challenge_numbers'] as List<dynamic>?)?.cast<int>(),
+      karmicLessons: (json['karmic_lessons'] as List<dynamic>?)?.cast<int>(),
+      bridgeLifePathExpression: json['bridge_life_path_expression'] as int?,
+      bridgeSoulUrgePersonality: json['bridge_soul_urge_personality'] as int?,
       calculatedAt: DateTime.parse(json['calculated_at'] as String),
     );
   }
@@ -152,6 +175,13 @@ class BirthChart extends Equatable {
     'current_soul_urge_number': currentSoulUrgeNumber,
     'current_personality_number': currentPersonalityNumber,
     'current_name': currentName,
+    'karmic_debt_life_path': karmicDebtLifePath,
+    'karmic_debt_expression': karmicDebtExpression,
+    'karmic_debt_soul_urge': karmicDebtSoulUrge,
+    'challenge_numbers': challengeNumbers,
+    'karmic_lessons': karmicLessons,
+    'bridge_life_path_expression': bridgeLifePathExpression,
+    'bridge_soul_urge_personality': bridgeSoulUrgePersonality,
     'calculated_at': calculatedAt.toIso8601String(),
   };
 

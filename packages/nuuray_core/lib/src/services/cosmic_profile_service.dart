@@ -216,6 +216,18 @@ class CosmicProfileService {
       log('   Soul Urge: ${numerologyProfile.birthSoulUrgeNumber}${numerologyProfile.birthSoulUrgeNumber != null && NumerologyCalculator.isMasterNumber(numerologyProfile.birthSoulUrgeNumber!) ? " ✨" : ""}');
       log('   Personality: ${numerologyProfile.birthPersonalityNumber}');
     }
+    if (numerologyProfile.karmicDebtLifePath != null) {
+      log('⚡ Karmic Debt Life Path: ${numerologyProfile.karmicDebtLifePath}');
+    }
+    if (numerologyProfile.challengeNumbers != null && numerologyProfile.challengeNumbers!.isNotEmpty) {
+      log('🎯 Challenges: ${numerologyProfile.challengeNumbers}');
+    }
+    if (numerologyProfile.karmicLessons != null && numerologyProfile.karmicLessons!.isNotEmpty) {
+      log('📚 Karmic Lessons: ${numerologyProfile.karmicLessons}');
+    }
+    if (numerologyProfile.bridgeLifePathExpression != null) {
+      log('🌉 Bridge Life Path ↔ Expression: ${numerologyProfile.bridgeLifePathExpression}');
+    }
 
     // ============================================================
     // 4. BIRTH CHART ZUSAMMENSTELLEN
@@ -256,6 +268,14 @@ class CosmicProfileService {
       currentSoulUrgeNumber: numerologyProfile.currentSoulUrgeNumber,
       currentPersonalityNumber: numerologyProfile.currentPersonalityNumber,
       currentName: numerologyProfile.currentName,
+      // Numerologie - Erweitert
+      karmicDebtLifePath: numerologyProfile.karmicDebtLifePath,
+      karmicDebtExpression: numerologyProfile.karmicDebtExpression,
+      karmicDebtSoulUrge: numerologyProfile.karmicDebtSoulUrge,
+      challengeNumbers: numerologyProfile.challengeNumbers,
+      karmicLessons: numerologyProfile.karmicLessons,
+      bridgeLifePathExpression: numerologyProfile.bridgeLifePathExpression,
+      bridgeSoulUrgePersonality: numerologyProfile.bridgeSoulUrgePersonality,
       calculatedAt: DateTime.now(),
     );
 

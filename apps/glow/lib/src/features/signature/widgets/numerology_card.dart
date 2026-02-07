@@ -344,6 +344,11 @@ class _NumerologyCardState extends State<NumerologyCard> {
             ),
           ],
 
+          const SizedBox(height: 20),
+
+          // === ERWEITERTE NUMEROLOGIE (Karmic Debt, Challenges, Lessons, Bridges) ===
+          _buildAdvancedNumerology(context),
+
           const SizedBox(height: 24),
 
           // Mehr erfahren Button
@@ -501,6 +506,327 @@ class _NumerologyCardState extends State<NumerologyCard> {
         ),
       ],
     );
+  }
+
+  /// Baut die erweiterte Numerologie-Sektion (Karmic Debt, Challenges, Lessons, Bridges)
+  Widget _buildAdvancedNumerology(BuildContext context) {
+    final karmicDebtLifePath = widget.birthChart.karmicDebtLifePath;
+    final karmicDebtExpression = widget.birthChart.karmicDebtExpression;
+    final karmicDebtSoulUrge = widget.birthChart.karmicDebtSoulUrge;
+    final challengeNumbers = widget.birthChart.challengeNumbers;
+    final karmicLessons = widget.birthChart.karmicLessons;
+    final bridgeLifePathExpression = widget.birthChart.bridgeLifePathExpression;
+    final bridgeSoulUrgePersonality = widget.birthChart.bridgeSoulUrgePersonality;
+
+    // Prüfe ob überhaupt erweiterte Daten vorhanden sind
+    final hasAnyData = karmicDebtLifePath != null ||
+        karmicDebtExpression != null ||
+        karmicDebtSoulUrge != null ||
+        (challengeNumbers != null && challengeNumbers.isNotEmpty) ||
+        (karmicLessons != null && karmicLessons.isNotEmpty) ||
+        bridgeLifePathExpression != null ||
+        bridgeSoulUrgePersonality != null;
+
+    if (!hasAnyData) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Section Header
+        Text(
+          'Erweiterte Numerologie',
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+        ),
+        const SizedBox(height: 12),
+
+        // Karmic Debt Numbers
+        if (karmicDebtLifePath != null ||
+            karmicDebtExpression != null ||
+            karmicDebtSoulUrge != null) ...[
+          _buildAdvancedSection(
+            context,
+            icon: '⚡',
+            title: 'Karmic Debt',
+            subtitle: 'Karmische Schuldzahlen',
+            children: [
+              if (karmicDebtLifePath != null)
+                _buildAdvancedItem(
+                  context,
+                  'Lebensweg',
+                  karmicDebtLifePath,
+                  _getKarmicDebtMeaning(karmicDebtLifePath),
+                ),
+              if (karmicDebtExpression != null)
+                _buildAdvancedItem(
+                  context,
+                  'Ausdruck',
+                  karmicDebtExpression,
+                  _getKarmicDebtMeaning(karmicDebtExpression),
+                ),
+              if (karmicDebtSoulUrge != null)
+                _buildAdvancedItem(
+                  context,
+                  'Seelenwunsch',
+                  karmicDebtSoulUrge,
+                  _getKarmicDebtMeaning(karmicDebtSoulUrge),
+                ),
+            ],
+          ),
+          const SizedBox(height: 12),
+        ],
+
+        // Challenge Numbers
+        if (challengeNumbers != null && challengeNumbers.isNotEmpty) ...[
+          _buildAdvancedSection(
+            context,
+            icon: '🎯',
+            title: 'Challenges',
+            subtitle: 'Herausforderungen',
+            children: [
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (int i = 0; i < challengeNumbers.length; i++)
+                    _buildChallengeChip(
+                      context,
+                      'Phase ${i + 1}',
+                      challengeNumbers[i],
+                    ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+        ],
+
+        // Karmic Lessons
+        if (karmicLessons != null && karmicLessons.isNotEmpty) ...[
+          _buildAdvancedSection(
+            context,
+            icon: '📚',
+            title: 'Karmic Lessons',
+            subtitle: 'Zu lernende Lektionen',
+            children: [
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  for (final lesson in karmicLessons)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: AppColors.warning.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: AppColors.warning.withOpacity(0.3),
+                        ),
+                      ),
+                      child: Text(
+                        '$lesson',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: AppColors.warning,
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                    ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+        ],
+
+        // Bridge Numbers
+        if (bridgeLifePathExpression != null || bridgeSoulUrgePersonality != null) ...[
+          _buildAdvancedSection(
+            context,
+            icon: '🌉',
+            title: 'Bridges',
+            subtitle: 'Verbindungen',
+            children: [
+              if (bridgeLifePathExpression != null)
+                _buildAdvancedItem(
+                  context,
+                  'Lebensweg ↔ Ausdruck',
+                  bridgeLifePathExpression,
+                  'Verbinde Weg & Talent',
+                ),
+              if (bridgeSoulUrgePersonality != null)
+                _buildAdvancedItem(
+                  context,
+                  'Seele ↔ Außen',
+                  bridgeSoulUrgePersonality,
+                  'Verbinde Innen & Außen',
+                ),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+
+  /// Baut eine Sektion für erweiterte Numerologie
+  Widget _buildAdvancedSection(
+    BuildContext context, {
+    required String icon,
+    required String title,
+    required String subtitle,
+    required List<Widget> children,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceDark.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColors.surfaceDark,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(icon, style: const TextStyle(fontSize: 20)),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                    ),
+                    Text(
+                      subtitle,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: AppColors.textSecondary,
+                            fontSize: 10,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          ...children,
+        ],
+      ),
+    );
+  }
+
+  /// Baut ein Item für erweiterte Numerologie
+  Widget _buildAdvancedItem(
+    BuildContext context,
+    String label,
+    int number,
+    String meaning,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  meaning,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppColors.textSecondary,
+                        fontSize: 10,
+                      ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              '$number',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Baut einen Chip für Challenge Numbers
+  Widget _buildChallengeChip(BuildContext context, String label, int number) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: number == 0
+            ? AppColors.success.withOpacity(0.1)
+            : AppColors.surfaceDark,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: number == 0
+              ? AppColors.success.withOpacity(0.3)
+              : AppColors.surfaceDark.withOpacity(0.5),
+        ),
+      ),
+      child: Column(
+        children: [
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AppColors.textSecondary,
+                  fontSize: 9,
+                  fontWeight: FontWeight.w500,
+                ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            '$number',
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: number == 0 ? AppColors.success : AppColors.textPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Gibt die Bedeutung einer Karmic Debt Number zurück
+  String _getKarmicDebtMeaning(int number) {
+    switch (number) {
+      case 13:
+        return 'Faulheit → Disziplin lernen';
+      case 14:
+        return 'Überindulgenz → Balance finden';
+      case 16:
+        return 'Ego & Fall → Demut entwickeln';
+      case 19:
+        return 'Machtmissbrauch → Geben lernen';
+      default:
+        return 'Karmische Schuld';
+    }
   }
 
   String _getLifePathMeaning(int number) {
