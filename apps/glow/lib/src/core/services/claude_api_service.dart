@@ -49,7 +49,7 @@ class ClaudeApiService {
     );
 
     // API Call
-    return await _callClaude(
+    return await callClaude(
       systemPrompt: _getSystemPromptForHoroscope(language),
       userPrompt: prompt,
     );
@@ -82,7 +82,7 @@ class ClaudeApiService {
       language: language,
     );
 
-    return await _callClaude(
+    return await callClaude(
       systemPrompt: _getSystemPromptForProfile(language),
       userPrompt: prompt,
     );
