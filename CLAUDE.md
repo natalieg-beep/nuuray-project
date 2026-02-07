@@ -1,10 +1,11 @@
 # NUURAY — Projektanweisung
 
-> **📚 Weitere Dokumentation:**
+> **📚 Vollständige Dokumentation:**
+> - **START HIER:** [`docs/README.md`](docs/README.md) — Dokumentations-Hub mit Navigation zu allen Docs
+> - [`docs/glow/GLOW_SPEC_V2.md`](docs/glow/GLOW_SPEC_V2.md) — ✨ AKTUELLE Glow-Spezifikation (2-Schritte Onboarding)
+> - [`docs/glow/SPEC_CHANGELOG.md`](docs/glow/SPEC_CHANGELOG.md) — Konzeptionelle Änderungen
 > - [`docs/architecture/PROJECT_BRIEF.md`](docs/architecture/PROJECT_BRIEF.md) — Vollständige Architektur (alle 3 Apps)
-> - [`docs/glow/GLOW_SPEC.md`](docs/glow/GLOW_SPEC.md) — Glow-spezifische Detailbeschreibung
-> - [`docs/glow/CHANGELOG.md`](docs/glow/CHANGELOG.md) — Entwicklungs-History
-> - [`docs/daily-logs/`](docs/daily-logs/) — Tägliche Arbeits-Logs
+> - [`docs/daily-logs/2026-02-08_session-zusammenfassung.md`](docs/daily-logs/2026-02-08_session-zusammenfassung.md) — Neueste Session
 > - [`TODO.md`](TODO.md) — Aktuelle Aufgabenliste
 
 ---

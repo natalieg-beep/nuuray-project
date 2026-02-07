@@ -83,14 +83,19 @@ nuuray-project/
 │   ├── functions/             # Edge Functions (Deno/TypeScript)
 │   └── seed/                  # Seed-Daten
 │
-└── docs/
+└── docs/                      # 📚 Vollständige Dokumentation
+    ├── README.md              # Dokumentations-Übersicht (START HIER!)
+    ├── CHANGELOG_DOKUMENTATION.md  # Dokumentations-Änderungen
     ├── architecture/          # Architektur-Dokumentation
     │   └── PROJECT_BRIEF.md   # Vollständige Architektur (alle 3 Apps)
     ├── glow/                  # Glow-spezifische Dokumentation
-    │   ├── GLOW_SPEC.md       # Detaillierte Glow-Beschreibung
+    │   ├── README.md          # Glow-Dokumentation Übersicht
+    │   ├── GLOW_SPEC_V2.md    # ✨ AKTUELLE Glow-Spezifikation
+    │   ├── SPEC_CHANGELOG.md  # Konzeptionelle Änderungen
     │   ├── CHANGELOG.md       # Entwicklungs-History
-    │   └── implementation/    # Implementation-Details
-    └── daily-logs/            # Tägliche Arbeits-Logs
+    │   └── implementation/    # Technische Implementation-Details
+    ├── daily-logs/            # Tägliche Session-Logs & Zusammenfassungen
+    └── archive/               # Veraltete Dokumente (z.B. GLOW_SPEC_V1.md)
 ```
 
 ---
@@ -133,14 +138,19 @@ flutter run
 
 ## 📚 Dokumentation
 
+> **⭐ START HIER:** [`docs/README.md`](docs/README.md) — Vollständige Dokumentations-Übersicht
+
+### Wichtigste Dokumente
+
 | Dokument | Beschreibung |
 |----------|--------------|
-| [`CLAUDE.md`](CLAUDE.md) | Projektanweisung für Claude AI (Tech Stack, Konventionen) |
-| [`docs/architecture/PROJECT_BRIEF.md`](docs/architecture/PROJECT_BRIEF.md) | Vollständige Architektur-Beschreibung (alle 3 Apps) |
-| [`docs/glow/GLOW_SPEC.md`](docs/glow/GLOW_SPEC.md) | Glow-spezifische Detailbeschreibung (58 KB!) |
-| [`docs/glow/CHANGELOG.md`](docs/glow/CHANGELOG.md) | Entwicklungs-History mit allen Meilensteinen |
-| [`docs/daily-logs/`](docs/daily-logs/) | Tägliche Arbeits-Zusammenfassungen |
-| [`TODO.md`](TODO.md) | Aktuelle Aufgabenliste |
+| [`CLAUDE.md`](CLAUDE.md) | ⚙️ Projektanweisung für Claude AI (Tech Stack, Konventionen, Git) |
+| [`TODO.md`](TODO.md) | ✅ Aktuelle Aufgabenliste mit Status |
+| [`docs/README.md`](docs/README.md) | 📚 **Dokumentations-Hub** — Navigation zu allen Docs |
+| [`docs/glow/GLOW_SPEC_V2.md`](docs/glow/GLOW_SPEC_V2.md) | 🌟 **Aktuelle Glow-Spezifikation** (2-Schritte Onboarding, Deine Signatur) |
+| [`docs/glow/SPEC_CHANGELOG.md`](docs/glow/SPEC_CHANGELOG.md) | 📝 Konzeptionelle Änderungen (was hat sich geändert?) |
+| [`docs/architecture/PROJECT_BRIEF.md`](docs/architecture/PROJECT_BRIEF.md) | 🏗️ Vollständige Architektur (alle 3 Apps) |
+| [`docs/daily-logs/2026-02-08_session-zusammenfassung.md`](docs/daily-logs/2026-02-08_session-zusammenfassung.md) | 📅 Neueste Session-Zusammenfassung |
 
 ---
 
@@ -174,4 +184,4 @@ Proprietär — Alle Rechte vorbehalten.
 
 ---
 
-**Stand:** 2025-02-07 | **Version:** 0.3.0 (MVP in Entwicklung)
+**Stand:** 2026-02-08 | **Version:** 0.3.0 (MVP in Entwicklung)

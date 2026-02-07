@@ -1,7 +1,11 @@
 # NUURAY GLOW — TODO Liste
 
-> Letzte Aktualisierung: 2026-02-07 (Nach 1h Session mit Claude)
-> Stand: Auth ✅, Onboarding ✅, Geocoding ✅, Basic Home ✅, Cosmic Profile ✅, **Claude API Integration ✅** (Basis-Infrastruktur fertig!)
+> Letzte Aktualisierung: 2026-02-08 (Onboarding 2-Schritte fertig!)
+> Stand: Auth ✅, **Onboarding ✅ (2-Schritte FERTIG mit Autocomplete!)**, Geocoding ✅, Basic Home ✅, Cosmic Profile ✅, **Claude API ✅** (getestet!)
+>
+> **📚 Neue Dokumentation:**
+> - `docs/glow/GLOW_SPEC_V2.md` — Aktualisierte vollständige Projektbeschreibung (2-Schritte Onboarding, Deine Signatur, Sprachen)
+> - `docs/glow/SPEC_CHANGELOG.md` — Changelog der konzeptionellen Änderungen
 
 ---
 
@@ -16,14 +20,23 @@
 - ✅ Router mit Auth-Guards (GoRouter + refreshListenable)
 
 ### Onboarding
-- ✅ 3-Schritte Onboarding-Flow
-  - Schritt 1: Name-Felder (displayName, fullFirstNames, lastName, birthName)
-  - Schritt 2: Geburtsdatum (Pflicht) + Geburtszeit (Optional)
-  - Schritt 3: Geburtsort mit **Geocoding** ✨
-    - Text-Input + "Ort suchen"-Button
-    - Google Places API via Supabase Edge Function
-    - Koordinaten (lat/lng) + Timezone werden gespeichert
-    - "Überspringen"-Option (dann kein Aszendent)
+- ✅ **2-Schritte Onboarding-Flow** (**FERTIG 2026-02-08!**) 🎉
+  - **Schritt 1:** Name & Identität (3 Felder)
+    - Rufname/Username (Pflicht)
+    - Voller Geburtsname (Optional, für Numerologie)
+    - Nachname aktuell (Optional, für aktuelle Energie)
+  - **Schritt 2:** Geburtsdaten KOMBINIERT auf einem Screen
+    - Geburtsdatum (Pflicht) → Date Picker
+    - Geburtszeit (Optional) → Time Picker + Checkbox "unbekannt"
+    - Geburtsort (Optional) → **LIVE-Autocomplete mit Google Places API** ✨
+      - Debounced Search (800ms)
+      - Automatische Suche beim Tippen (mind. 3 Zeichen)
+      - Success-Anzeige: Grüne Box mit Ort + Koordinaten + Timezone
+      - Error-Anzeige: Rote Box mit Hilfetext
+      - "Geburtsort überspringen" Button wenn nicht gefunden
+      - Gefundener Ort erscheint im TextField
+  - **Spec-konform:** Entspricht GLOW_SPEC_V2.md
+  - **File:** `onboarding_birthdata_combined_screen.dart` (neu erstellt)
 - ✅ UserProfile Model mit allen Feldern (inkl. birth_latitude, birth_longitude, birth_timezone)
 - ✅ UserProfileService (CRUD + Upsert-Logik)
 - ✅ GeocodingService (`nuuray_api/services/geocoding_service.dart`)
@@ -45,6 +58,7 @@
   - Western Astrology Card (Sonne/Mond/Aszendent)
   - Bazi Card (Vier Säulen + Day Master)
   - Numerology Card (9 Kern-Zahlen + Dual-Profil)
+  - ⚠️ **GEPLANT:** Umbenennung zu "Deine Signatur" Dashboard (siehe SPEC_CHANGELOG.md)
 
 ### Claude API Integration
 - ✅ ClaudeApiService implementiert (`apps/glow/lib/src/core/services/claude_api_service.dart`)
@@ -62,11 +76,34 @@
 
 ## ⏳ NÄCHSTE SCHRITTE
 
-### 🎯 SOFORT (Claude API Testing)
-- [ ] **Anthropic API Key holen** → https://console.anthropic.com
-- [ ] **API Key in .env eintragen** (`ANTHROPIC_API_KEY=sk-ant-...`)
-- [ ] **Test-Script ausführen**: `dart apps/glow/test/test_claude_api.dart`
-- [ ] **Supabase Migration deployen** (`20260207_add_daily_horoscopes.sql` im Dashboard ausführen)
+### 📚 Dokumentation & Konzept-Updates
+- [x] **Onboarding-Anpassung:** ✅ **FERTIG 2026-02-08!**
+  - Code auf 2 Schritte umgestellt (Name → Geburtsdaten kombiniert)
+  - Name-Felder auf 3 reduziert (displayName, fullBirthName, currentLastName)
+  - LIVE-Autocomplete für Geburtsort implementiert
+  - Siehe: `docs/daily-logs/2026-02-08_onboarding-2-schritte.md`
+- [ ] **"Cosmic Profile" → "Deine Signatur" Umbenennung:**
+  - [ ] Code-Suche: `Cosmic Profile` → `Deine Signatur` (Code + UI)
+  - [ ] Datenbank: `cosmic_profiles` → `signature_profiles` (Migration)
+  - [ ] Provider: `cosmicProfileProvider` → `signatureProfileProvider`
+- [ ] **i18n-Strategie umsetzen:**
+  - [ ] ARB-Dateien erstellen (`app_de.arb`, `app_en.arb`)
+  - [ ] Settings Screen mit Sprach-Auswahl (🇩🇪 / 🇬🇧)
+  - [ ] Profile-Tabelle: `language` Spalte nutzen
+
+### 🎯 SOFORT (Testing & Deployment)
+- [x] **Anthropic API Key:** ✅ **GETESTET 2026-02-08!**
+  - Key in `.env` vorhanden
+  - Tests erfolgreich: Tageshoroskop + Cosmic Profile
+  - Kosten: ~$0.02 pro Horoskop (sehr günstig!)
+- [x] **Onboarding testen:** ✅ **App läuft!**
+  - 2-Schritte Flow funktioniert
+  - Autocomplete funktioniert
+  - Name-Felder (3) funktionieren
+- [x] **Supabase Migration deployen:** ✅ **DEPLOYED 2026-02-08!**
+  - Migration `20260207_add_daily_horoscopes.sql` ist deployed
+  - Tabelle `daily_horoscopes` existiert mit Beispiel-Daten
+  - Verifiziert via Supabase Dashboard (2 Testeinträge: Aries + Cancer)
 
 ## ⏳ NÄCHSTE SCHRITTE (VORHER)
 

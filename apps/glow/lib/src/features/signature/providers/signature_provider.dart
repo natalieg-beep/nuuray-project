@@ -2,11 +2,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nuuray_core/nuuray_core.dart';
 import '../../profile/providers/user_profile_provider.dart';
 
-/// Cosmic Profile Provider
+/// Signature Provider
 ///
-/// Lädt das User-Profil und berechnet daraus das vollständige Cosmic Profile.
+/// Lädt das User-Profil und berechnet daraus die vollständige kosmische Signatur.
+/// "Deine Signatur" = Synthese aus Western Astrology + Bazi + Numerology.
 /// Cached das Ergebnis automatisch.
-final cosmicProfileProvider = FutureProvider<BirthChart?>((ref) async {
+final signatureProvider = FutureProvider<BirthChart?>((ref) async {
   // User-Profil laden
   final userProfileAsync = ref.watch(userProfileProvider);
 
@@ -48,7 +49,7 @@ final cosmicProfileProvider = FutureProvider<BirthChart?>((ref) async {
         fullName = userProfile.displayName;
       }
 
-      // Cosmic Profile berechnen
+      // Kosmische Signatur berechnen
       final birthChart = await CosmicProfileService.calculateCosmicProfile(
         userId: userProfile.id,
         birthDate: birthDate,

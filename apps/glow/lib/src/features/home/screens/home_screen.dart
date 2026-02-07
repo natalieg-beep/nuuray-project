@@ -5,10 +5,10 @@ import 'package:intl/intl.dart';
 import '../../../shared/constants/app_colors.dart';
 import '../../profile/providers/user_profile_provider.dart';
 import '../../auth/providers/auth_provider.dart';
-import '../../cosmic_profile/providers/cosmic_profile_provider.dart';
-import '../../cosmic_profile/widgets/western_astrology_card.dart';
-import '../../cosmic_profile/widgets/bazi_card.dart';
-import '../../cosmic_profile/widgets/numerology_card.dart';
+import '../../signature/providers/signature_provider.dart';
+import '../../signature/widgets/western_astrology_card.dart';
+import '../../signature/widgets/bazi_card.dart';
+import '../../signature/widgets/numerology_card.dart';
 import '../widgets/daily_horoscope_section.dart';
 
 /// Home-Screen: Hauptansicht mit Tageshoroskop, Mondphase, etc.
@@ -47,8 +47,8 @@ class HomeScreen extends ConsumerWidget {
                   const DailyHoroscopeSection(),
                   const SizedBox(height: 24),
 
-                  // === COSMIC PROFILE DASHBOARD ===
-                  _buildCosmicProfileSection(context, ref),
+                  // === DEINE SIGNATUR DASHBOARD ===
+                  _buildSignatureSection(context, ref),
 
                   const SizedBox(height: 24),
 
@@ -200,8 +200,8 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildCosmicProfileSection(BuildContext context, WidgetRef ref) {
-    final cosmicProfileAsync = ref.watch(cosmicProfileProvider);
+  Widget _buildSignatureSection(BuildContext context, WidgetRef ref) {
+    final signatureAsync = ref.watch(signatureProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,11 +225,11 @@ class HomeScreen extends ConsumerWidget {
         ),
         const SizedBox(height: 16),
 
-        // Cosmic Profile Cards
-        cosmicProfileAsync.when(
+        // Signature Cards
+        signatureAsync.when(
           data: (birthChart) {
             if (birthChart == null) {
-              return _buildCosmicProfilePlaceholder(context);
+              return _buildSignaturePlaceholder(context);
             }
 
             return Column(
@@ -253,13 +253,13 @@ class HomeScreen extends ConsumerWidget {
               child: CircularProgressIndicator(color: AppColors.primary),
             ),
           ),
-          error: (error, stack) => _buildCosmicProfileError(context, error),
+          error: (error, stack) => _buildSignatureError(context, error),
         ),
       ],
     );
   }
 
-  Widget _buildCosmicProfilePlaceholder(BuildContext context) {
+  Widget _buildSignaturePlaceholder(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -294,7 +294,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildCosmicProfileError(BuildContext context, Object error) {
+  Widget _buildSignatureError(BuildContext context, Object error) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
