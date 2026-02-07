@@ -82,10 +82,13 @@
   - Name-Felder auf 3 reduziert (displayName, fullBirthName, currentLastName)
   - LIVE-Autocomplete für Geburtsort implementiert
   - Siehe: `docs/daily-logs/2026-02-08_onboarding-2-schritte.md`
-- [ ] **"Cosmic Profile" → "Deine Signatur" Umbenennung:**
-  - [ ] Code-Suche: `Cosmic Profile` → `Deine Signatur` (Code + UI)
-  - [ ] Datenbank: `cosmic_profiles` → `signature_profiles` (Migration)
-  - [ ] Provider: `cosmicProfileProvider` → `signatureProfileProvider`
+- [x] **"Cosmic Profile" → "Deine Signatur" Umbenennung:** ✅ **FERTIG 2026-02-08!**
+  - [x] Code-Suche: `Cosmic Profile` → `Deine Signatur` (Code + UI) ✅
+  - [x] Provider: `cosmicProfileProvider` → `signatureProvider` ✅
+  - [x] Folder: `cosmic_profile/` → `signature/` ✅
+  - [x] Screen: `CosmicProfileDashboardScreen` → `SignatureDashboardScreen` ✅
+  - [x] Card-Design vereinheitlicht (alle Gradients entfernt, AppColors verwendet) ✅
+  - **Hinweis:** Datenbank nutzt bereits `birth_charts` Tabelle (keine Änderung nötig)
 - [ ] **i18n-Strategie umsetzen:**
   - [ ] ARB-Dateien erstellen (`app_de.arb`, `app_en.arb`)
   - [ ] Settings Screen mit Sprach-Auswahl (🇩🇪 / 🇬🇧)
@@ -109,6 +112,20 @@
 
 ### 🐛 BUGS ZU FIXEN
 **PRIORITÄT 1:**
+- [ ] **Numerologie-Berechnung reparieren** 🔴 **KRITISCH!**
+  - **Problem:** Name-Felder im Onboarding wurden geändert (displayName, fullFirstNames, lastName)
+  - **Aber:** `UserProfile` Model (`packages/nuuray_core`) nutzt noch alte Felder
+  - **Folge:** `signature_provider.dart` findet die Felder nicht → Numerologie-Berechnung schlägt fehl
+  - **Fix erforderlich:**
+    1. `UserProfile` Model in `nuuray_core` aktualisieren (neue Felder hinzufügen)
+    2. Migration prüfen ob Felder in DB vorhanden sind
+    3. `signature_provider.dart` Mapping korrigieren
+    4. Onboarding-Flow prüft ob Daten korrekt gespeichert werden
+  - **Betroffene Dateien:**
+    - `packages/nuuray_core/lib/src/models/user_profile.dart` (Model)
+    - `apps/glow/lib/src/features/signature/providers/signature_provider.dart` (Provider)
+    - `apps/glow/lib/src/features/profile/services/user_profile_service.dart` (Service)
+
 - [x] **Aszendent-Berechnung prüfen** ✅ **GELÖST!**
   - Problem identifiziert: UTC-Konvertierung in `_calculateJulianDay()`
   - Fix implementiert: Lokale Zeit ohne UTC-Konvertierung verwenden

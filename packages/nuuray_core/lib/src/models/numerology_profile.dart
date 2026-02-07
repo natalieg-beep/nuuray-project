@@ -62,6 +62,61 @@ class NumerologyProfile extends Equatable {
   /// Aktueller Name (nur wenn anders als Geburtsname)
   final String? currentName;
 
+  // ============================================================
+  // KARMIC DEBT NUMBERS (Schuldzahlen: 13, 14, 16, 19)
+  // ============================================================
+
+  /// Karmic Debt Number für Life Path (falls 13, 14, 16 oder 19)
+  ///
+  /// Beispiel: 19/1 bedeutet Zwischensumme war 19, reduziert zu 1
+  /// 13/4, 14/5, 16/7, 19/1 sind die Schuldzahlen
+  final int? karmicDebtLifePath;
+
+  /// Karmic Debt Number für Expression (falls 13, 14, 16 oder 19)
+  final int? karmicDebtExpression;
+
+  /// Karmic Debt Number für Soul Urge (falls 13, 14, 16 oder 19)
+  final int? karmicDebtSoulUrge;
+
+  // ============================================================
+  // CHALLENGE NUMBERS (Herausforderungen)
+  // ============================================================
+
+  /// Challenge Numbers zeigen Hürden im Leben (meist 3-4 Phasen)
+  ///
+  /// Werden durch Subtraktion der Geburtsdaten berechnet
+  /// - Challenge 1 (1. Lebenshälfte): |Tag - Monat|
+  /// - Challenge 2 (Jugend): |Tag - Jahr|
+  /// - Challenge 3 (Mittleres Alter): |Challenge1 - Challenge2|
+  /// - Challenge 4 (Reife): |Monat - Jahr|
+  final List<int>? challengeNumbers;
+
+  // ============================================================
+  // KARMIC LESSONS (Fehlende Zahlen im Namen)
+  // ============================================================
+
+  /// Karmic Lessons sind Zahlen 1-9, die im Namen nicht vorkommen
+  ///
+  /// Beispiel: "Anna" hat nur 1 und 5 → Lessons: [2,3,4,6,7,8,9]
+  /// Diese Zahlen repräsentieren Lektionen, die man in diesem Leben lernen muss
+  final List<int>? karmicLessons;
+
+  // ============================================================
+  // BRIDGE NUMBERS (Brückenzahlen zwischen Kernzahlen)
+  // ============================================================
+
+  /// Bridge zwischen Life Path und Expression
+  ///
+  /// Zeigt den Weg, wie man sein Potenzial (Expression) mit dem Lebensweg verbindet
+  /// Berechnung: |Life Path - Expression|
+  final int? bridgeLifePathExpression;
+
+  /// Bridge zwischen Soul Urge und Personality
+  ///
+  /// Zeigt, wie man die Lücke zwischen innerem Wunsch und äußerer Wirkung schließt
+  /// Berechnung: |Soul Urge - Personality|
+  final int? bridgeSoulUrgePersonality;
+
   const NumerologyProfile({
     required this.lifePathNumber,
     required this.birthdayNumber,
@@ -76,6 +131,13 @@ class NumerologyProfile extends Equatable {
     this.currentSoulUrgeNumber,
     this.currentPersonalityNumber,
     this.currentName,
+    this.karmicDebtLifePath,
+    this.karmicDebtExpression,
+    this.karmicDebtSoulUrge,
+    this.challengeNumbers,
+    this.karmicLessons,
+    this.bridgeLifePathExpression,
+    this.bridgeSoulUrgePersonality,
   });
 
   /// Hat der User seinen Namen geändert?
@@ -112,6 +174,13 @@ class NumerologyProfile extends Equatable {
         currentSoulUrgeNumber,
         currentPersonalityNumber,
         currentName,
+        karmicDebtLifePath,
+        karmicDebtExpression,
+        karmicDebtSoulUrge,
+        challengeNumbers,
+        karmicLessons,
+        bridgeLifePathExpression,
+        bridgeSoulUrgePersonality,
       ];
 
   @override
@@ -159,6 +228,13 @@ class NumerologyProfile extends Equatable {
       currentSoulUrgeNumber: json['current_soul_urge_number'] as int?,
       currentPersonalityNumber: json['current_personality_number'] as int?,
       currentName: json['current_name'] as String?,
+      karmicDebtLifePath: json['karmic_debt_life_path'] as int?,
+      karmicDebtExpression: json['karmic_debt_expression'] as int?,
+      karmicDebtSoulUrge: json['karmic_debt_soul_urge'] as int?,
+      challengeNumbers: (json['challenge_numbers'] as List<dynamic>?)?.cast<int>(),
+      karmicLessons: (json['karmic_lessons'] as List<dynamic>?)?.cast<int>(),
+      bridgeLifePathExpression: json['bridge_life_path_expression'] as int?,
+      bridgeSoulUrgePersonality: json['bridge_soul_urge_personality'] as int?,
     );
   }
 
@@ -176,5 +252,12 @@ class NumerologyProfile extends Equatable {
         'current_soul_urge_number': currentSoulUrgeNumber,
         'current_personality_number': currentPersonalityNumber,
         'current_name': currentName,
+        'karmic_debt_life_path': karmicDebtLifePath,
+        'karmic_debt_expression': karmicDebtExpression,
+        'karmic_debt_soul_urge': karmicDebtSoulUrge,
+        'challenge_numbers': challengeNumbers,
+        'karmic_lessons': karmicLessons,
+        'bridge_life_path_expression': bridgeLifePathExpression,
+        'bridge_soul_urge_personality': bridgeSoulUrgePersonality,
       };
 }

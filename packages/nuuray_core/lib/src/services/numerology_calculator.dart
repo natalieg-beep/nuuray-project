@@ -223,6 +223,251 @@ class NumerologyCalculator {
   }
 
   // ============================================================
+  // KARMIC DEBT NUMBERS (Schuldzahlen: 13, 14, 16, 19)
+  // ============================================================
+
+  /// Berechnet Karmic Debt Number für Life Path
+  ///
+  /// **Konzept:** Schuldzahlen verstecken sich in den Zwischenschritten.
+  /// Wenn die Summe VOR der finalen Reduktion 13, 14, 16 oder 19 ist,
+  /// trägt die Person eine karmische Schuld aus einem früheren Leben.
+  ///
+  /// **Bedeutung:**
+  /// - **13/4**: Faulheit → Harte Arbeit und Disziplin lernen
+  /// - **14/5**: Überindulgenz → Balance und Mäßigung finden
+  /// - **16/7**: Ego & Fall → Demut und Spiritualität entwickeln
+  /// - **19/1**: Machtmissbrauch → Geben statt Nehmen lernen
+  ///
+  /// **Berechnung:**
+  /// Beispiel: 18.10.1971
+  /// → Tag: 1+8 = 9
+  /// → Monat: 1+0 = 1
+  /// → Jahr: 1+9+7+1 = 18 → 9
+  /// → Summe: 9+1+9 = **19** ← Karmic Debt!
+  /// → Final: 1+9 = 1 (Life Path = 1 mit Karmic Debt 19)
+  static int? calculateKarmicDebtLifePath(DateTime birthDate) {
+    final day = _reduceToSingleDigit(birthDate.day);
+    final month = _reduceToSingleDigit(birthDate.month);
+    final year = _reduceToSingleDigit(_sumDigits(birthDate.year));
+
+    final sum = day + month + year;
+
+    // Prüfe ob Zwischensumme eine Schuldzahl ist
+    if (sum == 13 || sum == 14 || sum == 16 || sum == 19) {
+      return sum;
+    }
+
+    return null;
+  }
+
+  /// Berechnet Karmic Debt Number für Expression
+  ///
+  /// Prüft die Zwischensumme aller Buchstaben VOR der finalen Reduktion.
+  static int? calculateKarmicDebtExpression(String fullName) {
+    if (fullName.trim().isEmpty) return null;
+
+    final normalizedName = _normalizeName(fullName);
+    final nameParts = normalizedName.split(' ').where((p) => p.isNotEmpty).toList();
+
+    if (nameParts.isEmpty) return null;
+
+    // Gesamtsumme OHNE finale Reduktion
+    int totalSum = 0;
+    for (final part in nameParts) {
+      totalSum += _sumLetters(part);
+    }
+
+    // Prüfe ob Summe eine Schuldzahl ist
+    if (totalSum == 13 || totalSum == 14 || totalSum == 16 || totalSum == 19) {
+      return totalSum;
+    }
+
+    // Prüfe ob Zwischenreduktion eine Schuldzahl ist
+    if (totalSum > 19) {
+      final reduced = _sumDigits(totalSum);
+      if (reduced == 13 || reduced == 14 || reduced == 16 || reduced == 19) {
+        return reduced;
+      }
+    }
+
+    return null;
+  }
+
+  /// Berechnet Karmic Debt Number für Soul Urge
+  ///
+  /// Prüft die Zwischensumme aller Vokale VOR der finalen Reduktion.
+  static int? calculateKarmicDebtSoulUrge(String fullName) {
+    if (fullName.trim().isEmpty) return null;
+
+    final normalizedName = _normalizeName(fullName);
+    final nameParts = normalizedName.split(' ').where((p) => p.isNotEmpty).toList();
+
+    if (nameParts.isEmpty) return null;
+
+    // Gesamtsumme der Vokale OHNE finale Reduktion
+    int totalVowelSum = 0;
+    for (final part in nameParts) {
+      final vowelsInPart = part.split('').where((c) => _vowels.contains(c)).join('');
+      if (vowelsInPart.isNotEmpty) {
+        totalVowelSum += _sumLetters(vowelsInPart);
+      }
+    }
+
+    // Prüfe ob Summe eine Schuldzahl ist
+    if (totalVowelSum == 13 || totalVowelSum == 14 || totalVowelSum == 16 || totalVowelSum == 19) {
+      return totalVowelSum;
+    }
+
+    // Prüfe ob Zwischenreduktion eine Schuldzahl ist
+    if (totalVowelSum > 19) {
+      final reduced = _sumDigits(totalVowelSum);
+      if (reduced == 13 || reduced == 14 || reduced == 16 || reduced == 19) {
+        return reduced;
+      }
+    }
+
+    return null;
+  }
+
+  // ============================================================
+  // CHALLENGE NUMBERS (Herausforderungszahlen)
+  // ============================================================
+
+  /// Berechnet die Challenge Numbers (Herausforderungen im Leben)
+  ///
+  /// **Konzept:** Challenges zeigen Hürden und Lektionen in verschiedenen Lebensphasen.
+  /// Sie entstehen durch SUBTRAKTION der Geburtsdaten.
+  ///
+  /// **Berechnung:** (Beispiel: 15. Mai = 15.05.)
+  /// - **Challenge 1** (1. Lebenshälfte): |Tag - Monat| = |6 - 5| = 1
+  /// - **Challenge 2** (Jugend): |Tag - Jahr|
+  /// - **Challenge 3** (Mittleres Alter): |Challenge1 - Challenge2|
+  /// - **Challenge 4** (Reife): |Monat - Jahr|
+  ///
+  /// **Besonderheit:** Eine "0" als Challenge bedeutet:
+  /// - Alle Herausforderungen gleichzeitig ODER
+  /// - Sehr alte Seele ohne spezifische Lektionen
+  ///
+  /// Returns: Liste mit 4 Challenge Numbers [Challenge1, Challenge2, Challenge3, Challenge4]
+  static List<int> calculateChallengeNumbers(DateTime birthDate) {
+    final day = _reduceToSingleDigit(birthDate.day);
+    final month = _reduceToSingleDigit(birthDate.month);
+    final year = _reduceToSingleDigit(_sumDigits(birthDate.year));
+
+    // Challenge 1: |Tag - Monat|
+    final challenge1 = (day - month).abs();
+
+    // Challenge 2: |Tag - Jahr|
+    final challenge2 = (day - year).abs();
+
+    // Challenge 3: |Challenge1 - Challenge2|
+    final challenge3 = (challenge1 - challenge2).abs();
+
+    // Challenge 4: |Monat - Jahr|
+    final challenge4 = (month - year).abs();
+
+    return [challenge1, challenge2, challenge3, challenge4];
+  }
+
+  // ============================================================
+  // KARMIC LESSONS (Fehlende Zahlen im Namen)
+  // ============================================================
+
+  /// Berechnet die Karmic Lessons (Karmische Lektionen)
+  ///
+  /// **Konzept:** Karmic Lessons sind Zahlen 1-9, die im vollständigen Namen
+  /// NICHT vorkommen. Diese Zahlen repräsentieren Fähigkeiten oder Eigenschaften,
+  /// die man in diesem Leben erst lernen muss.
+  ///
+  /// **Bedeutung der fehlenden Zahlen:**
+  /// - **1 fehlt**: Selbstvertrauen und Führung entwickeln
+  /// - **2 fehlt**: Diplomatie und Teamwork lernen
+  /// - **3 fehlt**: Kreativität und Ausdruck entwickeln
+  /// - **4 fehlt**: Disziplin und Struktur aufbauen
+  /// - **5 fehlt**: Anpassungsfähigkeit und Flexibilität lernen
+  /// - **6 fehlt**: Verantwortung und Fürsorge entwickeln
+  /// - **7 fehlt**: Spiritualität und Analyse lernen
+  /// - **8 fehlt**: Umgang mit Geld und Macht lernen
+  /// - **9 fehlt**: Mitgefühl und Weisheit entwickeln
+  ///
+  /// **Berechnung:**
+  /// Beispiel: "ANNA" → A=1, N=5, N=5, A=1
+  /// Vorhanden: {1, 5}
+  /// Fehlend: [2, 3, 4, 6, 7, 8, 9]
+  ///
+  /// Returns: Liste der fehlenden Zahlen (leer wenn alle 1-9 vorhanden)
+  static List<int> calculateKarmicLessons(String fullName) {
+    if (fullName.trim().isEmpty) return [];
+
+    final normalizedName = _normalizeName(fullName);
+
+    // Zähle welche Zahlen vorkommen
+    final presentNumbers = <int>{};
+
+    for (int i = 0; i < normalizedName.length; i++) {
+      final char = normalizedName[i];
+      if (_letterValues.containsKey(char)) {
+        presentNumbers.add(_letterValues[char]!);
+      }
+    }
+
+    // Finde fehlende Zahlen (1-9)
+    final missingNumbers = <int>[];
+    for (int number = 1; number <= 9; number++) {
+      if (!presentNumbers.contains(number)) {
+        missingNumbers.add(number);
+      }
+    }
+
+    return missingNumbers;
+  }
+
+  // ============================================================
+  // BRIDGE NUMBERS (Brückenzahlen zwischen Kernzahlen)
+  // ============================================================
+
+  /// Berechnet Bridge Number zwischen Life Path und Expression
+  ///
+  /// **Konzept:** Bridge Numbers zeigen den Weg, wie man zwei Aspekte
+  /// seiner Persönlichkeit verbinden kann.
+  ///
+  /// **Bridge Life Path ↔ Expression:**
+  /// Zeigt, wie man sein natürliches Talent (Expression) mit dem
+  /// Lebensweg (Life Path) in Einklang bringt.
+  ///
+  /// **Berechnung:** |Life Path - Expression|
+  ///
+  /// Beispiel: Life Path 7, Expression 4
+  /// → Bridge = |7 - 4| = 3
+  /// → Bedeutung: Nutze Kreativität (3) um Weisheit (7) mit Struktur (4) zu verbinden
+  static int? calculateBridgeLifePathExpression({
+    required int lifePath,
+    int? expression,
+  }) {
+    if (expression == null) return null;
+    return (lifePath - expression).abs();
+  }
+
+  /// Berechnet Bridge Number zwischen Soul Urge und Personality
+  ///
+  /// **Konzept:** Zeigt, wie man die Lücke zwischen innerem Wunsch
+  /// (Soul Urge) und äußerer Wirkung (Personality) schließt.
+  ///
+  /// **Berechnung:** |Soul Urge - Personality|
+  ///
+  /// Beispiel: Soul Urge 33, Personality 4
+  /// → Bridge = |33 - 4| = 29 → 11 (Meisterzahl!)
+  /// → Bedeutung: Nutze Intuition (11) um innere Heilkraft (33) mit äußerer Stabilität (4) zu verbinden
+  static int? calculateBridgeSoulUrgePersonality({
+    int? soulUrge,
+    int? personality,
+  }) {
+    if (soulUrge == null || personality == null) return null;
+    final diff = (soulUrge - personality).abs();
+    return _reduceToSingleDigit(diff);
+  }
+
+  // ============================================================
   // HELPER METHODS
   // ============================================================
 
@@ -393,6 +638,37 @@ class NumerologyCalculator {
         ? calculateMaturity(lifePath: lifePathNumber, expression: activeExpression)
         : null;
 
+    // ==========================================
+    // KARMIC DEBT NUMBERS
+    // ==========================================
+    final karmicDebtLifePath = calculateKarmicDebtLifePath(birthDate);
+    final karmicDebtExpression = birthName != null ? calculateKarmicDebtExpression(birthName) : null;
+    final karmicDebtSoulUrge = birthName != null ? calculateKarmicDebtSoulUrge(birthName) : null;
+
+    // ==========================================
+    // CHALLENGE NUMBERS
+    // ==========================================
+    final challengeNumbers = calculateChallengeNumbers(birthDate);
+
+    // ==========================================
+    // KARMIC LESSONS
+    // ==========================================
+    final karmicLessons = birthName != null ? calculateKarmicLessons(birthName) : null;
+
+    // ==========================================
+    // BRIDGE NUMBERS
+    // ==========================================
+    final bridgeLifePathExpression = activeExpression != null
+        ? calculateBridgeLifePathExpression(lifePath: lifePathNumber, expression: activeExpression)
+        : null;
+
+    final activeSoulUrge = hasNameChange ? currentSoulUrge : birthSoulUrge;
+    final activePersonality = hasNameChange ? currentPersonality : birthPersonality;
+
+    final bridgeSoulUrgePersonality = activeSoulUrge != null && activePersonality != null
+        ? calculateBridgeSoulUrgePersonality(soulUrge: activeSoulUrge, personality: activePersonality)
+        : null;
+
     return NumerologyProfile(
       lifePathNumber: lifePathNumber,
       birthdayNumber: birthdayNumber,
@@ -407,6 +683,13 @@ class NumerologyCalculator {
       currentSoulUrgeNumber: currentSoulUrge,
       currentPersonalityNumber: currentPersonality,
       currentName: hasNameChange ? currentName : null,
+      karmicDebtLifePath: karmicDebtLifePath,
+      karmicDebtExpression: karmicDebtExpression,
+      karmicDebtSoulUrge: karmicDebtSoulUrge,
+      challengeNumbers: challengeNumbers,
+      karmicLessons: karmicLessons,
+      bridgeLifePathExpression: bridgeLifePathExpression,
+      bridgeSoulUrgePersonality: bridgeSoulUrgePersonality,
     );
   }
 }
