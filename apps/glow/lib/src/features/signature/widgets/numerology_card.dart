@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nuuray_core/nuuray_core.dart';
 
+import '../../../shared/constants/app_colors.dart';
+
 /// Numerology Card - Erweitert mit Dual-Profil System
 ///
 /// Zeigt alle numerologischen Zahlen in einem kompakten, schönen Design:
@@ -8,7 +10,7 @@ import 'package:nuuray_core/nuuray_core.dart';
 /// - Birth Energy (Geburtsname): Expression, Soul Urge, Personality
 /// - Current Energy (aktueller Name): Expression, Soul Urge, Personality
 ///
-/// Lila-Gradient für spirituelle, mystische Energie.
+/// Einheitliches Design mit AppColors (kein Gradient).
 class NumerologyCard extends StatefulWidget {
   final BirthChart birthChart;
 
@@ -49,403 +51,362 @@ class _NumerologyCardState extends State<NumerologyCard> {
     final hasNameChange = currentName != null && currentName != birthName;
 
     return Container(
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF9B59B6), // Amethyst Purple
-            Color(0xFFE91E63), // Pink
-          ],
-        ),
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: AppColors.surfaceDark,
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.purple.withOpacity(0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
+            color: AppColors.primary.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Stack(
-          children: [
-            // Decorative circles
-            Positioned(
-              top: -50,
-              left: -50,
-              child: Container(
-                width: 150,
-                height: 150,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.08),
+                  color: AppColors.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.filter_9_plus_rounded,
+                  color: AppColors.primary,
+                  size: 24,
                 ),
               ),
-            ),
-            Positioned(
-              bottom: -30,
-              right: -30,
-              child: Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.08),
-                ),
-              ),
-            ),
-
-            // Content
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Header
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.25),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Icon(
-                          Icons.filter_9_plus_rounded,
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      const Expanded(
-                        child: Text(
-                          'Numerologie',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Numerologie',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
                           ),
-                        ),
+                    ),
+                    Text(
+                      'Deine Lebenszahlen',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+
+          // === KERN-ZAHLEN (immer sichtbar) ===
+
+          // Life Path Number (prominent)
+          if (lifePathNumber != null)
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: AppColors.primary.withOpacity(0.3),
+                  width: 1,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.primary.withOpacity(0.2),
+                    ),
+                    child: Center(
+                      child: Text(
+                        '$lifePathNumber',
+                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Deine Lebenszahlen',
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.9),
-                      fontSize: 14,
                     ),
                   ),
-                  const SizedBox(height: 24),
-
-                  // === KERN-ZAHLEN (immer sichtbar) ===
-
-                  // Life Path Number (prominent)
-                  if (lifePathNumber != null)
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.3),
-                          width: 1,
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 60,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white.withOpacity(0.25),
-                            ),
-                            child: Center(
-                              child: Text(
-                                '$lifePathNumber',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Lebensweg',
-                                  style: TextStyle(
-                                    color: Colors.white.withOpacity(0.8),
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  _getLifePathMeaning(lifePathNumber),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                  const SizedBox(height: 16),
-
-                  // Weitere Kern-Zahlen (Grid)
-                  if (birthdayNumber != null || attitudeNumber != null || personalYear != null || maturityNumber != null)
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (birthdayNumber != null)
-                          _buildSmallNumberBox('Geburtstag', birthdayNumber),
-                        if (attitudeNumber != null)
-                          _buildSmallNumberBox('Haltung', attitudeNumber),
-                        if (personalYear != null)
-                          _buildSmallNumberBox('Jahr ${DateTime.now().year}', personalYear),
-                        if (maturityNumber != null)
-                          _buildSmallNumberBox('Reife', maturityNumber),
+                        Text(
+                          'Lebensweg',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: AppColors.textSecondary,
+                                fontWeight: FontWeight.w500,
+                              ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          _getLifePathMeaning(lifePathNumber),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: AppColors.textPrimary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                        ),
                       ],
                     ),
+                  ),
+                ],
+              ),
+            ),
 
-                  const SizedBox(height: 20),
+          const SizedBox(height: 16),
 
-                  // === NAME ENERGIES (expandable) ===
+          // Weitere Kern-Zahlen (Grid)
+          if (birthdayNumber != null || attitudeNumber != null || personalYear != null || maturityNumber != null)
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                if (birthdayNumber != null)
+                  _buildSmallNumberBox(context, 'Geburtstag', birthdayNumber),
+                if (attitudeNumber != null)
+                  _buildSmallNumberBox(context, 'Haltung', attitudeNumber),
+                if (personalYear != null)
+                  _buildSmallNumberBox(context, 'Jahr ${DateTime.now().year}', personalYear),
+                if (maturityNumber != null)
+                  _buildSmallNumberBox(context, 'Reife', maturityNumber),
+              ],
+            ),
 
-                  // Birth Energy Section
-                  if (birthName != null && birthName.isNotEmpty) ...[
-                    InkWell(
-                      onTap: () => setState(() => _showBirthEnergy = !_showBirthEnergy),
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: Colors.white.withOpacity(0.2),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            const Text('🌟', style: TextStyle(fontSize: 20)),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'Urenergie',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    birthName,
-                                    style: TextStyle(
-                                      color: Colors.white.withOpacity(0.7),
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Icon(
-                              _showBirthEnergy ? Icons.expand_less : Icons.expand_more,
-                              color: Colors.white,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+          const SizedBox(height: 20),
 
-                    if (_showBirthEnergy) ...[
-                      const SizedBox(height: 8),
-                      _buildEnergyDetails(
-                        expression: birthExpression,
-                        soulUrge: birthSoulUrge,
-                        personality: birthPersonality,
-                      ),
-                    ],
-                  ],
+          // === NAME ENERGIES (expandable) ===
 
-                  // Current Energy Section (nur wenn Name geändert)
-                  if (hasNameChange) ...[
-                    const SizedBox(height: 12),
-                    InkWell(
-                      onTap: () => setState(() => _showCurrentEnergy = !_showCurrentEnergy),
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: Colors.white.withOpacity(0.3),
-                            width: 1.5,
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            const Text('✨', style: TextStyle(fontSize: 20)),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'Aktuelle Energie',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    currentName!,
-                                    style: TextStyle(
-                                      color: Colors.white.withOpacity(0.7),
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Icon(
-                              _showCurrentEnergy ? Icons.expand_less : Icons.expand_more,
-                              color: Colors.white,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    if (_showCurrentEnergy) ...[
-                      const SizedBox(height: 8),
-                      _buildEnergyDetails(
-                        expression: currentExpression,
-                        soulUrge: currentSoulUrge,
-                        personality: currentPersonality,
-                      ),
-                    ],
-                  ],
-
-                  // Placeholder wenn keine Namen-Daten
-                  if (birthName == null || birthName.isEmpty) ...[
-                    const SizedBox(height: 12),
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.info_outline,
-                            color: Colors.white.withOpacity(0.8),
-                            size: 20,
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              'Vollständiger Name für weitere Zahlen erforderlich',
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.9),
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-
-                  const SizedBox(height: 24),
-
-                  // Mehr erfahren Button
-                  InkWell(
-                    onTap: () {
-                      // TODO: Navigate to details
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.5),
-                          width: 1,
-                        ),
-                      ),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
+          // Birth Energy Section
+          if (birthName != null && birthName.isNotEmpty) ...[
+            InkWell(
+              onTap: () => setState(() => _showBirthEnergy = !_showBirthEnergy),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceDark,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: AppColors.primary.withOpacity(0.2),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    const Text('🌟', style: TextStyle(fontSize: 20)),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Mehr erfahren',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            'Urenergie',
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textPrimary,
+                                ),
                           ),
-                          SizedBox(width: 6),
-                          Icon(
-                            Icons.arrow_forward_rounded,
-                            color: Colors.white,
-                            size: 16,
+                          const SizedBox(height: 2),
+                          Text(
+                            birthName,
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: AppColors.textSecondary,
+                                ),
                           ),
                         ],
                       ),
+                    ),
+                    Icon(
+                      _showBirthEnergy ? Icons.expand_less : Icons.expand_more,
+                      color: AppColors.textPrimary,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            if (_showBirthEnergy) ...[
+              const SizedBox(height: 8),
+              _buildEnergyDetails(
+                context,
+                expression: birthExpression,
+                soulUrge: birthSoulUrge,
+                personality: birthPersonality,
+              ),
+            ],
+          ],
+
+          // Current Energy Section (nur wenn Name geändert)
+          if (hasNameChange) ...[
+            const SizedBox(height: 12),
+            InkWell(
+              onTap: () => setState(() => _showCurrentEnergy = !_showCurrentEnergy),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: AppColors.primary.withOpacity(0.3),
+                    width: 1.5,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    const Text('✨', style: TextStyle(fontSize: 20)),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Aktuelle Energie',
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textPrimary,
+                                ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            currentName!,
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: AppColors.textSecondary,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(
+                      _showCurrentEnergy ? Icons.expand_less : Icons.expand_more,
+                      color: AppColors.textPrimary,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            if (_showCurrentEnergy) ...[
+              const SizedBox(height: 8),
+              _buildEnergyDetails(
+                context,
+                expression: currentExpression,
+                soulUrge: currentSoulUrge,
+                personality: currentPersonality,
+              ),
+            ],
+          ],
+
+          // Placeholder wenn keine Namen-Daten
+          if (birthName == null || birthName.isEmpty) ...[
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.info.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: AppColors.info.withOpacity(0.3),
+                ),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.info_outline,
+                    color: AppColors.info,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'Vollständiger Name für weitere Zahlen erforderlich',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
                     ),
                   ),
                 ],
               ),
             ),
           ],
-        ),
+
+          const SizedBox(height: 24),
+
+          // Mehr erfahren Button
+          InkWell(
+            onTap: () {
+              // TODO: Navigate to details
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 10,
+              ),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: AppColors.primary.withOpacity(0.3),
+                  width: 1,
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Mehr erfahren',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                  const SizedBox(width: 6),
+                  const Icon(
+                    Icons.arrow_forward_rounded,
+                    color: AppColors.primary,
+                    size: 16,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildSmallNumberBox(String label, int number) {
+  Widget _buildSmallNumberBox(BuildContext context, String label, int number) {
     final isMaster = NumerologyCalculator.isMasterNumber(number);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
+        color: AppColors.surfaceDark,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         children: [
           Text(
             label,
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.8),
-              fontSize: 10,
-              fontWeight: FontWeight.w500,
-            ),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AppColors.textSecondary,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w500,
+                ),
           ),
           const SizedBox(height: 4),
           Row(
@@ -453,11 +414,10 @@ class _NumerologyCardState extends State<NumerologyCard> {
             children: [
               Text(
                 '$number',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
               if (isMaster) ...[
                 const SizedBox(width: 2),
@@ -470,7 +430,8 @@ class _NumerologyCardState extends State<NumerologyCard> {
     );
   }
 
-  Widget _buildEnergyDetails({
+  Widget _buildEnergyDetails(
+    BuildContext context, {
     required int? expression,
     required int? soulUrge,
     required int? personality,
@@ -478,25 +439,25 @@ class _NumerologyCardState extends State<NumerologyCard> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: AppColors.surfaceDark.withOpacity(0.5),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         children: [
           if (expression != null)
-            _buildNumberRow('Ausdruck', expression, 'Talent & Fähigkeiten'),
+            _buildNumberRow(context, 'Ausdruck', expression, 'Talent & Fähigkeiten'),
           if (expression != null && soulUrge != null) const SizedBox(height: 12),
           if (soulUrge != null)
-            _buildNumberRow('Seelenwunsch', soulUrge, 'Innere Sehnsucht'),
+            _buildNumberRow(context, 'Seelenwunsch', soulUrge, 'Innere Sehnsucht'),
           if (soulUrge != null && personality != null) const SizedBox(height: 12),
           if (personality != null)
-            _buildNumberRow('Persönlichkeit', personality, 'Äußere Wirkung'),
+            _buildNumberRow(context, 'Persönlichkeit', personality, 'Äußere Wirkung'),
         ],
       ),
     );
   }
 
-  Widget _buildNumberRow(String label, int number, String meaning) {
+  Widget _buildNumberRow(BuildContext context, String label, int number, String meaning) {
     final isMaster = NumerologyCalculator.isMasterNumber(number);
 
     return Row(
@@ -507,19 +468,18 @@ class _NumerologyCardState extends State<NumerologyCard> {
             children: [
               Text(
                 label,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.w600,
+                    ),
               ),
               const SizedBox(height: 2),
               Text(
                 meaning,
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.7),
-                  fontSize: 10,
-                ),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppColors.textSecondary,
+                      fontSize: 10,
+                    ),
               ),
             ],
           ),
@@ -528,11 +488,10 @@ class _NumerologyCardState extends State<NumerologyCard> {
           children: [
             Text(
               '$number',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             if (isMaster) ...[
               const SizedBox(width: 4),
