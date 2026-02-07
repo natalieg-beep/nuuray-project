@@ -1,7 +1,7 @@
 # NUURAY GLOW — TODO Liste
 
-> Letzte Aktualisierung: 2025-02-06 (Spätabend)
-> Stand: Auth ✅, Onboarding ✅ (mit Geocoding ✅ FUNKTIONIERT!), Basic Home ✅, **Cosmic Profile Dashboard ✅** (Code komplett, Testing ausstehend)
+> Letzte Aktualisierung: 2026-02-07 (Nach 1h Session mit Claude)
+> Stand: Auth ✅, Onboarding ✅, Geocoding ✅, Basic Home ✅, Cosmic Profile ✅, **Claude API Integration ✅** (Basis-Infrastruktur fertig!)
 
 ---
 
@@ -46,9 +46,29 @@
   - Bazi Card (Vier Säulen + Day Master)
   - Numerology Card (9 Kern-Zahlen + Dual-Profil)
 
+### Claude API Integration
+- ✅ ClaudeApiService implementiert (`apps/glow/lib/src/core/services/claude_api_service.dart`)
+  - Tageshoroskop-Generierung (80-120 Wörter, Deutsch + Englisch)
+  - Cosmic Profile Interpretation (400-500 Wörter, Synthese aller 3 Systeme)
+  - Token-Usage Tracking für Kosten-Kalkulation
+  - System-Prompts für konsistenten Ton (unterhaltsam, staunend, empowernd)
+- ✅ Supabase Migration: `daily_horoscopes` Tabelle (bereit für Deployment)
+- ✅ Test-Script erstellt (`apps/glow/test/test_claude_api.dart`)
+- ✅ Dokumentation (`docs/glow/implementation/CLAUDE_API_IMPLEMENTATION.md`)
+  - Kosten-Kalkulation: MVP ~$11/Monat
+  - Caching-Strategie: 99.9% Einsparung durch Vorab-Generierung
+
 ---
 
-## ⏳ NÄCHSTE SCHRITTE (HEUTE)
+## ⏳ NÄCHSTE SCHRITTE
+
+### 🎯 SOFORT (Claude API Testing)
+- [ ] **Anthropic API Key holen** → https://console.anthropic.com
+- [ ] **API Key in .env eintragen** (`ANTHROPIC_API_KEY=sk-ant-...`)
+- [ ] **Test-Script ausführen**: `dart apps/glow/test/test_claude_api.dart`
+- [ ] **Supabase Migration deployen** (`20260207_add_daily_horoscopes.sql` im Dashboard ausführen)
+
+## ⏳ NÄCHSTE SCHRITTE (VORHER)
 
 ### 🐛 BUGS ZU FIXEN
 **PRIORITÄT 1:**
