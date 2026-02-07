@@ -88,8 +88,8 @@ class ClaudeApiService {
     );
   }
 
-  /// Interner API Call
-  Future<ClaudeResponse> _callClaude({
+  /// API Call (public für Variante B & C)
+  Future<ClaudeResponse> callClaude({
     required String systemPrompt,
     required String userPrompt,
   }) async {

@@ -107,7 +107,7 @@ class DailyHoroscopeService {
       language: language,
     );
 
-    final response = await _claudeService!._callClaude(
+    final response = await _claudeService!.callClaude(
       systemPrompt: _getMiniPersonalizationSystemPrompt(language),
       userPrompt: prompt,
     );
@@ -143,7 +143,7 @@ class DailyHoroscopeService {
       language: language,
     );
 
-    final response = await _claudeService!._callClaude(
+    final response = await _claudeService!.callClaude(
       systemPrompt: _getDeepPersonalizationSystemPrompt(language),
       userPrompt: prompt,
     );
