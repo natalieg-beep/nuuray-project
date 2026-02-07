@@ -216,7 +216,7 @@ class HomeScreen extends ConsumerWidget {
             ),
             const SizedBox(width: 12),
             Text(
-              'Dein Cosmic Profile',
+              'Deine Signatur',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -283,7 +283,7 @@ class HomeScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Bitte vervollständige deine Geburtsdaten im Onboarding, um dein Cosmic Profile zu berechnen.',
+            'Bitte vervollständige deine Geburtsdaten im Onboarding, um deine kosmische Signatur zu berechnen.',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: AppColors.textSecondary,
                 ),

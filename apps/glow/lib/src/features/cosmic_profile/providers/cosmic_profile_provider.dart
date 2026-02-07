@@ -33,6 +33,9 @@ final cosmicProfileProvider = FutureProvider<BirthChart?>((ref) async {
       final birthLatitude = userProfile.birthLatitude;
       final birthLongitude = userProfile.birthLongitude;
 
+      // Timezone für UTC-Konvertierung
+      final birthTimezone = userProfile.birthTimezone ?? 'Europe/Berlin'; // Fallback
+
       // Vollständiger Name für Numerologie
       // TODO: Später birthName + currentName unterscheiden
       String? fullName;
@@ -52,6 +55,7 @@ final cosmicProfileProvider = FutureProvider<BirthChart?>((ref) async {
         birthTime: birthTime,
         birthLatitude: birthLatitude,
         birthLongitude: birthLongitude,
+        birthTimezone: birthTimezone,  // NEU: Timezone für UTC-Konvertierung!
         fullName: fullName,
       );
 
