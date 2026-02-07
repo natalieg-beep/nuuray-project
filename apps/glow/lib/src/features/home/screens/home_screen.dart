@@ -43,7 +43,7 @@ class HomeScreen extends ConsumerWidget {
                   const SizedBox(height: 16),
 
                   // Tageshoroskop-Card
-                  _buildHoroscopeCard(context),
+                  _buildHoroscopeCard(context, ref),
                   const SizedBox(height: 24),
 
                   // === COSMIC PROFILE DASHBOARD ===
@@ -166,54 +166,118 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildHoroscopeCard(BuildContext context) {
+  Widget _buildHoroscopeCard(BuildContext context, WidgetRef ref) {
+    final cosmicProfileAsync = ref.watch(cosmicProfileProvider);
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+        child: cosmicProfileAsync.when(
+          data: (birthChart) {
+            // User-Sternzeichen aus Cosmic Profile holen (Sonnenzeichen)
+            final sunSign = birthChart?.westernAstrology?.sunSign;
+            final zodiacName = sunSign?.nameDe ?? 'Lädt...';
+            final zodiacSymbol = sunSign?.symbol ?? '';
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.star_outline,
-                  color: AppColors.primary,
-                  size: 28,
+                Row(
+                  children: [
+                    Icon(
+                      Icons.star_outline,
+                      color: AppColors.primary,
+                      size: 28,
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Dein Tageshoroskop',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(height: 16),
                 Text(
-                  'Dein Tageshoroskop',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
+                  '$zodiacName $zodiacSymbol',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w600,
                       ),
                 ),
+                const SizedBox(height: 12),
+                Text(
+                  'Die Sterne stehen heute günstig für dich! Deine natürliche Energie wird von den Planeten unterstützt. '
+                  'Nutze diese Energie für neue Projekte und bleib offen für unerwartete Chancen.',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    _buildEnergyIndicator(context, 'Liebe', 4),
+                    const SizedBox(width: 16),
+                    _buildEnergyIndicator(context, 'Karriere', 5),
+                    const SizedBox(width: 16),
+                    _buildEnergyIndicator(context, 'Gesundheit', 3),
+                  ],
+                ),
               ],
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Schütze ♐',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            );
+          },
+          loading: () => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.star_outline,
                     color: AppColors.primary,
-                    fontWeight: FontWeight.w600,
+                    size: 28,
                   ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'Die Sterne stehen heute günstig für dich! Deine natürliche Abenteuerlust wird von Jupiter unterstützt. '
-              'Nutze diese Energie für neue Projekte und bleib offen für unerwartete Chancen.',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                _buildEnergyIndicator(context, 'Liebe', 4),
-                const SizedBox(width: 16),
-                _buildEnergyIndicator(context, 'Karriere', 5),
-                const SizedBox(width: 16),
-                _buildEnergyIndicator(context, 'Gesundheit', 3),
-              ],
-            ),
-          ],
+                  const SizedBox(width: 12),
+                  Text(
+                    'Dein Tageshoroskop',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              const Center(
+                child: CircularProgressIndicator(color: AppColors.primary),
+              ),
+            ],
+          ),
+          error: (error, stack) => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.star_outline,
+                    color: AppColors.primary,
+                    size: 28,
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'Dein Tageshoroskop',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Horoskop konnte nicht geladen werden',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AppColors.error,
+                    ),
+              ),
+            ],
+          ),
         ),
       ),
     );

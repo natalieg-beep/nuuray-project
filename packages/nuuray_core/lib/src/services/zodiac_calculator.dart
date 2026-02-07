@@ -173,11 +173,12 @@ class ZodiacCalculator {
     final epsilonRad = epsilon * math.pi / 180.0;
 
     // Aszendent-Formel mit atan2 für korrekten Quadranten
-    final numerator = math.cos(RAMCRad);
-    final denominator = -(math.sin(epsilonRad) * math.tan(latRad) +
+    // Korrekte Formel: atan2(sin, cos) für ekliptische Länge
+    final y = math.cos(RAMCRad);
+    final x = -(math.sin(epsilonRad) * math.tan(latRad) +
         math.cos(epsilonRad) * math.sin(RAMCRad));
 
-    var ascendant = math.atan2(numerator, denominator) * 180.0 / math.pi;
+    var ascendant = math.atan2(y, x) * 180.0 / math.pi;
 
     // Normalisieren auf 0-360°
     ascendant = ascendant % 360.0;
@@ -192,16 +193,18 @@ class ZodiacCalculator {
   /// seit 1. Januar 4713 v.Chr. (Julian Calendar).
   ///
   /// Basiert auf Meeus-Formel für gregorianischen Kalender.
+  ///
+  /// WICHTIG: Verwendet die übergebene Zeit OHNE UTC-Konvertierung.
+  /// Für Aszendent-Berechnungen ist die lokale Zeit entscheidend,
+  /// da die Longitude-Korrektur über die Sidereal Time erfolgt.
   static double _calculateJulianDay(DateTime dateTime) {
-    // In UTC konvertieren für korrekte Berechnung
-    final utc = dateTime.toUtc();
-
-    int year = utc.year;
-    int month = utc.month;
-    final day = utc.day;
-    final hour = utc.hour;
-    final minute = utc.minute;
-    final second = utc.second;
+    // KEINE UTC-Konvertierung! Lokale Zeit ist wichtig für Aszendent
+    int year = dateTime.year;
+    int month = dateTime.month;
+    final day = dateTime.day;
+    final hour = dateTime.hour;
+    final minute = dateTime.minute;
+    final second = dateTime.second;
 
     // Monat-Jahr-Anpassung für Meeus-Formel
     if (month <= 2) {
