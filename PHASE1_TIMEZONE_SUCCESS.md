@@ -209,8 +209,9 @@ final utcOffset = response.rawOffset + response.dstOffset;
 **Neue Files:**
 1. `packages/nuuray_core/lib/src/services/timezone_converter_simple.dart` (156 Zeilen)
 2. `packages/nuuray_core/test/test_user_ascendant_utc.dart` (Test)
+3. `packages/nuuray_core/test/test_timezone_conversion.dart` (Test - nicht genutzt)
 
-**Geänderte Files:**
+**Geänderte Files (Commit 52b3352):**
 1. `packages/nuuray_core/pubspec.yaml` (timezone dependency - wird nicht genutzt, kann später entfernt werden)
 2. `packages/nuuray_core/lib/src/services/cosmic_profile_service.dart`
    - Import: `timezone_converter_simple.dart`
@@ -219,6 +220,15 @@ final utcOffset = response.rawOffset + response.dstOffset;
    - UTC-Konvertierung in Mondzeichen-Berechnung
 3. `packages/nuuray_core/lib/src/services/zodiac_calculator.dart`
    - Dokumentation: dateTime MUSS UTC sein
+
+**Geänderte Files (Commit 44123a9 - Provider-Fix):**
+1. `apps/glow/lib/src/features/cosmic_profile/providers/cosmic_profile_provider.dart`
+   - birthTimezone aus UserProfile laden
+   - Parameter an CosmicProfileService übergeben
+   - KRITISCHER FIX: Ohne diesen Parameter wurde UTC-Konvertierung nicht angewendet!
+2. `apps/glow/lib/src/features/home/screens/home_screen.dart`
+   - "Dein Cosmic Profile" → "Deine Signatur" (Zeile 219)
+   - "Cosmic Profile" → "kosmische Signatur" (Zeile 286)
 
 ---
 
@@ -236,16 +246,49 @@ final utcOffset = response.rawOffset + response.dstOffset;
 ## 🎯 Nächste Schritte
 
 **Sofort:**
-1. ✅ Phase 1 committed
-2. ⏳ Integration testen (in App)
-3. ⏳ UserProfile mit birth_timezone erweitern
+1. ✅ Phase 1 committed (Commit 52b3352)
+2. ✅ Provider-Fix committed (Commit 44123a9)
+3. ✅ UserProfile mit birth_timezone erweitert (bereits in Migration 002)
+4. ✅ UI-Umbenennung: "Cosmic Profile" → "Deine Signatur"
+5. ⏳ Integration in App testen mit verschiedenen Usern
 
 **Later (Phase 2):**
-1. Google Time Zone API Integration
-2. `utc_offset_seconds` in DB speichern
-3. Fallback-Logik für fehlende Timezone
+1. Google Time Zone API Integration in Geocoding Edge Function
+2. `utc_offset_seconds` in DB speichern (einmalig bei Geocoding)
+3. Fallback-Logik für fehlende Timezone (aktuell: Europe/Berlin)
 
 ---
 
-**Status:** ✅ **Phase 1 ERFOLGREICH ABGESCHLOSSEN!**
+## 🐛 Post-Implementation Fix (07.02.2025)
+
+**Problem:** Cosmic Profile wurde nicht neu berechnet für verschiedene User
+- Ursache: `birthTimezone` Parameter fehlte in `cosmic_profile_provider.dart`
+- Provider rief `CosmicProfileService.calculateCosmicProfile()` ohne Timezone-Parameter auf
+- UTC-Konvertierung wurde dadurch nicht angewendet
+
+**Lösung (Commit 44123a9):**
+```dart
+// birthTimezone aus UserProfile laden
+final birthTimezone = userProfile.birthTimezone ?? 'Europe/Berlin';
+
+// An Service übergeben
+final birthChart = await CosmicProfileService.calculateCosmicProfile(
+  userId: userProfile.id,
+  birthDate: birthDate,
+  birthTime: birthTime,
+  birthLatitude: birthLatitude,
+  birthLongitude: birthLongitude,
+  birthTimezone: birthTimezone,  // ← KRITISCH: War missing!
+  fullName: fullName,
+);
+```
+
+**UI-Umbenennung:**
+- "Dein Cosmic Profile" → "Deine Signatur" (konsistent mit Projekt-Docs)
+- "Cosmic Profile" → "kosmische Signatur" (Placeholder-Text)
+
+---
+
+**Status:** ✅ **Phase 1 ERFOLGREICH ABGESCHLOSSEN + PROVIDER GEFIXT!**
 **Aszendent zeigt jetzt korrekt Löwe für User 30.11.1983 22:32 Friedrichshafen** 🎉
+**Provider nutzt jetzt birthTimezone für UTC-Konvertierung** ✅
