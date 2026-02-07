@@ -9,7 +9,6 @@ import '../../cosmic_profile/providers/cosmic_profile_provider.dart';
 import '../../cosmic_profile/widgets/western_astrology_card.dart';
 import '../../cosmic_profile/widgets/bazi_card.dart';
 import '../../cosmic_profile/widgets/numerology_card.dart';
-import '../widgets/daily_horoscope_section.dart';
 
 /// Home-Screen: Hauptansicht mit Tageshoroskop, Mondphase, etc.
 class HomeScreen extends ConsumerWidget {
@@ -44,7 +43,7 @@ class HomeScreen extends ConsumerWidget {
                   const SizedBox(height: 16),
 
                   // Tageshoroskop-Card
-                  const DailyHoroscopeSection(),
+                  _buildHoroscopeCard(context, ref),
                   const SizedBox(height: 24),
 
                   // === COSMIC PROFILE DASHBOARD ===
