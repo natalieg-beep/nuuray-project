@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:nuuray_ui/nuuray_ui.dart';
 
 import 'src/core/config/app_config.dart';
 import 'src/core/navigation/app_router.dart';
+import 'src/core/providers/language_provider.dart';
 import 'src/shared/constants/app_colors.dart';
 
 void main() async {
@@ -72,6 +74,7 @@ class NuurayGlowApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
+    final currentLocale = ref.watch(languageProvider);
 
     return MaterialApp.router(
       title: AppConfig.appName,
@@ -82,15 +85,13 @@ class NuurayGlowApp extends ConsumerWidget {
 
       // Localization
       localizationsDelegates: const [
+        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale('de', 'DE'),
-        Locale('en', 'US'),
-      ],
-      locale: const Locale('de', 'DE'),
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: currentLocale,
 
       // Routing
       routerConfig: router,

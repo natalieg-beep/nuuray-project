@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nuuray_ui/nuuray_ui.dart';
 
 import '../../../shared/constants/app_colors.dart';
 import '../providers/auth_provider.dart';
@@ -49,9 +50,10 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       // Erfolgreich registriert → Zum Onboarding
       context.go('/onboarding');
     } else {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(result.error ?? 'Registrierung fehlgeschlagen'),
+          content: Text(result.error ?? l10n.authSignupFailed),
           backgroundColor: AppColors.error,
         ),
       );
@@ -60,6 +62,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -82,7 +86,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 children: [
                   // Titel
                   Text(
-                    'Account erstellen',
+                    l10n.authCreateAccount,
                     style: Theme.of(context).textTheme.displayMedium?.copyWith(
                           color: AppColors.primary,
                           fontWeight: FontWeight.bold,
@@ -93,7 +97,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
                   // Untertitel
                   Text(
-                    'Starte deine kosmische Reise',
+                    l10n.authSignupSubtitle,
                     style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
@@ -104,16 +108,16 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      prefixIcon: Icon(Icons.email_outlined),
+                    decoration: InputDecoration(
+                      labelText: l10n.authEmailLabel,
+                      prefixIcon: const Icon(Icons.email_outlined),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Bitte Email eingeben';
+                        return l10n.authEmailRequired;
                       }
                       if (!value.contains('@')) {
-                        return 'Ungültige Email';
+                        return l10n.authEmailInvalid;
                       }
                       return null;
                     },
@@ -126,7 +130,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     obscureText: _obscurePassword,
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
-                      labelText: 'Passwort',
+                      labelText: l10n.authPasswordLabel,
                       prefixIcon: const Icon(Icons.lock_outline),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -141,10 +145,10 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Bitte Passwort eingeben';
+                        return l10n.authPasswordRequired;
                       }
                       if (value.length < 6) {
-                        return 'Passwort muss mindestens 6 Zeichen haben';
+                        return l10n.authPasswordTooShort;
                       }
                       return null;
                     },
@@ -158,7 +162,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     textInputAction: TextInputAction.done,
                     onFieldSubmitted: (_) => _handleSignup(),
                     decoration: InputDecoration(
-                      labelText: 'Passwort bestätigen',
+                      labelText: l10n.authPasswordConfirm,
                       prefixIcon: const Icon(Icons.lock_outline),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -174,10 +178,10 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Bitte Passwort bestätigen';
+                        return l10n.authPasswordConfirmRequired;
                       }
                       if (value != _passwordController.text) {
-                        return 'Passwörter stimmen nicht überein';
+                        return l10n.authPasswordMismatch;
                       }
                       return null;
                     },
@@ -196,7 +200,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                               color: Colors.white,
                             ),
                           )
-                        : const Text('Registrieren'),
+                        : Text(l10n.authSignUp),
                   ),
                   const SizedBox(height: 16),
 
@@ -204,10 +208,10 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('Schon registriert?'),
+                      Text(l10n.authAlreadyRegistered),
                       TextButton(
                         onPressed: () => context.pop(),
-                        child: const Text('Jetzt anmelden'),
+                        child: Text(l10n.authSignInNow),
                       ),
                     ],
                   ),

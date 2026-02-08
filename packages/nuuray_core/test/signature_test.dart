@@ -2,8 +2,8 @@ import 'package:test/test.dart';
 import 'package:nuuray_core/nuuray_core.dart';
 
 void main() {
-  group('Cosmic Profile Service Tests', () {
-    test('Berechne Cosmic Profile für Natalie (30.11.1983, 22:32, Friedrichshafen)', () async {
+  group('Signature Service Tests (vormals Cosmic Profile)', () {
+    test('Berechne "Deine Signatur" für Natalie (30.11.1983, 22:32, Friedrichshafen)', () async {
       // Arrange
       final birthDate = DateTime(1983, 11, 30);
       final birthTime = DateTime(1983, 11, 30, 22, 32);
@@ -12,7 +12,7 @@ void main() {
       const fullName = 'Natalie Frauke Günes';
 
       // Act
-      final cosmicProfile = await CosmicProfileService.calculateCosmicProfile(
+      final cosmicProfile = await SignatureService.calculateSignature(
         userId: 'test-natalie',
         birthDate: birthDate,
         birthTime: birthTime,
@@ -22,7 +22,7 @@ void main() {
       );
 
       // Assert
-      print('\n📊 COSMIC PROFILE RESULTS:');
+      print('\n📊 DEINE SIGNATUR — RESULTS:');
       print('═══════════════════════════════════════════════════\n');
 
       print('☀️  WESTERN ASTROLOGY');
@@ -72,7 +72,7 @@ void main() {
       final birthDate = DateTime(1990, 6, 15);
 
       // Act
-      final cosmicProfile = await CosmicProfileService.calculateCosmicProfile(
+      final cosmicProfile = await SignatureService.calculateSignature(
         userId: 'test-minimal',
         birthDate: birthDate,
       );

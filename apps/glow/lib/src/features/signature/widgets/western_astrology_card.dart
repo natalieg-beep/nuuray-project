@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nuuray_core/nuuray_core.dart';
+import 'package:nuuray_ui/nuuray_ui.dart';
 
 import '../../../shared/constants/app_colors.dart';
 
@@ -17,6 +18,9 @@ class WesternAstrologyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context);
+
     // Sternzeichen-Objekte laden
     final sunSign = ZodiacSign.fromKey(birthChart.sunSign);
     final moonSign = birthChart.moonSign != null
@@ -67,14 +71,14 @@ class WesternAstrologyCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Western Astrology',
+                      l10n.signatureWesternTitle,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: AppColors.textPrimary,
                           ),
                     ),
                     Text(
-                      'Deine Planetenpositionen',
+                      l10n.signatureWesternSubtitle,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: AppColors.textSecondary,
                           ),
@@ -90,8 +94,8 @@ class WesternAstrologyCard extends StatelessWidget {
           _buildPlanetRow(
             context,
             symbol: sunSign.symbol,
-            label: 'Sonne',
-            sign: sunSign.nameDe,
+            label: l10n.signatureSun,
+            sign: locale.languageCode == 'de' ? sunSign.nameDe : sunSign.nameEn,
             degree: birthChart.sunDegree,
           ),
 
@@ -102,8 +106,8 @@ class WesternAstrologyCard extends StatelessWidget {
             _buildPlanetRow(
               context,
               symbol: moonSign.symbol,
-              label: 'Mond',
-              sign: moonSign.nameDe,
+              label: l10n.signatureMoon,
+              sign: locale.languageCode == 'de' ? moonSign.nameDe : moonSign.nameEn,
               degree: birthChart.moonDegree,
             ),
 
@@ -114,8 +118,8 @@ class WesternAstrologyCard extends StatelessWidget {
             _buildPlanetRow(
               context,
               symbol: ascendantSign.symbol,
-              label: 'Aszendent',
-              sign: ascendantSign.nameDe,
+              label: l10n.signatureAscendant,
+              sign: locale.languageCode == 'de' ? ascendantSign.nameDe : ascendantSign.nameEn,
               degree: birthChart.ascendantDegree,
             )
           else
@@ -139,7 +143,7 @@ class WesternAstrologyCard extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Aszendent: Geburtsort-Koordinaten erforderlich',
+                      l10n.signatureAscendantRequired,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: AppColors.textSecondary,
                           ),
@@ -173,7 +177,7 @@ class WesternAstrologyCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Mehr erfahren',
+                    l10n.signatureLearnMore,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: AppColors.primary,
                           fontWeight: FontWeight.w600,

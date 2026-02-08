@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nuuray_ui/nuuray_ui.dart';
 
 import '../../../shared/constants/app_colors.dart';
 
@@ -84,16 +85,19 @@ class _OnboardingNameScreenState extends State<OnboardingNameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+    final l10n = AppLocalizations.of(context)!;
+
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
             // Titel
             Text(
-              'Wie heißt du?',
+              l10n.onboardingNameTitle,
               style: Theme.of(context).textTheme.displaySmall?.copyWith(
                     color: AppColors.primary,
                     fontWeight: FontWeight.bold,
@@ -103,7 +107,7 @@ class _OnboardingNameScreenState extends State<OnboardingNameScreen> {
 
             // Untertitel
             Text(
-              'Dein vollständiger Name hilft uns, deine numerologische Energie zu verstehen.',
+              l10n.onboardingNameSubtitle,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 32),
@@ -113,15 +117,15 @@ class _OnboardingNameScreenState extends State<OnboardingNameScreen> {
               controller: _displayNameController,
               textInputAction: TextInputAction.next,
               textCapitalization: TextCapitalization.words,
-              decoration: const InputDecoration(
-                labelText: 'Rufname / Username *',
-                hintText: 'z.B. Natalie',
-                prefixIcon: Icon(Icons.person_outline),
-                helperText: 'Wie sollen wir dich nennen?',
+              decoration: InputDecoration(
+                labelText: l10n.onboardingNameDisplayNameLabel,
+                hintText: l10n.onboardingNameDisplayNameHint,
+                prefixIcon: const Icon(Icons.person_outline),
+                helperText: l10n.onboardingNameDisplayNameHelper,
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Bitte gib deinen Rufnamen ein';
+                  return l10n.onboardingNameDisplayNameRequired;
                 }
                 return null;
               },
@@ -133,11 +137,11 @@ class _OnboardingNameScreenState extends State<OnboardingNameScreen> {
               controller: _fullFirstNamesController,
               textInputAction: TextInputAction.next,
               textCapitalization: TextCapitalization.words,
-              decoration: const InputDecoration(
-                labelText: 'Vornamen lt. Geburtsurkunde (optional)',
-                hintText: 'z.B. Natalie Frauke',
-                prefixIcon: Icon(Icons.badge_outlined),
-                helperText: 'Alle Vornamen aus der Geburtsurkunde',
+              decoration: InputDecoration(
+                labelText: l10n.onboardingNameFullFirstNamesLabel,
+                hintText: l10n.onboardingNameFullFirstNamesHint,
+                prefixIcon: const Icon(Icons.badge_outlined),
+                helperText: l10n.onboardingNameFullFirstNamesHelper,
               ),
             ),
             const SizedBox(height: 20),
@@ -147,11 +151,11 @@ class _OnboardingNameScreenState extends State<OnboardingNameScreen> {
               controller: _birthNameController,
               textInputAction: TextInputAction.next,
               textCapitalization: TextCapitalization.words,
-              decoration: const InputDecoration(
-                labelText: 'Geburtsname (optional)',
-                hintText: 'z.B. Pawlowski',
-                prefixIcon: Icon(Icons.family_restroom_outlined),
-                helperText: 'Nachname bei Geburt (Maiden Name)',
+              decoration: InputDecoration(
+                labelText: l10n.onboardingNameBirthNameLabel,
+                hintText: l10n.onboardingNameBirthNameHint,
+                prefixIcon: const Icon(Icons.family_restroom_outlined),
+                helperText: l10n.onboardingNameBirthNameHelper,
               ),
             ),
             const SizedBox(height: 20),
@@ -161,11 +165,11 @@ class _OnboardingNameScreenState extends State<OnboardingNameScreen> {
               controller: _lastNameController,
               textInputAction: TextInputAction.done,
               textCapitalization: TextCapitalization.words,
-              decoration: const InputDecoration(
-                labelText: 'Nachname aktuell (optional)',
-                hintText: 'z.B. Günes',
-                prefixIcon: Icon(Icons.person_outline),
-                helperText: 'Aktueller Nachname (falls geändert)',
+              decoration: InputDecoration(
+                labelText: l10n.onboardingNameLastNameLabel,
+                hintText: l10n.onboardingNameLastNameHint,
+                prefixIcon: const Icon(Icons.person_outline),
+                helperText: l10n.onboardingNameLastNameHelper,
               ),
               onFieldSubmitted: (_) => _handleNext(),
             ),
@@ -184,7 +188,7 @@ class _OnboardingNameScreenState extends State<OnboardingNameScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.info_outline,
                     color: AppColors.primary,
                     size: 20,
@@ -192,8 +196,7 @@ class _OnboardingNameScreenState extends State<OnboardingNameScreen> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Für präzise Numerologie empfehlen wir, alle Felder auszufüllen. '
-                      'Besonders wichtig: Vornamen + Geburtsname zeigen deine Urenergie.',
+                      l10n.onboardingNameNumerologyHint,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: AppColors.textSecondary,
                           ),
@@ -202,15 +205,16 @@ class _OnboardingNameScreenState extends State<OnboardingNameScreen> {
                 ],
               ),
             ),
-
-            const Spacer(),
+            const SizedBox(height: 32),
 
             // Weiter-Button
             ElevatedButton(
               onPressed: _handleNext,
-              child: const Text('Weiter'),
+              child: Text(l10n.generalNext),
             ),
-          ],
+            const SizedBox(height: 24), // Extra Padding am Ende
+            ],
+          ),
         ),
       ),
     );

@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 /// - Tageshoroskope
 /// - Wochen-/Monatshoroskope (Premium)
 /// - Partner-Check
-/// - Cosmic Profile Interpretationen
+/// - "Deine Signatur" Interpretationen (vormals Cosmic Profile)
 ///
 /// Best Practices:
 /// - Caching für häufig verwendete Prompts
@@ -55,7 +55,7 @@ class ClaudeApiService {
     );
   }
 
-  /// Generiert eine Interpretation des Cosmic Profile (Premium)
+  /// Generiert eine Interpretation von "Deine Signatur" (Premium)
   ///
   /// [sunSign] - Sonnenzeichen
   /// [moonSign] - Mondzeichen
@@ -65,7 +65,7 @@ class ClaudeApiService {
   /// [language] - Sprache
   ///
   /// Returns: Personalisierte Interpretation (~500 Wörter)
-  Future<ClaudeResponse> generateCosmicProfileInterpretation({
+  Future<ClaudeResponse> generateSignatureInterpretation({
     required String sunSign,
     required String moonSign,
     String? ascendant,
@@ -73,7 +73,7 @@ class ClaudeApiService {
     int? lifePathNumber,
     String language = 'de',
   }) async {
-    final prompt = _buildCosmicProfilePrompt(
+    final prompt = _buildSignaturePrompt(
       sunSign: sunSign,
       moonSign: moonSign,
       ascendant: ascendant,
@@ -187,8 +187,8 @@ Only the text, no heading, no formatting.
     }
   }
 
-  /// Prompt-Builder: Cosmic Profile Interpretation
-  String _buildCosmicProfilePrompt({
+  /// Prompt-Builder: "Deine Signatur" Interpretation
+  String _buildSignaturePrompt({
     required String sunSign,
     required String moonSign,
     String? ascendant,
@@ -198,7 +198,7 @@ Only the text, no heading, no formatting.
   }) {
     if (language == 'de') {
       return '''
-Erstelle eine personalisierte Interpretation des Cosmic Profile für:
+Erstelle eine personalisierte Interpretation von "Deine Signatur" (Synthese aus 3 Systemen) für:
 
 **Westliche Astrologie:**
 - Sonnenzeichen: $sunSign
@@ -225,7 +225,7 @@ Fließtext in Absätzen, keine Überschriften.
 ''';
     } else {
       return '''
-Create a personalized interpretation of the Cosmic Profile for:
+Create a personalized interpretation of "Your Signature" (synthesis of 3 systems) for:
 
 **Western Astrology:**
 - Sun Sign: $sunSign
@@ -302,7 +302,7 @@ Direct, warm, authentic. You speak to the reader like a friend.
     }
   }
 
-  /// System-Prompt: Cosmic Profile
+  /// System-Prompt: "Deine Signatur" / "Your Signature"
   String _getSystemPromptForProfile(String language) {
     if (language == 'de') {
       return '''

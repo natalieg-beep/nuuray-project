@@ -11,6 +11,7 @@ import '../../features/onboarding/screens/onboarding_flow_screen.dart';
 import '../../features/splash/splash_screen.dart';
 import '../../features/home/screens/home_screen.dart';
 import '../../features/signature/screens/signature_dashboard_screen.dart';
+import '../../features/settings/screens/settings_screen.dart';
 
 /// Router Provider
 final routerProvider = Provider<GoRouter>((ref) {
@@ -49,6 +50,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/signature',
         name: 'signature',
         builder: (context, state) => const SignatureDashboardScreen(),
+      ),
+      GoRoute(
+        path: '/settings',
+        name: 'settings',
+        builder: (context, state) => const SettingsScreen(),
       ),
     ],
     redirect: (context, state) {

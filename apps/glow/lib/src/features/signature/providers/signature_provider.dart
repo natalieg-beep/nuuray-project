@@ -66,8 +66,8 @@ final signatureProvider = FutureProvider<BirthChart?>((ref) async {
         birthName = userProfile.displayName;
       }
 
-      // Kosmische Signatur berechnen
-      final birthChart = await CosmicProfileService.calculateCosmicProfile(
+      // "Deine Signatur" berechnen
+      final birthChart = await SignatureService.calculateSignature(
         userId: userProfile.id,
         birthDate: birthDate,
         birthTime: birthTime,

@@ -18,7 +18,7 @@ export 'src/services/moon_phase_calculator.dart';
 export 'src/services/numerology_calculator.dart';
 export 'src/services/bazi_calculator.dart';
 export 'src/services/daily_energy_calculator.dart';
-export 'src/services/cosmic_profile_service.dart';
+export 'src/services/signature_service.dart';
 
 // Utils
 export 'src/utils/date_helpers.dart';

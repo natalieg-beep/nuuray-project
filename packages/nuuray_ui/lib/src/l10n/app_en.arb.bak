@@ -237,31 +237,6 @@
   "numerologyBridgeSoulPersonality": "Soul ↔ Outside",
   "numerologyBridgeSoulMeaning": "Connect Inside & Outside",
 
-  "signatureLearnMore": "Learn more",
-  "signatureAscendantRequired": "Ascendant: Birth location coordinates required",
-
-  "baziElementWood": "Wood",
-  "baziElementFire": "Fire",
-  "baziElementEarth": "Earth",
-  "baziElementMetal": "Metal",
-  "baziElementWater": "Water",
-
-  "baziBranchRat": "Rat",
-  "baziBranchOx": "Ox",
-  "baziBranchTiger": "Tiger",
-  "baziBranchRabbit": "Rabbit",
-  "baziBranchDragon": "Dragon",
-  "baziBranchSnake": "Snake",
-  "baziBranchHorse": "Horse",
-  "baziBranchGoat": "Goat",
-  "baziBranchMonkey": "Monkey",
-  "baziBranchRooster": "Rooster",
-  "baziBranchDog": "Dog",
-  "baziBranchPig": "Pig",
-
-  "numerologySubtitle": "Your Life Numbers",
-  "numerologyKarmicDebtDefault": "Karmic Debt",
-
   "numerologyLifepath1": "Leadership & Pioneer Spirit",
   "numerologyLifepath2": "Harmony & Partnership",
   "numerologyLifepath3": "Creativity & Expression",
@@ -399,11 +374,4 @@
   "horoscopeNumerologyCardDescription": "Your Life Path {lifePath} brings manifesting power today. Perfect for business decisions and goals.",
 
   "homeProfileLoadError": "Could not load profile"
-,
-
-  "horoscopeLoading": "Loading your horoscope...",
-  "horoscopeErrorTitle": "Could not load horoscope",
-  "horoscopeErrorRetry": "Please try again later.",
-  "horoscopePlaceholderTitle": "Birth data missing",
-  "horoscopePlaceholderDescription": "Please complete your birth data to see your personal horoscope."
 }

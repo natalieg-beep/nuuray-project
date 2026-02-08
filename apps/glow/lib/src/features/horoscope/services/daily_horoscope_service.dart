@@ -36,10 +36,7 @@ class DailyHoroscopeService {
     final targetDate = date ?? DateTime.now();
     final dateString = targetDate.toIso8601String().split('T')[0];
 
-    developer.log(
-      '🔍 Suche Horoskop: $zodiacSign, $language, $dateString',
-      name: 'DailyHoroscopeService',
-    );
+    print('🔍 [Horoskop] Suche: $zodiacSign, $language, $dateString');
 
     // 1. Versuche gecachtes Horoskop zu laden
     final response = await _supabase
@@ -52,16 +49,16 @@ class DailyHoroscopeService {
 
     if (response != null && response['content_text'] != null) {
       // Cache Hit! (Normalfall)
-      developer.log('✅ Cache Hit! Horoskop gefunden', name: 'DailyHoroscopeService');
+      print('✅ [Horoskop] Cache Hit! Horoskop gefunden');
       return response['content_text'] as String;
     }
 
-    developer.log('❌ Cache Miss! Fallback zu Claude API', name: 'DailyHoroscopeService');
+    print('❌ [Horoskop] Cache Miss! Fallback zu Claude API');
 
     // 2. Cache Miss → Fallback: Generiere neues Horoskop
     // (sollte nur passieren, wenn Cron Job fehlgeschlagen ist)
     if (_claudeService != null) {
-      developer.log('🤖 ClaudeService vorhanden, generiere Horoskop...', name: 'DailyHoroscopeService');
+      print('🤖 [Horoskop] ClaudeService vorhanden, generiere Horoskop...');
 
       try {
         final horoscope = await _claudeService!.generateDailyHoroscope(
@@ -70,7 +67,7 @@ class DailyHoroscopeService {
           date: targetDate,
         );
 
-        developer.log('✅ Horoskop generiert (${horoscope.totalTokens} tokens)', name: 'DailyHoroscopeService');
+        print('✅ [Horoskop] Horoskop generiert (${horoscope.totalTokens} tokens)');
 
         // Cache für nächstes Mal
         await _cacheHoroscope(
@@ -84,13 +81,13 @@ class DailyHoroscopeService {
 
         return horoscope.text;
       } catch (e) {
-        developer.log('❌ Fehler bei Claude API: $e', name: 'DailyHoroscopeService', error: e);
+        print('❌ [Horoskop] Fehler bei Claude API: $e');
         return _getFallbackHoroscope(zodiacSign, language);
       }
     }
 
     // 3. Kein Service verfügbar → Fallback-Text
-    developer.log('⚠️ Kein ClaudeService verfügbar → Fallback-Text', name: 'DailyHoroscopeService');
+    print('⚠️ [Horoskop] Kein ClaudeService verfügbar → Fallback-Text');
     return _getFallbackHoroscope(zodiacSign, language);
   }
 

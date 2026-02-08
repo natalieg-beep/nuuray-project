@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:nuuray_ui/nuuray_ui.dart';
 
 import '../../../shared/constants/app_colors.dart';
 
@@ -131,10 +132,10 @@ class _OnboardingBirthdataCombinedScreenState
       if (!mounted) return;
 
       if (response.status == 404) {
+        final l10n = AppLocalizations.of(context)!;
         setState(() {
           _isSearching = false;
-          _errorMessage =
-              'Kein Ort gefunden. Versuche "Stadt, Land" (z.B. "München, Deutschland")';
+          _errorMessage = l10n.onboardingPlaceNotFound;
           _selectedPlace = null;
           _selectedLatitude = null;
           _selectedLongitude = null;
@@ -144,9 +145,10 @@ class _OnboardingBirthdataCombinedScreenState
       }
 
       if (response.status != 200) {
+        final l10n = AppLocalizations.of(context)!;
         setState(() {
           _isSearching = false;
-          _errorMessage = 'Fehler ${response.status}: ${response.data}';
+          _errorMessage = '${l10n.generalError} ${response.status}: ${response.data}';
         });
         return;
       }
@@ -161,14 +163,15 @@ class _OnboardingBirthdataCombinedScreenState
         _isSearching = false;
         _errorMessage = null;
 
-        // ✅ UPDATE: Gefundenen Ort im TextField anzeigen
-        _searchController.text = _selectedPlace!;
+        // ✅ NICHT den TextField überschreiben - User-Eingabe bleibt erhalten!
+        // Der gefundene Ort wird in der grünen Success-Box angezeigt
       });
     } catch (e) {
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       setState(() {
         _isSearching = false;
-        _errorMessage = 'Netzwerkfehler: $e';
+        _errorMessage = '${l10n.onboardingPlaceNetworkError}: $e';
       });
     }
   }
@@ -234,10 +237,12 @@ class _OnboardingBirthdataCombinedScreenState
   }
 
   void _handleComplete() {
+    final l10n = AppLocalizations.of(context)!;
+
     if (_selectedDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Bitte wähle dein Geburtsdatum'),
+        SnackBar(
+          content: Text(l10n.onboardingDateRequired),
           backgroundColor: AppColors.error,
         ),
       );
@@ -258,7 +263,9 @@ class _OnboardingBirthdataCombinedScreenState
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat('dd.MM.yyyy', 'de_DE');
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context);
+    final dateFormat = DateFormat('dd.MM.yyyy', locale.toString());
 
     return Padding(
       padding: const EdgeInsets.all(24),
@@ -268,7 +275,7 @@ class _OnboardingBirthdataCombinedScreenState
           children: [
             // Titel
             Text(
-              'Wann & wo wurdest du geboren?',
+              l10n.onboardingBirthdataTitle,
               style: Theme.of(context).textTheme.displaySmall?.copyWith(
                     color: AppColors.primary,
                     fontWeight: FontWeight.bold,
@@ -277,7 +284,7 @@ class _OnboardingBirthdataCombinedScreenState
             const SizedBox(height: 8),
 
             Text(
-              'Deine Geburtsdaten bestimmen deine kosmische Signatur.',
+              l10n.onboardingBirthdataSubtitle,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 32),
@@ -285,10 +292,10 @@ class _OnboardingBirthdataCombinedScreenState
             // 📅 GEBURTSDATUM
             _buildSelectionCard(
               icon: Icons.calendar_today_outlined,
-              label: 'Geburtsdatum *',
+              label: l10n.onboardingDateLabel,
               value: _selectedDate != null
                   ? dateFormat.format(_selectedDate!)
-                  : 'Datum wählen',
+                  : l10n.onboardingDateSelect,
               onTap: _selectDate,
               isSelected: _selectedDate != null,
             ),
@@ -297,10 +304,10 @@ class _OnboardingBirthdataCombinedScreenState
             // 🕐 GEBURTSZEIT
             _buildSelectionCard(
               icon: Icons.access_time_outlined,
-              label: 'Geburtszeit (optional)',
+              label: l10n.onboardingTimeLabel,
               value: _hasBirthTime && _selectedTime != null
-                  ? '${_selectedTime!.hour.toString().padLeft(2, '0')}:${_selectedTime!.minute.toString().padLeft(2, '0')} Uhr'
-                  : 'Zeit wählen',
+                  ? l10n.onboardingTimeValue(_selectedTime!.hour.toString().padLeft(2, '0'), _selectedTime!.minute.toString().padLeft(2, '0'))
+                  : l10n.onboardingTimeSelect,
               onTap: _selectTime,
               isSelected: _hasBirthTime && _selectedTime != null,
             ),
@@ -334,7 +341,7 @@ class _OnboardingBirthdataCombinedScreenState
                     ),
                     Expanded(
                       child: Text(
-                        'Geburtszeit ist mir nicht bekannt',
+                        l10n.onboardingTimeUnknown,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),
@@ -346,14 +353,14 @@ class _OnboardingBirthdataCombinedScreenState
 
             // 📍 GEBURTSORT
             Text(
-              'Geburtsort (optional)',
+              l10n.onboardingPlaceLabel,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
             ),
             const SizedBox(height: 8),
             Text(
-              'Für präzise Aszendent-Berechnung',
+              l10n.onboardingPlaceHelper,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: AppColors.textSecondary,
                   ),
@@ -364,9 +371,9 @@ class _OnboardingBirthdataCombinedScreenState
             TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                labelText: 'Stadt oder Ort',
-                hintText: 'z.B. München, Deutschland',
-                helperText: 'Tippe mindestens 3 Buchstaben',
+                labelText: l10n.onboardingPlaceSearchLabel,
+                hintText: l10n.onboardingPlaceSearchHint,
+                helperText: l10n.onboardingPlaceSearchHelper,
                 prefixIcon: const Icon(Icons.place_outlined),
                 suffixIcon: _isSearching
                     ? const Padding(
@@ -459,7 +466,7 @@ class _OnboardingBirthdataCombinedScreenState
                   });
                 },
                 icon: const Icon(Icons.close, size: 18),
-                label: const Text('Geburtsort überspringen'),
+                label: Text(l10n.onboardingPlaceSkip),
                 style: TextButton.styleFrom(
                   foregroundColor: AppColors.textSecondary,
                 ),
@@ -472,13 +479,13 @@ class _OnboardingBirthdataCombinedScreenState
               children: [
                 OutlinedButton(
                   onPressed: widget.onBack,
-                  child: const Text('Zurück'),
+                  child: Text(l10n.generalBack),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: ElevatedButton(
                     onPressed: _handleComplete,
-                    child: const Text('Fertig'),
+                    child: Text(l10n.generalFinish),
                   ),
                 ),
               ],

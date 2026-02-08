@@ -198,8 +198,6 @@ class DailyHoroscopeSection extends ConsumerWidget {
   }
 
   Widget _buildLoading(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -246,7 +244,7 @@ class DailyHoroscopeSection extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              l10n.horoscopeErrorRetry,
+              'Bitte versuche es später erneut.',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: AppColors.textSecondary,
                   ),
@@ -259,8 +257,6 @@ class DailyHoroscopeSection extends ConsumerWidget {
   }
 
   Widget _buildPlaceholder(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),

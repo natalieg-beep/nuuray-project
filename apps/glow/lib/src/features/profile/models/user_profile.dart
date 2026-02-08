@@ -25,6 +25,7 @@ class UserProfile {
   final DateTime createdAt;
   final DateTime? updatedAt;
   final bool onboardingCompleted;
+  final String? language; // Sprachpräferenz (DE, EN, etc.)
 
   const UserProfile({
     required this.id,
@@ -42,6 +43,7 @@ class UserProfile {
     required this.createdAt,
     this.updatedAt,
     this.onboardingCompleted = false,
+    this.language,
   });
 
   /// Prüft ob alle wichtigen Daten für genaue Berechnungen vorhanden sind
@@ -69,6 +71,7 @@ class UserProfile {
     String? birthTimezone,
     DateTime? updatedAt,
     bool? onboardingCompleted,
+    String? language,
   }) {
     return UserProfile(
       id: id,
@@ -86,6 +89,7 @@ class UserProfile {
       createdAt: createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       onboardingCompleted: onboardingCompleted ?? this.onboardingCompleted,
+      language: language ?? this.language,
     );
   }
 
@@ -118,6 +122,7 @@ class UserProfile {
           ? DateTime.parse(json['updated_at'] as String)
           : null,
       onboardingCompleted: json['onboarding_completed'] as bool? ?? false,
+      language: json['language'] as String?,
     );
   }
 
@@ -139,6 +144,7 @@ class UserProfile {
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
       'onboarding_completed': onboardingCompleted,
+      'language': language,
     };
   }
 

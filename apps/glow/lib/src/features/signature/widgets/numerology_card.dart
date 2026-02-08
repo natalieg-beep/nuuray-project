@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nuuray_core/nuuray_core.dart';
+import 'package:nuuray_ui/nuuray_ui.dart';
 
 import '../../../shared/constants/app_colors.dart';
 
@@ -29,6 +30,8 @@ class _NumerologyCardState extends State<NumerologyCard> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     // Extract numbers from BirthChart
     final lifePathNumber = widget.birthChart.lifePathNumber;
     final birthdayNumber = widget.birthChart.birthdayNumber;
@@ -91,14 +94,14 @@ class _NumerologyCardState extends State<NumerologyCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Numerologie',
+                      l10n.signatureNumerologyTitle,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: AppColors.textPrimary,
                           ),
                     ),
                     Text(
-                      'Deine Lebenszahlen',
+                      l10n.numerologySubtitle,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: AppColors.textSecondary,
                           ),
@@ -149,7 +152,7 @@ class _NumerologyCardState extends State<NumerologyCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Lebensweg',
+                          l10n.numerologyLifePath,
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                 color: AppColors.textSecondary,
                                 fontWeight: FontWeight.w500,
@@ -179,13 +182,13 @@ class _NumerologyCardState extends State<NumerologyCard> {
               runSpacing: 8,
               children: [
                 if (birthdayNumber != null)
-                  _buildSmallNumberBox(context, 'Geburtstag', birthdayNumber),
+                  _buildSmallNumberBox(context, l10n.numerologyBirthday, birthdayNumber),
                 if (attitudeNumber != null)
-                  _buildSmallNumberBox(context, 'Haltung', attitudeNumber),
+                  _buildSmallNumberBox(context, l10n.numerologyAttitude, attitudeNumber),
                 if (personalYear != null)
-                  _buildSmallNumberBox(context, 'Jahr ${DateTime.now().year}', personalYear),
+                  _buildSmallNumberBox(context, l10n.numerologyPersonalYear('${DateTime.now().year}'), personalYear),
                 if (maturityNumber != null)
-                  _buildSmallNumberBox(context, 'Reife', maturityNumber),
+                  _buildSmallNumberBox(context, l10n.numerologyMaturity, maturityNumber),
               ],
             ),
 
@@ -215,7 +218,7 @@ class _NumerologyCardState extends State<NumerologyCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Urenergie',
+                            l10n.numerologyBirthEnergy,
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: AppColors.textPrimary,
@@ -275,7 +278,7 @@ class _NumerologyCardState extends State<NumerologyCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Aktuelle Energie',
+                            l10n.numerologyCurrentEnergy,
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: AppColors.textPrimary,
@@ -333,7 +336,7 @@ class _NumerologyCardState extends State<NumerologyCard> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Vollständiger Name für weitere Zahlen erforderlich',
+                      l10n.signatureNumerologyFullNameRequired,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: AppColors.textSecondary,
                           ),
@@ -373,7 +376,7 @@ class _NumerologyCardState extends State<NumerologyCard> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Mehr erfahren',
+                    l10n.signatureLearnMore,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: AppColors.primary,
                           fontWeight: FontWeight.w600,
@@ -441,6 +444,8 @@ class _NumerologyCardState extends State<NumerologyCard> {
     required int? soulUrge,
     required int? personality,
   }) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -450,13 +455,13 @@ class _NumerologyCardState extends State<NumerologyCard> {
       child: Column(
         children: [
           if (expression != null)
-            _buildNumberRow(context, 'Ausdruck', expression, 'Talent & Fähigkeiten'),
+            _buildNumberRow(context, l10n.numerologyExpression, expression, l10n.numerologyExpressionMeaning),
           if (expression != null && soulUrge != null) const SizedBox(height: 12),
           if (soulUrge != null)
-            _buildNumberRow(context, 'Seelenwunsch', soulUrge, 'Innere Sehnsucht'),
+            _buildNumberRow(context, l10n.numerologySoulUrge, soulUrge, l10n.numerologySoulUrgeMeaning),
           if (soulUrge != null && personality != null) const SizedBox(height: 12),
           if (personality != null)
-            _buildNumberRow(context, 'Persönlichkeit', personality, 'Äußere Wirkung'),
+            _buildNumberRow(context, l10n.numerologyPersonality, personality, l10n.numerologyPersonalityMeaning),
         ],
       ),
     );
@@ -510,6 +515,7 @@ class _NumerologyCardState extends State<NumerologyCard> {
 
   /// Baut die erweiterte Numerologie-Sektion (Karmic Debt, Challenges, Lessons, Bridges)
   Widget _buildAdvancedNumerology(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final karmicDebtLifePath = widget.birthChart.karmicDebtLifePath;
     final karmicDebtExpression = widget.birthChart.karmicDebtExpression;
     final karmicDebtSoulUrge = widget.birthChart.karmicDebtSoulUrge;
@@ -534,7 +540,7 @@ class _NumerologyCardState extends State<NumerologyCard> {
       children: [
         // Section Header
         Text(
-          'Erweiterte Numerologie',
+          l10n.signatureNumerologyAdvancedTitle,
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
@@ -549,29 +555,29 @@ class _NumerologyCardState extends State<NumerologyCard> {
           _buildAdvancedSection(
             context,
             icon: '⚡',
-            title: 'Karmic Debt',
-            subtitle: 'Karmische Schuldzahlen',
+            title: l10n.numerologyKarmicDebtTitle,
+            subtitle: l10n.numerologyKarmicDebtSubtitle,
             children: [
               if (karmicDebtLifePath != null)
                 _buildAdvancedItem(
                   context,
-                  'Lebensweg',
+                  l10n.numerologyLifePath,
                   karmicDebtLifePath,
-                  _getKarmicDebtMeaning(karmicDebtLifePath),
+                  _getKarmicDebtMeaning(context, karmicDebtLifePath),
                 ),
               if (karmicDebtExpression != null)
                 _buildAdvancedItem(
                   context,
-                  'Ausdruck',
+                  l10n.numerologyExpression,
                   karmicDebtExpression,
-                  _getKarmicDebtMeaning(karmicDebtExpression),
+                  _getKarmicDebtMeaning(context, karmicDebtExpression),
                 ),
               if (karmicDebtSoulUrge != null)
                 _buildAdvancedItem(
                   context,
-                  'Seelenwunsch',
+                  l10n.numerologySoulUrge,
                   karmicDebtSoulUrge,
-                  _getKarmicDebtMeaning(karmicDebtSoulUrge),
+                  _getKarmicDebtMeaning(context, karmicDebtSoulUrge),
                 ),
             ],
           ),
@@ -583,8 +589,8 @@ class _NumerologyCardState extends State<NumerologyCard> {
           _buildAdvancedSection(
             context,
             icon: '🎯',
-            title: 'Challenges',
-            subtitle: 'Herausforderungen',
+            title: l10n.numerologyChallengesTitle,
+            subtitle: l10n.numerologyChallengesSubtitle,
             children: [
               Wrap(
                 spacing: 8,
@@ -593,7 +599,7 @@ class _NumerologyCardState extends State<NumerologyCard> {
                   for (int i = 0; i < challengeNumbers.length; i++)
                     _buildChallengeChip(
                       context,
-                      'Phase ${i + 1}',
+                      l10n.numerologyChallengePhase('${i + 1}'),
                       challengeNumbers[i],
                     ),
                 ],
@@ -608,8 +614,8 @@ class _NumerologyCardState extends State<NumerologyCard> {
           _buildAdvancedSection(
             context,
             icon: '📚',
-            title: 'Karmic Lessons',
-            subtitle: 'Zu lernende Lektionen',
+            title: l10n.numerologyKarmicLessonsTitle,
+            subtitle: l10n.numerologyKarmicLessonsSubtitle,
             children: [
               Wrap(
                 spacing: 6,
@@ -645,22 +651,22 @@ class _NumerologyCardState extends State<NumerologyCard> {
           _buildAdvancedSection(
             context,
             icon: '🌉',
-            title: 'Bridges',
-            subtitle: 'Verbindungen',
+            title: l10n.numerologyBridgesTitle,
+            subtitle: l10n.numerologyBridgesSubtitle,
             children: [
               if (bridgeLifePathExpression != null)
                 _buildAdvancedItem(
                   context,
-                  'Lebensweg ↔ Ausdruck',
+                  l10n.numerologyBridgeLifepathExpression,
                   bridgeLifePathExpression,
-                  'Verbinde Weg & Talent',
+                  l10n.numerologyBridgeLifepathMeaning,
                 ),
               if (bridgeSoulUrgePersonality != null)
                 _buildAdvancedItem(
                   context,
-                  'Seele ↔ Außen',
+                  l10n.numerologyBridgeSoulPersonality,
                   bridgeSoulUrgePersonality,
-                  'Verbinde Innen & Außen',
+                  l10n.numerologyBridgeSoulMeaning,
                 ),
             ],
           ),
@@ -814,49 +820,53 @@ class _NumerologyCardState extends State<NumerologyCard> {
   }
 
   /// Gibt die Bedeutung einer Karmic Debt Number zurück
-  String _getKarmicDebtMeaning(int number) {
+  String _getKarmicDebtMeaning(BuildContext context, int number) {
+    final l10n = AppLocalizations.of(context)!;
+
     switch (number) {
       case 13:
-        return 'Faulheit → Disziplin lernen';
+        return l10n.numerologyKarmicDebt13;
       case 14:
-        return 'Überindulgenz → Balance finden';
+        return l10n.numerologyKarmicDebt14;
       case 16:
-        return 'Ego & Fall → Demut entwickeln';
+        return l10n.numerologyKarmicDebt16;
       case 19:
-        return 'Machtmissbrauch → Geben lernen';
+        return l10n.numerologyKarmicDebt19;
       default:
-        return 'Karmische Schuld';
+        return l10n.numerologyKarmicDebtDefault;
     }
   }
 
   String _getLifePathMeaning(int number) {
+    final l10n = AppLocalizations.of(context)!;
+
     switch (number) {
       case 1:
-        return 'Führung & Pioniergeist';
+        return l10n.numerologyLifepath1;
       case 2:
-        return 'Harmonie & Partnerschaft';
+        return l10n.numerologyLifepath2;
       case 3:
-        return 'Kreativität & Ausdruck';
+        return l10n.numerologyLifepath3;
       case 4:
-        return 'Stabilität & Struktur';
+        return l10n.numerologyLifepath4;
       case 5:
-        return 'Freiheit & Abenteuer';
+        return l10n.numerologyLifepath5;
       case 6:
-        return 'Fürsorge & Verantwortung';
+        return l10n.numerologyLifepath6;
       case 7:
-        return 'Weisheit & Spiritualität';
+        return l10n.numerologyLifepath7;
       case 8:
-        return 'Macht & Manifestation';
+        return l10n.numerologyLifepath8;
       case 9:
-        return 'Vollendung & Mitgefühl';
+        return l10n.numerologyLifepath9;
       case 11:
-        return 'Spiritueller Botschafter ✨';
+        return l10n.numerologyLifepath11;
       case 22:
-        return 'Meister-Manifestierer ✨';
+        return l10n.numerologyLifepath22;
       case 33:
-        return 'Meister-Heiler ✨';
+        return l10n.numerologyLifepath33;
       default:
-        return 'Lebensweg';
+        return l10n.numerologyLifePath;
     }
   }
 }

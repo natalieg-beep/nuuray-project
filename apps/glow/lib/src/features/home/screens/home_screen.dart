@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:nuuray_ui/nuuray_ui.dart';
 
 import '../../../shared/constants/app_colors.dart';
 import '../../profile/providers/user_profile_provider.dart';
@@ -17,16 +19,29 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final profileAsync = ref.watch(userProfileProvider);
 
     return Scaffold(
       backgroundColor: AppColors.background,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          // Settings Button
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: () => context.pushNamed('settings'),
+            tooltip: l10n.settingsTitle,
+          ),
+        ],
+      ),
       body: SafeArea(
         child: profileAsync.when(
           data: (profile) {
             if (profile == null) {
-              return const Center(
-                child: Text('Profil konnte nicht geladen werden'),
+              return Center(
+                child: Text(l10n.homeProfileLoadError),
               );
             }
 
@@ -66,7 +81,7 @@ class HomeScreen extends ConsumerWidget {
             child: CircularProgressIndicator(color: AppColors.primary),
           ),
           error: (error, stack) => Center(
-            child: Text('Fehler: $error'),
+            child: Text('${l10n.generalError}: $error'),
           ),
         ),
       ),
@@ -74,16 +89,18 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Widget _buildHeader(BuildContext context, String displayName) {
+    final l10n = AppLocalizations.of(context)!;
     final now = DateTime.now();
-    final dateFormat = DateFormat('EEEE, d. MMMM', 'de_DE');
+    final locale = Localizations.localeOf(context);
+    final dateFormat = DateFormat('EEEE, d. MMMM', locale.toString());
     final formattedDate = dateFormat.format(now);
 
-    String greeting = 'Guten Morgen';
+    String greeting = l10n.homeGreetingMorning;
     final hour = now.hour;
     if (hour >= 12 && hour < 18) {
-      greeting = 'Guten Tag';
+      greeting = l10n.homeGreetingDay;
     } else if (hour >= 18) {
-      greeting = 'Guten Abend';
+      greeting = l10n.homeGreetingEvening;
     }
 
     return Column(
@@ -108,6 +125,8 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Widget _buildDailyEnergyCard(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -140,7 +159,7 @@ class HomeScreen extends ConsumerWidget {
               ),
               const SizedBox(width: 12),
               Text(
-                'Tagesenergie',
+                l10n.homeDailyEnergy,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -150,14 +169,14 @@ class HomeScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'Zunehmender Mond in Steinbock',
+            l10n.homeDailyEnergyMoonExample,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: Colors.white,
                 ),
           ),
           const SizedBox(height: 8),
           Text(
-            'Heute ist ein guter Tag für Struktur und Planung. Die kosmische Energie unterstützt dich dabei, deine Ziele klar zu definieren.',
+            l10n.homeDailyEnergyDescriptionExample,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.white.withOpacity(0.9),
                 ),
@@ -201,6 +220,7 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Widget _buildSignatureSection(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final signatureAsync = ref.watch(signatureProvider);
 
     return Column(
@@ -216,7 +236,7 @@ class HomeScreen extends ConsumerWidget {
             ),
             const SizedBox(width: 12),
             Text(
-              'Deine Signatur',
+              l10n.homeYourSignature,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -260,6 +280,8 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Widget _buildSignaturePlaceholder(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -276,14 +298,14 @@ class HomeScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'Geburtsdaten unvollständig',
+            l10n.homeSignatureIncomplete,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
           ),
           const SizedBox(height: 8),
           Text(
-            'Bitte vervollständige deine Geburtsdaten im Onboarding, um deine kosmische Signatur zu berechnen.',
+            l10n.homeSignatureIncompleteDescription,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: AppColors.textSecondary,
                 ),
@@ -295,6 +317,8 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Widget _buildSignatureError(BuildContext context, Object error) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -311,7 +335,7 @@ class HomeScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'Fehler beim Laden',
+            l10n.homeSignatureLoadError,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: AppColors.error,
@@ -331,11 +355,13 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Widget _buildQuickActions(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Entdecke mehr',
+          l10n.homeQuickActions,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -347,12 +373,12 @@ class HomeScreen extends ConsumerWidget {
               child: _buildActionCard(
                 context,
                 icon: Icons.calendar_month,
-                title: 'Mondkalender',
-                subtitle: 'Alle Mondphasen',
+                title: l10n.homeMoonCalendar,
+                subtitle: l10n.homeMoonCalendarSubtitle,
                 onTap: () {
                   // TODO: Navigation zum Mondkalender
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Coming Soon!')),
+                    SnackBar(content: Text(l10n.generalComingSoon)),
                   );
                 },
               ),
@@ -362,12 +388,12 @@ class HomeScreen extends ConsumerWidget {
               child: _buildActionCard(
                 context,
                 icon: Icons.favorite_outline,
-                title: 'Partner-Check',
-                subtitle: 'Kompatibilität',
+                title: l10n.homePartnerCheck,
+                subtitle: l10n.homePartnerCheckSubtitle,
                 onTap: () {
                   // TODO: Navigation zum Partner-Check
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Coming Soon!')),
+                    SnackBar(content: Text(l10n.generalComingSoon)),
                   );
                 },
               ),
@@ -422,6 +448,8 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Widget _buildDebugSection(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Center(
       child: OutlinedButton.icon(
         onPressed: () async {
@@ -430,7 +458,7 @@ class HomeScreen extends ConsumerWidget {
           // Router leitet automatisch zu /login weiter
         },
         icon: const Icon(Icons.logout),
-        label: const Text('Logout'),
+        label: Text(l10n.settingsLogout),
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.error,
           side: const BorderSide(color: AppColors.error),

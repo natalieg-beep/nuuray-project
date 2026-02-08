@@ -101,4 +101,32 @@ class UserProfileService {
     final profile = await getUserProfile();
     return profile?.onboardingCompleted ?? false;
   }
+
+  /// Sprache aktualisieren
+  Future<bool> updateLanguage(String languageCode) async {
+    try {
+      final userId = _supabase.auth.currentUser?.id;
+      if (userId == null) {
+        log('updateLanguage: Kein User eingeloggt');
+        return false;
+      }
+
+      // Verwende lowercase für DB (de, en, etc.) - konsistent mit Flutter Locale
+      final dbLanguage = languageCode.toLowerCase();
+
+      await _supabase
+          .from('profiles')
+          .update({
+            'language': dbLanguage,
+            'updated_at': DateTime.now().toIso8601String(),
+          })
+          .eq('id', userId);
+
+      log('Sprache aktualisiert zu $dbLanguage für User $userId');
+      return true;
+    } catch (e) {
+      log('updateLanguage Fehler: $e');
+      return false;
+    }
+  }
 }

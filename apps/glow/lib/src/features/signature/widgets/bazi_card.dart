@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nuuray_core/nuuray_core.dart';
+import 'package:nuuray_ui/nuuray_ui.dart';
 
 import '../../../shared/constants/app_colors.dart';
 
@@ -15,21 +16,17 @@ class BaziCard extends StatelessWidget {
     required this.birthChart,
   });
 
-  // TODO: i18n - später aus ARB-Dateien
-  static const Map<String, String> _stemsDE = {
+  // Stems bleiben immer gleich (pinyin)
+  static const Map<String, String> _stems = {
     'Jia': 'Jia', 'Yi': 'Yi', 'Bing': 'Bing', 'Ding': 'Ding',
     'Wu': 'Wu', 'Ji': 'Ji', 'Geng': 'Geng', 'Xin': 'Xin',
     'Ren': 'Ren', 'Gui': 'Gui',
   };
 
-  static const Map<String, String> _branchesDE = {
-    'Rat': 'Ratte', 'Ox': 'Büffel', 'Tiger': 'Tiger', 'Rabbit': 'Hase',
-    'Dragon': 'Drache', 'Snake': 'Schlange', 'Horse': 'Pferd', 'Goat': 'Ziege',
-    'Monkey': 'Affe', 'Rooster': 'Hahn', 'Dog': 'Hund', 'Pig': 'Schwein',
-  };
-
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -70,14 +67,14 @@ class BaziCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Bazi (四柱)',
+                      l10n.signatureBaziTitle,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: AppColors.textPrimary,
                           ),
                     ),
                     Text(
-                      'Vier Säulen des Schicksals',
+                      l10n.signatureBaziSubtitle,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: AppColors.textSecondary,
                           ),
@@ -103,7 +100,7 @@ class BaziCard extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  'Tages-Meister',
+                  l10n.signatureBaziDayMaster,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: AppColors.textSecondary,
                         fontWeight: FontWeight.w500,
@@ -111,7 +108,7 @@ class BaziCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '${_translateStem(birthChart.baziDayStem ?? 'N/A')}-${_translateBranch(birthChart.baziDayBranch ?? 'N/A')}',
+                  '${_translateStem(birthChart.baziDayStem ?? 'N/A')}-${_translateBranch(context,birthChart.baziDayBranch ?? 'N/A')}',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,
@@ -130,33 +127,33 @@ class BaziCard extends StatelessWidget {
               Expanded(
                 child: _buildPillarColumn(
                   context,
-                  'Jahr',
-                  '${_translateStem(birthChart.baziYearStem ?? 'N/A')}-${_translateBranch(birthChart.baziYearBranch ?? 'N/A')}',
+                  l10n.signatureBaziYear,
+                  '${_translateStem(birthChart.baziYearStem ?? 'N/A')}-${_translateBranch(context,birthChart.baziYearBranch ?? 'N/A')}',
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: _buildPillarColumn(
                   context,
-                  'Monat',
-                  '${_translateStem(birthChart.baziMonthStem ?? 'N/A')}-${_translateBranch(birthChart.baziMonthBranch ?? 'N/A')}',
+                  l10n.signatureBaziMonth,
+                  '${_translateStem(birthChart.baziMonthStem ?? 'N/A')}-${_translateBranch(context,birthChart.baziMonthBranch ?? 'N/A')}',
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: _buildPillarColumn(
                   context,
-                  'Tag',
-                  '${_translateStem(birthChart.baziDayStem ?? 'N/A')}-${_translateBranch(birthChart.baziDayBranch ?? 'N/A')}',
+                  l10n.signatureBaziDay,
+                  '${_translateStem(birthChart.baziDayStem ?? 'N/A')}-${_translateBranch(context,birthChart.baziDayBranch ?? 'N/A')}',
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: _buildPillarColumn(
                   context,
-                  'Stunde',
+                  l10n.signatureBaziHour,
                   birthChart.baziHourStem != null
-                      ? '${_translateStem(birthChart.baziHourStem!)}-${_translateBranch(birthChart.baziHourBranch!)}'
+                      ? '${_translateStem(birthChart.baziHourStem!)}-${_translateBranch(context,birthChart.baziHourBranch!)}'
                       : '?',
                 ),
               ),
@@ -169,7 +166,7 @@ class BaziCard extends StatelessWidget {
           Row(
             children: [
               Text(
-                'Dominantes Element:',
+                l10n.signatureBaziDominantElement,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: AppColors.textSecondary,
                     ),
@@ -187,7 +184,7 @@ class BaziCard extends StatelessWidget {
                 child: Text(
                   _getElementEmoji(birthChart.baziElement ?? 'Wood') +
                       ' ' +
-                      _getElementName(birthChart.baziElement ?? 'Wood'),
+                      _getElementName(birthChart.baziElement ?? 'Wood', context),
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,
@@ -221,7 +218,7 @@ class BaziCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Mehr erfahren',
+                    l10n.signatureLearnMore,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: AppColors.primary,
                           fontWeight: FontWeight.w600,
@@ -295,29 +292,59 @@ class BaziCard extends StatelessWidget {
     }
   }
 
-  String _getElementName(String element) {
-    // TODO: i18n - später aus ARB-Dateien
+  String _getElementName(String element, BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     switch (element.toLowerCase()) {
       case 'wood':
-        return 'Holz';
+        return l10n.baziElementWood;
       case 'fire':
-        return 'Feuer';
+        return l10n.baziElementFire;
       case 'earth':
-        return 'Erde';
+        return l10n.baziElementEarth;
       case 'metal':
-        return 'Metall';
+        return l10n.baziElementMetal;
       case 'water':
-        return 'Wasser';
+        return l10n.baziElementWater;
       default:
         return element;
     }
   }
 
   String _translateStem(String stem) {
-    return _stemsDE[stem] ?? stem;
+    return _stems[stem] ?? stem;
   }
 
-  String _translateBranch(String branch) {
-    return _branchesDE[branch] ?? branch;
+  String _translateBranch(BuildContext context, String branch) {
+    final l10n = AppLocalizations.of(context)!;
+
+    switch (branch) {
+      case 'Rat':
+        return l10n.baziBranchRat;
+      case 'Ox':
+        return l10n.baziBranchOx;
+      case 'Tiger':
+        return l10n.baziBranchTiger;
+      case 'Rabbit':
+        return l10n.baziBranchRabbit;
+      case 'Dragon':
+        return l10n.baziBranchDragon;
+      case 'Snake':
+        return l10n.baziBranchSnake;
+      case 'Horse':
+        return l10n.baziBranchHorse;
+      case 'Goat':
+        return l10n.baziBranchGoat;
+      case 'Monkey':
+        return l10n.baziBranchMonkey;
+      case 'Rooster':
+        return l10n.baziBranchRooster;
+      case 'Dog':
+        return l10n.baziBranchDog;
+      case 'Pig':
+        return l10n.baziBranchPig;
+      default:
+        return branch;
+    }
   }
 }

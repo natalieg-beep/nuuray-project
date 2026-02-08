@@ -5,7 +5,7 @@ import 'bazi_calculator.dart';
 import 'numerology_calculator.dart';
 import 'timezone_converter_simple.dart';
 
-/// Cosmic Profile Service
+/// Signature Service (vormals Cosmic Profile Service)
 ///
 /// Zentrale Service-Klasse, die alle drei Berechnungs-Systeme zusammenführt:
 /// - Western Astrology (Sonne, Mond, Aszendent)
@@ -13,8 +13,8 @@ import 'timezone_converter_simple.dart';
 /// - Numerologie (Life Path, Expression, Soul Urge)
 ///
 /// Nimmt User-Profil-Daten als Input und gibt ein vollständiges BirthChart zurück.
-class CosmicProfileService {
-  /// Berechnet das vollständige Cosmic Profile aus Geburtsdaten und Namen
+class SignatureService {
+  /// Berechnet die vollständige "Deine Signatur" aus Geburtsdaten und Namen
   ///
   /// Parameter:
   /// - [userId]: User-ID für Zuordnung
@@ -28,7 +28,7 @@ class CosmicProfileService {
   /// - [fullName]: DEPRECATED - Legacy Parameter, nutze birthName stattdessen
   ///
   /// Gibt ein [BirthChart] zurück mit allen berechneten Werten.
-  static Future<BirthChart> calculateCosmicProfile({
+  static Future<BirthChart> calculateSignature({
     required String userId,
     required DateTime birthDate,
     DateTime? birthTime,
@@ -42,7 +42,7 @@ class CosmicProfileService {
     // Legacy Support: Wenn fullName gesetzt, aber birthName nicht, verwende fullName
     final effectiveBirthName = birthName ?? fullName;
 
-    log('📊 Berechne Cosmic Profile für User: $userId');
+    log('📊 Berechne "Deine Signatur" für User: $userId');
     log('   Geburtsdatum: ${birthDate.toIso8601String()}');
     log('   Hat Geburtszeit: ${birthTime != null}');
     log('   Hat Geburtsort: ${birthLatitude != null && birthLongitude != null}');
@@ -297,7 +297,7 @@ class CosmicProfileService {
     final birthDate = DateTime(1983, 11, 30);
     final birthTime = DateTime(1983, 11, 30, 22, 32);
 
-    return calculateCosmicProfile(
+    return calculateSignature(
       userId: 'test-user-natalie',
       birthDate: birthDate,
       birthTime: birthTime,

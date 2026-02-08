@@ -1,12 +1,12 @@
 # NUURAY GLOW — TODO Liste
 
-> Letzte Aktualisierung: 2026-02-08 (Erweiterte Numerologie UI fertig!)
-> Stand: Auth ✅, **Onboarding ✅ (REVERT zu 4 Feldern!)**, Geocoding ✅, Basic Home ✅, Deine Signatur ✅, Claude API ✅, **Erweiterte Numerologie ✅**
+> Letzte Aktualisierung: 2026-02-08 (i18n VOLLSTÄNDIG! 🌍✨)
+> Stand: Auth ✅, Onboarding ✅, Geocoding ✅, Basic Home ✅, Deine Signatur ✅, Claude API ✅, Erweiterte Numerologie ✅, **Tageshoroskop On-Demand ✅, i18n DE/EN 100% ✅**
 >
 > **📚 Neue Dokumentation:**
-> - `docs/glow/GLOW_SPEC_V2.md` — Aktualisierte vollständige Projektbeschreibung (2-Schritte Onboarding, Deine Signatur, Sprachen)
+> - `docs/deployment/HOROSCOPE_STRATEGY.md` — **NEU!** Tageshoroskop On-Demand vs. Cron Job Strategie
+> - `docs/glow/GLOW_SPEC_V2.md` — Aktualisierte vollständige Projektbeschreibung
 > - `docs/glow/SPEC_CHANGELOG.md` — Changelog der konzeptionellen Änderungen
-> - `docs/daily-logs/2026-02-08_erweiterte-numerologie-ui.md` — Session-Log: Erweiterte Numerologie UI
 
 ---
 
@@ -79,11 +79,16 @@
   - Cosmic Profile Interpretation (400-500 Wörter, Synthese aller 3 Systeme)
   - Token-Usage Tracking für Kosten-Kalkulation
   - System-Prompts für konsistenten Ton (unterhaltsam, staunend, empowernd)
-- ✅ Supabase Migration: `daily_horoscopes` Tabelle (bereit für Deployment)
+- ✅ Supabase Migration: `daily_horoscopes` Tabelle
+- ✅ **Tageshoroskop: On-Demand Strategie (AKTIV)** — **FERTIG 2026-02-08!**
+  - DailyHoroscopeService mit Cache-First + On-Demand Generation
+  - Kosten Testphase: $0 | 100 User: ~$6-7/Monat
+  - Edge Function vorbereitet für späteren Cron Job (ab 1000+ User)
+  - Siehe: `docs/deployment/HOROSCOPE_STRATEGY.md`
 - ✅ Test-Script erstellt (`apps/glow/test/test_claude_api.dart`)
-- ✅ Dokumentation (`docs/glow/implementation/CLAUDE_API_IMPLEMENTATION.md`)
-  - Kosten-Kalkulation: MVP ~$11/Monat
-  - Caching-Strategie: 99.9% Einsparung durch Vorab-Generierung
+- ✅ Dokumentation
+  - `docs/glow/implementation/CLAUDE_API_IMPLEMENTATION.md`
+  - `docs/deployment/HOROSCOPE_STRATEGY.md` — Phase 1 (On-Demand) vs. Phase 2 (Cron)
 
 ---
 
@@ -94,19 +99,36 @@
   - Code auf 2 Schritte umgestellt (Name → Geburtsdaten kombiniert)
   - Name-Felder: **4 Felder bleiben** (displayName, fullFirstNames, birthName, lastName)
   - LIVE-Autocomplete für Geburtsort implementiert
+  - **UX-Fixes:** Bottom Overflow + Autocomplete behält Eingabe ✅
   - Siehe: `docs/daily-logs/2026-02-08_onboarding-2-schritte.md`
-- [x] **"Deine Signatur" Umbenennung:** ✅ **TEILWEISE FERTIG 2026-02-08!**
+  - Siehe: `docs/daily-logs/2026-02-08_ux-fixes.md`
+- [x] **"Deine Signatur" Umbenennung:** ✅ **KOMPLETT FERTIG 2026-02-08!**
   - [x] Code-Suche: `Cosmic Profile` → `Deine Signatur` (Code + UI) ✅
   - [x] Provider: `cosmicProfileProvider` → `signatureProvider` ✅
   - [x] Folder: `cosmic_profile/` → `signature/` ✅
   - [x] Screen: `CosmicProfileDashboardScreen` → `SignatureDashboardScreen` ✅
   - [x] Card-Design vereinheitlicht (alle Gradients entfernt, AppColors verwendet) ✅
-  - [ ] Service: `CosmicProfileService` → `SignatureService` ❌ **NOCH NICHT**
-  - [ ] Datenbank-Tabelle: `birth_charts` → `signature_profiles` ❌ **NOCH NICHT** (optional)
-- [ ] **i18n-Strategie umsetzen:**
-  - [ ] ARB-Dateien erstellen (`app_de.arb`, `app_en.arb`)
-  - [ ] Settings Screen mit Sprach-Auswahl (🇩🇪 / 🇬🇧)
-  - [ ] Profile-Tabelle: `language` Spalte nutzen
+  - [x] Service: `CosmicProfileService` → `SignatureService` ✅ **FERTIG!**
+  - [x] ClaudeApiService Prompts: "Cosmic Profile" → "Deine Signatur" ✅ **FERTIG!**
+  - [x] Test-Datei umbenannt: `cosmic_profile_test.dart` → `signature_test.dart` ✅ **FERTIG!**
+  - [ ] Datenbank-Tabelle: `birth_charts` → `signature_profiles` ❌ **OPTIONAL** (nicht kritisch)
+- [x] **i18n-Strategie umsetzen:** ✅ **100% KOMPLETT (2026-02-08 Abend)!**
+  - [x] ARB-Dateien erstellt (`app_de.arb`, `app_en.arb`) — **260+ Strings!**
+  - [x] l10n.yaml Konfiguration
+  - [x] Localizations generiert (`flutter gen-l10n`)
+  - [x] MaterialApp mit AppLocalizations konfiguriert
+  - [x] LanguageProvider (Riverpod) erstellt
+  - [x] Settings Screen mit Sprach-Switcher (🇩🇪 / 🇬🇧)
+  - [x] Profile-Tabelle: `language` Spalte hinzugefügt (Migration 004) ✅
+  - [x] UserProfileService: `updateLanguage()` implementiert ✅
+  - [x] **ALLE Screens 100% lokalisiert:** ✅
+    - [x] Login, Signup, Settings, Home, Onboarding ✅
+    - [x] Daily Horoscope Section (Tageshoroskop + Personal Insights) ✅
+    - [x] **Signature Cards (Deine Signatur):** ✅
+      - [x] Western Astrology Card: "Mehr erfahren" + Aszendent-Placeholder ✅
+      - [x] Bazi Card: "Mehr erfahren" + Elemente (Holz, Feuer, ...) + Branches (Ratte, Schwein, ...) ✅
+      - [x] Numerology Card: "Mehr erfahren" + alle Labels + erweiterte Numerologie ✅
+  - [ ] **OFFEN:** Tageshoroskop-Text aus API auf Englisch (on-demand, später)
 
 ### 🎯 SOFORT (Testing & Deployment)
 - [x] **Anthropic API Key:** ✅ **GETESTET 2026-02-08!**
@@ -121,6 +143,17 @@
   - Migration `20260207_add_daily_horoscopes.sql` ist deployed
   - Tabelle `daily_horoscopes` existiert mit Beispiel-Daten
   - Verifiziert via Supabase Dashboard (2 Testeinträge: Aries + Cancer)
+- [x] **Edge Function erstellen:** ✅ **FERTIG 2026-02-08!**
+  - `supabase/functions/generate-daily-horoscopes/index.ts` erstellt
+  - **WICHTIG:** Phase 2 Code (NICHT deployed, nur vorbereitet für später!)
+  - Generiert nur benötigte Horoskope (user-spezifisch nach Sprache)
+  - Kosten (wenn aktiviert): ~$0.50/Tag = ~$15/Monat
+  - Siehe: `docs/deployment/HOROSCOPE_STRATEGY.md`
+- [x] **Tageshoroskop-Strategie:** ✅ **PHASE 1 AKTIV!**
+  - **Aktiv:** On-Demand Generation (DailyHoroscopeService)
+  - **Inaktiv:** Edge Function + Cron Job (vorbereitet für Phase 2)
+  - **Cleanup:** Supabase Cron Job gelöscht, Edge Function nicht deployed
+  - Siehe: `docs/deployment/HOROSCOPE_STRATEGY.md` (Cleanup-Section)
 
 ## ⏳ NÄCHSTE SCHRITTE (VORHER)
 
@@ -230,13 +263,28 @@
      - ✅ Master Numbers mit ✨ Highlight
      - ✅ "Mehr erfahren" Button (TODO: Navigation)
 
-5. **i18n**
-   - ✅ Alle UI-Labels auf Deutsch (Lebensweg, Seelenwunsch, Ausdruck, etc.)
-   - ✅ Sternzeichen-Namen (DE: nameDe Property in ZodiacSign)
+5. **i18n** ✅ **100% KOMPLETT (2026-02-08 Abend)**
+   - ✅ **Flutter i18n Setup** (flutter_localizations + ARB-Dateien)
+   - ✅ **ARB-Dateien** (`app_de.arb` + `app_en.arb`) mit 260+ Strings
+   - ✅ **ALLE Screens 100% lokalisiert:**
+     - ✅ Login, Signup, Home, Onboarding, Settings
+     - ✅ Daily Horoscope Section (Tageshoroskop + Sternzeichen-Namen + Personal Insights)
+     - ✅ **Signature Cards vollständig:**
+       - ✅ Western Astrology: "Mehr erfahren" Button + Aszendent-Placeholder
+       - ✅ Bazi: "Mehr erfahren" Button + Elemente (Holz/Wood, Feuer/Fire, ...) + Branches (Ratte/Rat, Schwein/Pig, ...)
+       - ✅ Numerology: "Mehr erfahren" Button + Subtitle + Labels + Life Path Meanings + Karmic Debt + Challenges + Lessons + Bridges
+   - ✅ **Language Provider** (Riverpod StateNotifier + Supabase Sync)
+   - ✅ **Settings Screen** mit visuellem Sprachenwähler (DE 🇩🇪 / EN 🇬🇧)
+   - ✅ **UserProfile.language** Feld + Migration 004 + `updateLanguage()` Service
+   - ✅ **Dynamic Locale** (lädt Sprache aus User-Profil, speichert Änderungen in DB)
+   - ✅ Sternzeichen-Namen (DE/EN: nameDe/nameEn Property in ZodiacSign)
    - ✅ Bazi-Elemente übersetzt (Holz, Feuer, Erde, Metall, Wasser)
    - ✅ Branches übersetzt (Ratte, Büffel, Tiger, etc.)
-   - ⏳ Stems: Aktuell ohne Übersetzung (Jia, Yi, etc. bleiben)
-   - ⏳ ARB-Dateien: Noch nicht migriert (TODO für echte i18n)
+   - ⏳ Stems: Bleiben in Pinyin (Jia, Yi, etc.) — kulturell korrekt
+   - ⏳ **API-Content:** Tageshoroskop-Text bleibt gecacht (on-demand, später)
+   - 📝 **Weitere Sprachen (Backlog):** ES (Spanisch), FR (Französisch), TR (Türkisch)
+     - Strategie: Nach MVP-Launch mit DeepL API automatisiert übersetzen
+     - Einfach: Neue ARB-Datei + 2 Zeilen in LanguageProvider
 
 6. **Integration**
    - ✅ Provider: cosmicProfileProvider (cached BirthChart)
@@ -257,6 +305,20 @@
   - Numerology: Alle 30+ Zahlen + Lebensphasen (Premium)
 - [ ] **Premium-Gating** für erweiterte Berechnungen
 - [ ] **Supabase Migration:** Neue Spalten für erweiterte Daten
+
+### i18n & Mehrsprachigkeit
+- ✅ **Basis-Setup komplett:** DE + EN (300+ Strings in ARB-Dateien)
+- ✅ **Alle Screens migriert:** Login, Signup, Home, Onboarding, Settings, Signature Cards
+- ✅ **Settings Screen** mit visuellem Sprachenwähler (DE 🇩🇪 / EN 🇬🇧)
+- ✅ **Language Provider** mit Supabase-Sync (speichert Auswahl in DB)
+- ✅ **UserProfile.language** Feld hinzugefügt
+- 📋 **Weitere Sprachen (Backlog - nach MVP):**
+  - [ ] Spanisch (ES) - mit DeepL API automatisiert
+  - [ ] Französisch (FR) - mit DeepL API automatisiert
+  - [ ] Türkisch (TR) - mit DeepL API automatisiert
+  - **Strategie:** Nach MVP-Launch, wenn UI-Texte stabil sind
+  - **Aufwand:** ~2-3h manuell mit DeepL oder 10min mit DeepL API
+  - **Einfach:** Neue `app_XX.arb` kopieren + 2 Zeilen in `LanguageProvider`
 
 ### Geburtsdaten-Engine vervollständigen
 - [x] Mondzeichen-Berechnung (✅ ELP2000 Algorithmus implementiert)

@@ -237,36 +237,6 @@
   "numerologyBridgeSoulPersonality": "Seele ↔ Außen",
   "numerologyBridgeSoulMeaning": "Verbinde Innen & Außen",
 
-  "signatureLearnMore": "Mehr erfahren",
-  "signatureAscendantRequired": "Aszendent: Geburtsort-Koordinaten erforderlich",
-
-  "baziElementWood": "Holz",
-  "baziElementFire": "Feuer",
-  "baziElementEarth": "Erde",
-  "baziElementMetal": "Metall",
-  "baziElementWater": "Wasser",
-
-  "baziBranchRat": "Ratte",
-  "baziBranchOx": "Büffel",
-  "baziBranchTiger": "Tiger",
-  "baziBranchRabbit": "Hase",
-  "baziBranchDragon": "Drache",
-  "baziBranchSnake": "Schlange",
-  "baziBranchHorse": "Pferd",
-  "baziBranchGoat": "Ziege",
-  "baziBranchMonkey": "Affe",
-  "baziBranchRooster": "Hahn",
-  "baziBranchDog": "Hund",
-  "baziBranchPig": "Schwein",
-
-  "numerologySubtitle": "Deine Lebenszahlen",
-
-  "numerologyKarmicDebt13": "Faulheit → Disziplin lernen",
-  "numerologyKarmicDebt14": "Überindulgenz → Balance finden",
-  "numerologyKarmicDebt16": "Ego & Fall → Demut entwickeln",
-  "numerologyKarmicDebt19": "Machtmissbrauch → Geben lernen",
-  "numerologyKarmicDebtDefault": "Karmische Schuld",
-
   "numerologyLifepath1": "Führung & Pioniergeist",
   "numerologyLifepath2": "Harmonie & Partnerschaft",
   "numerologyLifepath3": "Kreativität & Ausdruck",
@@ -409,11 +379,4 @@
       }
     }
   }
-,
-
-  "horoscopeLoading": "Lade dein Horoskop...",
-  "horoscopeErrorTitle": "Horoskop konnte nicht geladen werden",
-  "horoscopeErrorRetry": "Bitte versuche es später erneut.",
-  "horoscopePlaceholderTitle": "Geburtsdaten fehlen",
-  "horoscopePlaceholderDescription": "Bitte vervollständige deine Geburtsdaten, um dein persönliches Horoskop zu sehen."
 }
