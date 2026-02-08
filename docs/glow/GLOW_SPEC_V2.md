@@ -1184,8 +1184,9 @@ Wird von Supabase verwaltet, keine eigenen Änderungen nötig.
 | `updated_at` | TIMESTAMPTZ | Letzte Änderung | NOT NULL |
 | **Name-Felder** | | | |
 | `display_name` | TEXT | Rufname/Username (wie User genannt werden will) | NOT NULL |
-| `full_birth_name` | TEXT | Voller Geburtsname lt. Geburtsurkunde | NULL |
-| `current_last_name` | TEXT | Aktueller Nachname (nach Heirat/Namensänderung) | NULL |
+| `full_first_names` | TEXT | Vornamen lt. Geburtsurkunde (z.B. "Natalie Frauke") | NULL |
+| `birth_name` | TEXT | Geburtsname / Maiden Name (Nachname vor Heirat) | NULL |
+| `last_name` | TEXT | Aktueller Nachname (nach Heirat/Namensänderung) | NULL |
 | **Geburtsdaten** | | | |
 | `birth_date` | DATE | Geburtsdatum | NOT NULL |
 | `birth_time` | TIME | Geburtszeit (optional) | NULL |
@@ -1198,19 +1199,20 @@ Wird von Supabase verwaltet, keine eigenen Änderungen nötig.
 | `premium_status` | BOOLEAN | Ist Premium-User? | NOT NULL, Default: FALSE |
 | `premium_until` | TIMESTAMPTZ | Premium-Abo läuft bis | NULL |
 
-**Numerologie-Logik:**
-- Wenn `full_birth_name` vorhanden → Berechne Expression/Soul Urge/Personality daraus
-- Wenn nur `display_name` → Berechne nur aus diesem Namen
-- `current_last_name` → Fließt in aktuelle Namens-Energie ein (wird mit `display_name` kombiniert)
+**Numerologie-Logik (Dual-Energy System):**
+- **Birth Energy (Urenergie):** `full_first_names` + `birth_name`
+- **Current Energy (Aktuelle Energie):** `full_first_names` + `last_name`
+- Wenn Namen identisch sind, wird nur Birth Energy angezeigt
 
 **Beispiel:**
 ```
 display_name: "Natalie"
-full_birth_name: "Natalie Frauke Günes"  (Geburtsname)
-current_last_name: "Schmidt"  (nach Heirat)
+full_first_names: "Natalie Frauke"
+birth_name: "Pawlowski"  (Geburtsname vor Heirat)
+last_name: "Günes"  (aktueller Nachname nach Heirat)
 
-→ Expression berechnet aus: "Natalie Frauke Günes"  (Geburtsname!)
-→ Aktuelle Energie aus: "Natalie Schmidt"  (aktueller Name)
+→ Birth Energy berechnet aus: "Natalie Frauke Pawlowski"  (Geburtsname!)
+→ Current Energy berechnet aus: "Natalie Frauke Günes"  (aktueller Name)
 ```
 
 **RLS (Row Level Security):**
@@ -1228,9 +1230,11 @@ CREATE POLICY "Users can update own profile"
 
 ---
 
-#### `signature_profiles`
+#### `birth_charts`
 
 **Zweck:** Berechnete astrologische Daten ("Deine Signatur" - Cache)
+
+**Hinweis:** Tabellenname ist `birth_charts` (nicht `signature_profiles`), da die Umbenennung noch aussteht.
 
 | Feld | Typ | Beschreibung | Nullable |
 |------|-----|--------------|----------|
@@ -1239,35 +1243,52 @@ CREATE POLICY "Users can update own profile"
 | `created_at` | TIMESTAMPTZ | Erste Berechnung | NOT NULL |
 | `updated_at` | TIMESTAMPTZ | Letzte Neuberechnung | NOT NULL |
 | **Western Astrology** | | | |
-| `sun_sign` | TEXT | Sonnenzeichen (z.B. "Sagittarius") | NOT NULL |
-| `sun_degree` | FLOAT | Grad im Zeichen (0-30) | NOT NULL |
+| `sun_sign` | TEXT | Sonnenzeichen (z.B. "sagittarius") | NOT NULL |
+| `sun_degree` | DOUBLE PRECISION | Grad im Zeichen (0-30) | NULL |
 | `moon_sign` | TEXT | Mondzeichen | NULL |
-| `moon_degree` | FLOAT | Grad im Zeichen | NULL |
+| `moon_degree` | DOUBLE PRECISION | Grad im Zeichen | NULL |
 | `ascendant_sign` | TEXT | Aszendent | NULL |
-| `ascendant_degree` | FLOAT | Grad im Zeichen | NULL |
+| `ascendant_degree` | DOUBLE PRECISION | Grad im Zeichen | NULL |
 | **Bazi** | | | |
-| `bazi_year_stem` | TEXT | Heavenly Stem Jahr | NOT NULL |
-| `bazi_year_branch` | TEXT | Earthly Branch Jahr | NOT NULL |
-| `bazi_month_stem` | TEXT | Heavenly Stem Monat | NOT NULL |
-| `bazi_month_branch` | TEXT | Earthly Branch Monat | NOT NULL |
-| `bazi_day_stem` | TEXT | Day Master (wichtig!) | NOT NULL |
-| `bazi_day_branch` | TEXT | Earthly Branch Tag | NOT NULL |
+| `bazi_year_stem` | TEXT | Heavenly Stem Jahr | NULL |
+| `bazi_year_branch` | TEXT | Earthly Branch Jahr | NULL |
+| `bazi_month_stem` | TEXT | Heavenly Stem Monat | NULL |
+| `bazi_month_branch` | TEXT | Earthly Branch Monat | NULL |
+| `bazi_day_stem` | TEXT | Day Master (wichtig!) | NULL |
+| `bazi_day_branch` | TEXT | Earthly Branch Tag | NULL |
 | `bazi_hour_stem` | TEXT | Heavenly Stem Stunde | NULL |
 | `bazi_hour_branch` | TEXT | Earthly Branch Stunde | NULL |
-| `bazi_dominant_element` | TEXT | Stärkstes Element | NOT NULL |
-| **Numerologie** | | | |
-| `life_path` | INTEGER | Lebenszahl (1-9, 11, 22, 33) | NOT NULL |
-| `expression` | INTEGER | Ausdruck | NOT NULL |
-| `soul_urge` | INTEGER | Seelenwunsch | NOT NULL |
-| `personality` | INTEGER | Persönlichkeit | NOT NULL |
-| `birth_day` | INTEGER | Urenergie | NOT NULL |
-| `maturity` | INTEGER | Reifezahl (Premium) | NULL |
-| `current_year` | INTEGER | Persönliches Jahr | NULL |
+| `bazi_element` | TEXT | Dominantes Element | NULL |
+| **Numerologie - Kern** | | | |
+| `life_path_number` | INTEGER | Lebenszahl (1-9, 11, 22, 33) | NULL |
+| `birthday_number` | INTEGER | Geburtstagszahl | NULL |
+| `attitude_number` | INTEGER | Haltungszahl | NULL |
+| `personal_year` | INTEGER | Persönliches Jahr | NULL |
+| `maturity_number` | INTEGER | Reifezahl | NULL |
+| **Numerologie - Birth Energy** | | | |
+| `birth_expression_number` | INTEGER | Ausdruck (Geburtsname) | NULL |
+| `birth_soul_urge_number` | INTEGER | Seelenwunsch (Geburtsname) | NULL |
+| `birth_personality_number` | INTEGER | Persönlichkeit (Geburtsname) | NULL |
+| `birth_name` | TEXT | Geburtsname (vollständig) | NULL |
+| **Numerologie - Current Energy** | | | |
+| `current_expression_number` | INTEGER | Ausdruck (aktueller Name) | NULL |
+| `current_soul_urge_number` | INTEGER | Seelenwunsch (aktueller Name) | NULL |
+| `current_personality_number` | INTEGER | Persönlichkeit (aktueller Name) | NULL |
+| `current_name` | TEXT | Aktueller Name (vollständig) | NULL |
+| **Numerologie - Erweitert** | | | |
+| `karmic_debt_life_path` | INTEGER | Karmic Debt (13/14/16/19) | NULL |
+| `karmic_debt_expression` | INTEGER | Karmic Debt Expression | NULL |
+| `karmic_debt_soul_urge` | INTEGER | Karmic Debt Soul Urge | NULL |
+| `challenge_numbers` | INTEGER[] | 4 Challenge Numbers (Array) | NULL |
+| `karmic_lessons` | INTEGER[] | Fehlende Zahlen (Array) | NULL |
+| `bridge_life_path_expression` | INTEGER | Bridge LP↔Expression | NULL |
+| `bridge_soul_urge_personality` | INTEGER | Bridge SU↔Personality | NULL |
+| `calculated_at` | TIMESTAMPTZ | Zeitpunkt der Berechnung | NOT NULL |
 
 **RLS:**
 ```sql
-CREATE POLICY "Users can view own signature"
-  ON signature_profiles FOR SELECT
+CREATE POLICY "Users can view own birth chart"
+  ON birth_charts FOR SELECT
   USING (auth.uid() = user_id);
 ```
 

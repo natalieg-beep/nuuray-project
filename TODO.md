@@ -92,16 +92,17 @@
 ### 📚 Dokumentation & Konzept-Updates
 - [x] **Onboarding-Anpassung:** ✅ **FERTIG 2026-02-08!**
   - Code auf 2 Schritte umgestellt (Name → Geburtsdaten kombiniert)
-  - Name-Felder auf 3 reduziert (displayName, fullBirthName, currentLastName)
+  - Name-Felder: **4 Felder bleiben** (displayName, fullFirstNames, birthName, lastName)
   - LIVE-Autocomplete für Geburtsort implementiert
   - Siehe: `docs/daily-logs/2026-02-08_onboarding-2-schritte.md`
-- [x] **"Cosmic Profile" → "Deine Signatur" Umbenennung:** ✅ **FERTIG 2026-02-08!**
+- [x] **"Deine Signatur" Umbenennung:** ✅ **TEILWEISE FERTIG 2026-02-08!**
   - [x] Code-Suche: `Cosmic Profile` → `Deine Signatur` (Code + UI) ✅
   - [x] Provider: `cosmicProfileProvider` → `signatureProvider` ✅
   - [x] Folder: `cosmic_profile/` → `signature/` ✅
   - [x] Screen: `CosmicProfileDashboardScreen` → `SignatureDashboardScreen` ✅
   - [x] Card-Design vereinheitlicht (alle Gradients entfernt, AppColors verwendet) ✅
-  - **Hinweis:** Datenbank nutzt bereits `birth_charts` Tabelle (keine Änderung nötig)
+  - [ ] Service: `CosmicProfileService` → `SignatureService` ❌ **NOCH NICHT**
+  - [ ] Datenbank-Tabelle: `birth_charts` → `signature_profiles` ❌ **NOCH NICHT** (optional)
 - [ ] **i18n-Strategie umsetzen:**
   - [ ] ARB-Dateien erstellen (`app_de.arb`, `app_en.arb`)
   - [ ] Settings Screen mit Sprach-Auswahl (🇩🇪 / 🇬🇧)

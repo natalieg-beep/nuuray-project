@@ -68,31 +68,30 @@ Onboarding an GLOW_SPEC_V2.md anpassen:
 ---
 
 ### 3. Name-Screen vereinfacht
+
+> **⚠️ KORREKTUR (2026-02-09):** Dieser Abschnitt dokumentiert eine Änderung die **NICHT stattgefunden hat**!
+> Die Name-Felder wurden NICHT von 4 auf 3 reduziert. Der Code hat weiterhin **4 Felder** (siehe unten).
+> Ursprüngliche Planung war 3 Felder, aber die finale Implementation behielt 4 Felder bei.
+
 **Datei:** `apps/glow/lib/src/features/onboarding/screens/onboarding_name_screen.dart`
 
-**Änderungen:**
-- ✅ **4 Felder → 3 Felder**
-- ✅ Umbenennung & Vereinfachung gemäß GLOW_SPEC_V2
-
-**Vorher (4 Felder):**
-1. `displayName` (Rufname) — PFLICHT
-2. `fullFirstNames` (Vornamen lt. Geburtsurkunde) — OPTIONAL
-3. `lastName` (Nachname) — OPTIONAL
-4. `birthName` (Geburtsname) — OPTIONAL
-
-**Jetzt (3 Felder):**
+**Tatsächliche Implementation (4 Felder):**
 1. **`displayName`** (Rufname/Username) — PFLICHT
    - "Wie sollen wir dich nennen?"
-2. **`fullBirthName`** (Voller Geburtsname) — OPTIONAL
-   - "Lt. Geburtsurkunde, für präzise Numerologie"
-   - Verwendet für: Expression, Soul Urge, Personality
-3. **`currentLastName`** (Nachname aktuell) — OPTIONAL
+2. **`fullFirstNames`** (Vornamen lt. Geburtsurkunde) — OPTIONAL
+   - "Alle Vornamen, z.B. Natalie Frauke"
+   - Für präzise Numerologie
+3. **`birthName`** (Geburtsname / Maiden Name) — OPTIONAL
+   - "Nachname vor Heirat"
+   - Für Birth Energy (Urenergie)
+4. **`lastName`** (Aktueller Nachname) — OPTIONAL
    - "Falls geändert nach Heirat/Namensänderung"
-   - Beeinflusst aktuelle Namens-Energie
+   - Für Current Energy (Aktuelle Energie)
 
-**Logik:**
-- `fullBirthName` wird für Numerologie-Berechnungen verwendet (Geburtsname)
-- `currentLastName` fließt in aktuelle Energie ein (nach Namensänderung)
+**Numerologie-Logik (Dual-Energy System):**
+- **Birth Energy:** `fullFirstNames` + `birthName` (z.B. "Natalie Frauke Pawlowski")
+- **Current Energy:** `fullFirstNames` + `lastName` (z.B. "Natalie Frauke Günes")
+- Wenn Namen identisch sind, wird nur Birth Energy angezeigt
 
 ---
 

@@ -69,12 +69,13 @@ Schütze ☀️ • Waage 🌙 • Löwe ⬆️
 
 **Neu:**
 - `display_name` (Rufname/Username) — **PFLICHT**
-- `full_birth_name` (Voller Geburtsname lt. Geburtsurkunde) — **OPTIONAL**
-- `current_last_name` (Aktueller Nachname nach Heirat/Namensänderung) — **OPTIONAL**
+- `full_first_names` (Vornamen lt. Geburtsurkunde, z.B. "Natalie Frauke") — **OPTIONAL**
+- `birth_name` (Geburtsname / Maiden Name, Nachname vor Heirat) — **OPTIONAL**
+- `last_name` (Aktueller Nachname nach Heirat/Namensänderung) — **OPTIONAL**
 
-**Numerologie-Logik:**
-- `full_birth_name` → Expression/Soul Urge/Personality (Geburtsname!)
-- `current_last_name` → Aktuelle Namens-Energie (kombiniert mit `display_name`)
+**Numerologie-Logik (Dual-Energy System):**
+- **Birth Energy (Urenergie):** `full_first_names` + `birth_name` → Expression/Soul Urge/Personality (Geburtsname!)
+- **Current Energy (Aktuelle Energie):** `full_first_names` + `last_name` → Expression/Soul Urge/Personality (aktueller Name)
 
 #### Geburtsdaten kombiniert:
 

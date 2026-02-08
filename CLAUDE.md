@@ -168,10 +168,11 @@ User öffnet App
    - Routing mit GoRouter und Auth-Guards
    - TODO: Apple Sign-In + Google Sign-In
 2. ✅ Onboarding: Geburtsdaten eingeben
-   - 3-Schritte Onboarding-Flow implementiert
-   - Name-Felder (Rufname, Vornamen lt. Geburtsurkunde, Nachname, Geburtsname)
-   - Geburtsdatum + Geburtszeit (optional)
-   - Geburtsort (Text-Input, TODO: Google Places Integration)
+   - **2-Schritte Onboarding-Flow** implementiert ✅
+   - **Schritt 1:** Name-Felder (4 Felder: Rufname, Vornamen, Geburtsname, Nachname)
+   - **Schritt 2:** Geburtsdaten kombiniert (Datum + Zeit + Ort)
+   - Geburtsdatum (Pflicht) + Geburtszeit (optional)
+   - Geburtsort mit **LIVE Google Places Autocomplete** ✅ (via Supabase Edge Function)
    - Speicherung in Supabase `profiles` Tabelle
 3. ✅ Splash Screen mit Auth/Onboarding Routing
    - Prüft Auth-Status
@@ -180,17 +181,20 @@ User öffnet App
 4. ✅ Basic Home Screen
    - Begrüßung mit Tageszeit-Anpassung
    - Tagesenergie-Card (Placeholder)
-   - Horoskop-Card (Placeholder)
+   - Horoskop-Card (zeigt User-Sternzeichen aus Profil)
    - Quick Actions (Coming Soon)
    - Logout-Funktion
-5. 🔨 Cosmic Profile Dashboard (NÄCHSTER SCHRITT)
+5. ✅ **"Deine Signatur" Dashboard** (inline auf Home Screen) ✅
    - Western Astrology Card (Sonne/Mond/Aszendent mit Graden)
    - Bazi Card (Vier Säulen, Day Master, Element Balance)
-   - Numerology Card (Life Path, Expression, Soul Urge)
-6. ⬜ Geburtsdaten-Engine: Chart berechnen
-   - Western Astrology Calculator (Sonnenzeichen, Mondzeichen, Aszendent)
-   - Bazi Calculator (Vier Säulen, Day Master, Elemente)
-   - Numerology Calculator (Life Path, Expression, Soul Urge)
+   - **Numerology Card (ERWEITERT):**
+     - Kern-Zahlen: Life Path, Birthday, Attitude, Personal Year, Maturity
+     - Name Energies: Birth Energy (expandable), Current Energy (expandable)
+     - **Erweiterte Numerologie:** Karmic Debt, Challenge Numbers, Karmic Lessons, Bridge Numbers
+6. ✅ Geburtsdaten-Engine: Chart berechnen
+   - Western Astrology Calculator (Sonnenzeichen, Mondzeichen, Aszendent) ✅
+   - Bazi Calculator (Vier Säulen, Day Master, Elemente) ✅
+   - Numerology Calculator (Life Path, Expression, Soul Urge + Erweitert) ✅
 7. ⬜ Tageshoroskop-Ansicht (gecachter Content + persönliche Akzente)
 8. ⬜ Mondphasen-Kalender
 9. ⬜ Wochen- und Monatsüberblick
@@ -198,9 +202,10 @@ User öffnet App
 11. ⬜ Premium-Gating + In-App Purchase
 12. ⬜ Push-Notifications (tägliches Horoskop)
 
-### Implementierungs-Hinweise für Cosmic Profile Dashboard
-- **Datenmodell**: `CosmicProfile` mit drei Subsystemen (Western, Bazi, Numerology)
-- **UI**: Drei Cards mit Gradient-Styles, jeweils mit "Mehr erfahren" für Premium-Details
+### Implementierungs-Hinweise für "Deine Signatur" Dashboard
+- **Datenmodell**: `BirthChart` mit drei Subsystemen (Western, Bazi, Numerology)
+- **UI**: Drei Cards mit einheitlichem Design (AppColors, kein Gradient)
 - **Berechnungen**: Calculator-Services in `nuuray_core`, nutzen Geburtsdaten aus User-Profil
-- **Supabase**: `cosmic_profiles` Tabelle mit JSONB für berechnete Daten + Cache
+- **Supabase**: `birth_charts` Tabelle mit JSONB für berechnete Daten + Cache
+- **Provider**: `signatureProvider` (nutzt `CosmicProfileService`)
 - **i18n**: Alle Sternzeichen, Elemente, Zahlen-Beschreibungen mehrsprachig
