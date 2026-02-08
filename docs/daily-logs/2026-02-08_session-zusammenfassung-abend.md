@@ -446,7 +446,7 @@ userProfileAsync.when(
 
 ## 📦 Deployment
 
-### Git Commit (TODO):
+### Git Commit ✅:
 ```bash
 git add .
 git commit -m "feat: Rufnamen-Numerologie + Web Platform Fix
@@ -470,15 +470,24 @@ Dokumentation:
 - TODO.md aktualisiert
 
 Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
+
+# Commit Hash: c7b8d25
+# 53 files changed, 8766 insertions(+), 523 deletions(-)
 ```
 
-### Supabase Migration (TODO):
-```bash
-# Migration 006 deployen
-supabase db push
+### Supabase Migration ✅:
+```sql
+-- Migration 006 deployed via Dashboard (2026-02-08, ~23:30 Uhr)
+-- URL: https://supabase.com/dashboard/project/ykkayjbplutdodummcte/sql
 
-# Oder via Dashboard:
-# https://supabase.com/dashboard/project/ykkayjbplutdodummcte/editor
+ALTER TABLE birth_charts
+ADD COLUMN IF NOT EXISTS display_name_number INTEGER;
+
+COMMENT ON COLUMN birth_charts.display_name_number IS
+  'Numerologie-Zahl des Rufnamens (1-9/11/22/33). Beispiel: "Natalie" = 8';
+
+-- Status: ✅ Erfolgreich deployed
+-- Verifiziert: Spalte `display_name_number` existiert in `birth_charts` Tabelle
 ```
 
 ---
@@ -486,11 +495,11 @@ supabase db push
 ## 📋 Offene TODOs
 
 ### Sofort:
-- [ ] App visuell testen (Chrome + macOS)
-- [ ] Display Name Number visuell prüfen
-- [ ] Web Platform Login + Profil-Load testen
-- [ ] Git Commit erstellen
-- [ ] Supabase Migration 006 deployen
+- [x] App visuell testen (Chrome + macOS) ✅
+- [x] Display Name Number visuell prüfen ✅
+- [x] Web Platform Login + Profil-Load testen ✅
+- [x] Git Commit erstellen ✅ (c7b8d25)
+- [x] Supabase Migration 006 deployen ✅ (manuell via Dashboard)
 
 ### Später:
 - [ ] Debug print() Statements für Production entfernen (oder durch Logger ersetzen)
@@ -514,5 +523,11 @@ supabase db push
 
 ---
 
-**Ende Session:** 2026-02-08, ~23:30 Uhr
-**Nächste Session:** Testing + Deployment
+**Ende Session:** 2026-02-08, ~23:45 Uhr
+**Status:** ✅ **100% KOMPLETT!**
+- ✅ Features implementiert
+- ✅ Visuell getestet (Chrome + macOS)
+- ✅ Git Commit erstellt (c7b8d25)
+- ✅ Migration deployed (via Dashboard)
+- ✅ Dokumentation vollständig
+**Nächste Session:** Weitere Features oder Polishing

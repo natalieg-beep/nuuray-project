@@ -108,7 +108,7 @@
   - Token-Usage Tracking für Kosten-Kalkulation
   - System-Prompts für konsistenten Ton (unterhaltsam, staunend, empowernd)
 - ✅ Supabase Migration: `daily_horoscopes` Tabelle
-- ✅ Supabase Migration: `display_name_number` Spalte in `birth_charts` Tabelle ✅ **FERTIG 2026-02-08!**
+- ✅ Supabase Migration: `display_name_number` Spalte in `birth_charts` Tabelle ✅ **DEPLOYED 2026-02-08!**
 - ✅ **Tageshoroskop: On-Demand Strategie (AKTIV)** — **FERTIG 2026-02-08!**
   - DailyHoroscopeService mit Cache-First + On-Demand Generation
   - Kosten Testphase: $0 | 100 User: ~$6-7/Monat
@@ -172,6 +172,7 @@
   - Migration `20260207_add_daily_horoscopes.sql` ist deployed
   - Tabelle `daily_horoscopes` existiert mit Beispiel-Daten
   - Verifiziert via Supabase Dashboard (2 Testeinträge: Aries + Cancer)
+  - **Migration `006_add_display_name_number.sql` deployed** ✅ **2026-02-08 Spätabend!**
 - [x] **Edge Function erstellen:** ✅ **FERTIG 2026-02-08!**
   - `supabase/functions/generate-daily-horoscopes/index.ts` erstellt
   - **WICHTIG:** Phase 2 Code (NICHT deployed, nur vorbereitet für später!)
