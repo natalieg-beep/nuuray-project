@@ -265,21 +265,52 @@ Wir nutzen das **pythagoräische System** (westliche Numerologie), NICHT das kab
 9: I, R
 ```
 
-#### Die 5 Kernzahlen in Nuuray Glow
+#### Die Kernzahlen in Nuuray Glow
+
+**Basis-Zahlen (immer berechnet):**
 
 | Zahl | Deutsch | Englisch | Berechnung | Aussage |
 |------|---------|----------|------------|---------|
 | 1 | **Lebensweg** | Life Path | Quersumme des **Geburtsdatums** | "Wozu bin ich hier?" — Lebensaufgabe |
-| 2 | **Ausdruck** | Expression | Quersumme des **vollständigen Namens** | "Was sind meine Talente?" |
-| 3 | **Seelenwunsch** | Soul Urge | Quersumme der **Vokale** im Namen | "Was wünsche ich mir wirklich?" |
-| 4 | **Persönlichkeit** | Personality | Quersumme der **Konsonanten** im Namen | "Wie wirke ich auf andere?" |
-| 5 | **Urenergie** | Birth Day | **Tag** des Geburtstages (1-31) reduziert | "Meine natürliche Energie" |
+| 2 | **Geburtstag** | Birthday | **Tag** des Geburtstages (1-31) reduziert | "Meine natürliche Energie" |
+| 3 | **Haltung** | Attitude | Quersumme von **Geburtstag + Geburtsmonat** | "Meine Grundhaltung" |
+| 4 | **Persönliches Jahr** | Personal Year | Quersumme von **Geburtstag + Geburtsmonat + Aktuelles Jahr** | "Thema dieses Jahres" |
+| 5 | **Reife** | Maturity | Quersumme von **Lebensweg + Ausdruck** | "Wer werde ich im Alter?" |
 
-**Plus 4 erweiterte Zahlen** (für Premium):
-- Maturity Number (Lebensweg + Ausdruck)
-- Current Year Number (persönliches Jahr)
-- Challenge Numbers (Herausforderungen)
-- Karmic Debt Numbers (11/22, 13, 14, 16, 19)
+**Name-basierte Zahlen (Dual-Energy System):**
+
+| Zahl | Deutsch | Englisch | Berechnung | Aussage |
+|------|---------|----------|------------|---------|
+| **Birth Energy** | Urenergie | Birth Name | Vornamen + Geburtsname | "Meine angeborenen Eigenschaften" |
+| • Ausdruck | | Expression | Quersumme des **vollen Geburtsnamens** | "Meine Talente bei Geburt" |
+| • Seelenwunsch | | Soul Urge | Quersumme der **Vokale** im Geburtsnamen | "Meine wahren Sehnsüchte" |
+| • Persönlichkeit | | Personality | Quersumme der **Konsonanten** im Geburtsnamen | "Wie ich geboren wirke" |
+| **Current Energy** | Aktuelle Energie | Current Name | Vornamen + Aktueller Nachname | "Meine aktuelle Energie" |
+| • Ausdruck | | Expression | Quersumme des **aktuellen Namens** | "Meine heutigen Talente" |
+| • Seelenwunsch | | Soul Urge | Quersumme der **Vokale** im aktuellen Namen | "Was ich heute will" |
+| • Persönlichkeit | | Personality | Quersumme der **Konsonanten** im aktuellen Namen | "Wie ich heute wirke" |
+
+**Erweiterte Numerologie (immer berechnet, in UI angezeigt):**
+
+| Feature | Icon | Deutsch | Englisch | Berechnung | Aussage |
+|---------|------|---------|----------|------------|---------|
+| **Karmic Debt** | ⚡ | Karmische Schuldzahl | Karmic Debt Numbers | Prüfung auf 13/14/16/19 während Reduktion | "Alte Seelen-Lektionen" |
+| **Challenges** | 🎯 | Herausforderungen | Challenge Numbers | 4 Phasen: Subtraktion von Geburtsdatum-Teilen | "Lebensaufgaben in 4 Phasen" |
+| **Karmic Lessons** | 📚 | Karmische Lektionen | Karmic Lessons | Fehlende Zahlen 1-9 im Namen | "Was muss ich lernen?" |
+| **Bridges** | 🌉 | Brückenzahlen | Bridge Numbers | Differenz zwischen Kernzahlen | "Wie verbinde ich meine Energien?" |
+
+**Karmic Debt Details:**
+- **13/4**: Faulheit → Disziplin lernen
+- **14/5**: Überindulgenz → Balance finden
+- **16/7**: Ego & Fall → Demut entwickeln
+- **19/1**: Machtmissbrauch → Geben lernen
+
+**Challenge Phases (4 Phasen):**
+- **Phase 1** (0-30 Jahre): Jugend-Herausforderung
+- **Phase 2** (30-40 Jahre): Erwachsenen-Herausforderung
+- **Phase 3** (40-60 Jahre): Reife-Herausforderung
+- **Phase 4** (60+ Jahre): Lebensziel-Herausforderung
+- **Challenge 0**: Alte Seele (keine Herausforderung mehr)
 
 #### Methode B: Meisterzahlen-erhaltend
 
@@ -592,17 +623,20 @@ Logik:
 │ Rufname / Username      │ ← PFLICHT
 │ [Natalie         ]      │
 │                         │
-│ Voller Geburtsname      │ ← OPTIONAL
-│ (lt. Geburtsurkunde)    │
-│ [Natalie Frauke Günes]  │
-│ ℹ️ Für präzise Numerologie│
+│ Vornamen lt. Geburts-   │ ← OPTIONAL
+│ urkunde                 │
+│ [Natalie Frauke  ]      │
+│ ℹ️ Alle Vornamen für     │
+│    präzise Numerologie   │
 │                         │
-│ Nachname aktuell        │ ← OPTIONAL
+│ Geburtsname (Maiden)    │ ← OPTIONAL
+│ [Pawlowski       ]      │
+│ ℹ️ Nachname vor Heirat   │
+│                         │
+│ Aktueller Nachname      │ ← OPTIONAL
 │ [Günes           ]      │
 │ ℹ️ Falls geändert nach   │
-│    Heirat/Namensänderung.│
-│    Beeinflusst deine     │
-│    aktuelle Energie.     │
+│    Heirat/Namensänderung │
 │                         │
 │         [Weiter]        │ ← CTA
 └─────────────────────────┘
@@ -610,8 +644,14 @@ Logik:
 
 **Wichtig:**
 - **Rufname/Username:** PFLICHT (wird überall in der App angezeigt)
-- **Voller Geburtsname:** OPTIONAL (für Numerologie Expression, Soul Urge, Personality)
-- **Nachname aktuell:** OPTIONAL (für aktuelle Namens-Energie, fließt jetzt schon in Numerologie ein!)
+- **Vornamen lt. Geburtsurkunde:** OPTIONAL (alle Vornamen für Numerologie)
+- **Geburtsname:** OPTIONAL (Nachname vor Heirat/Namensänderung)
+- **Aktueller Nachname:** OPTIONAL (heutiger Nachname)
+
+**Numerologie-Konzept (Dual-Energy):**
+- **Birth Energy (Urenergie):** `Vornamen + Geburtsname` (z.B. "Natalie Frauke Pawlowski")
+- **Current Energy (Aktuelle Energie):** `Vornamen + Aktueller Nachname` (z.B. "Natalie Frauke Günes")
+- Wenn Namen identisch sind, wird nur Birth Energy angezeigt
 
 **Schritt 2: Geburtsdaten (alles kombiniert)**
 ```
@@ -746,15 +786,57 @@ Logik:
 ┌─────────────────────────┐
 │ 🔢 NUMEROLOGIE          │
 ├─────────────────────────┤
-│ Lebensweg: 8            │
-│ Ausdruck: 11 ✨         │
-│ Seelenwunsch: 33 ✨     │
-│ Persönlichkeit: 5       │
-│ Urenergie: 3            │
+│ ● Lebensweg: 1          │ ← Prominent
+│   Führung & Pioniergeist│
+│                         │
+│ [Geburtstag] [Haltung]  │ ← Kompakte Chips
+│ [Jahr 2026] [Reife]     │
+│                         │
+│ 🌟 Urenergie (expandable)│ ← Birth Energy
+│ Natalie Frauke Pawlowski│
+│ └─ Ausdruck: 11 ✨      │
+│ └─ Seelenwunsch: 33 ✨  │
+│ └─ Persönlichkeit: 5    │
+│                         │
+│ ✨ Aktuelle Energie     │ ← Current Energy
+│    (expandable)         │   (nur wenn Name geändert)
+│ Natalie Frauke Günes    │
+│ └─ Ausdruck: 8          │
+│ └─ Seelenwunsch: 6      │
+│ └─ Persönlichkeit: 2    │
+│                         │
+│ ─── Erweiterte Numerologie ───│
+│                         │
+│ ⚡ Karmic Debt          │
+│ └─ Lebensweg: 19        │
+│    Machtmissbrauch →    │
+│    Geben lernen         │
+│                         │
+│ 🎯 Challenges           │
+│ [Phase 1: 3] [Phase 2: 1]│
+│ [Phase 3: 2] [Phase 4: 0]│ ← 0 = grün (alte Seele)
+│                         │
+│ 📚 Karmic Lessons       │
+│ [2] [4] [6] [8]         │ ← Fehlende Zahlen
+│                         │
+│ 🌉 Bridges              │
+│ └─ Lebensweg ↔ Ausdruck: 3│
+│    Verbinde Weg & Talent│
 │                         │
 │ [Mehr erfahren →]       │
 └─────────────────────────┘
 ```
+
+**Features:**
+- **Kern-Zahlen:** Life Path prominent, andere als Chips
+- **Dual-Energy System:** Birth Energy (Urenergie) + Current Energy (nur bei Namensänderung)
+- **Expandable Sections:** Name Energies klappbar
+- **Erweiterte Numerologie:**
+  - ⚡ Karmic Debt Numbers (13/14/16/19)
+  - 🎯 Challenge Numbers (4 Phasen, Challenge 0 grün hervorgehoben)
+  - 📚 Karmic Lessons (fehlende Zahlen 1-9)
+  - 🌉 Bridge Numbers (Verbindungen zwischen Kernzahlen)
+- **Meisterzahlen:** 11, 22, 33 mit ✨ markiert
 
 **Expandable:**
 - Tap auf Card → Detail-View mit Erklärungen
