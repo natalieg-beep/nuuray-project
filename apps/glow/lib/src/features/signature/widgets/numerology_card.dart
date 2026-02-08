@@ -34,6 +34,7 @@ class _NumerologyCardState extends State<NumerologyCard> {
 
     // Extract numbers from BirthChart
     final lifePathNumber = widget.birthChart.lifePathNumber;
+    final displayNameNumber = widget.birthChart.displayNameNumber;
     final birthdayNumber = widget.birthChart.birthdayNumber;
     final attitudeNumber = widget.birthChart.attitudeNumber;
     final personalYear = widget.birthChart.personalYear;
@@ -174,6 +175,66 @@ class _NumerologyCardState extends State<NumerologyCard> {
             ),
 
           const SizedBox(height: 16),
+
+          // Display Name Number (unter Life Path)
+          if (displayNameNumber != null)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceDark,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.primary.withOpacity(0.15),
+                    ),
+                    child: Center(
+                      child: Text(
+                        '$displayNameNumber',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.numerologyDisplayName,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: AppColors.textSecondary,
+                                fontWeight: FontWeight.w500,
+                              ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          l10n.numerologyDisplayNameMeaning,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: AppColors.textPrimary,
+                                fontSize: 10,
+                              ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (NumerologyCalculator.isMasterNumber(displayNameNumber)) ...[
+                    const SizedBox(width: 4),
+                    const Text('✨', style: TextStyle(fontSize: 16)),
+                  ],
+                ],
+              ),
+            ),
+
+          if (displayNameNumber != null) const SizedBox(height: 16),
 
           // Weitere Kern-Zahlen (Grid)
           if (birthdayNumber != null || attitudeNumber != null || personalYear != null || maturityNumber != null)

@@ -25,6 +25,7 @@ class BirthChart extends Equatable {
 
   // Numerologie - Kern-Zahlen
   final int? lifePathNumber;
+  final int? displayNameNumber; // Rufname-Numerologie (z.B. "Natalie" = 8)
   final int? birthdayNumber;
   final int? attitudeNumber;
   final int? personalYear;
@@ -78,6 +79,7 @@ class BirthChart extends Equatable {
     this.baziHourBranch,
     this.baziElement,
     this.lifePathNumber,
+    this.displayNameNumber,
     this.birthdayNumber,
     this.attitudeNumber,
     this.personalYear,
@@ -122,6 +124,7 @@ class BirthChart extends Equatable {
       baziHourBranch: json['bazi_hour_branch'] as String?,
       baziElement: json['bazi_element'] as String?,
       lifePathNumber: json['life_path_number'] as int?,
+      displayNameNumber: json['display_name_number'] as int?,
       birthdayNumber: json['birthday_number'] as int?,
       attitudeNumber: json['attitude_number'] as int?,
       personalYear: json['personal_year'] as int?,
@@ -163,6 +166,7 @@ class BirthChart extends Equatable {
     'bazi_hour_branch': baziHourBranch,
     'bazi_element': baziElement,
     'life_path_number': lifePathNumber,
+    'display_name_number': displayNameNumber,
     'birthday_number': birthdayNumber,
     'attitude_number': attitudeNumber,
     'personal_year': personalYear,

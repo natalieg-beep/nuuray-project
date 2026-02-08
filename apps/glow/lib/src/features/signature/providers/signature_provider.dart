@@ -17,6 +17,7 @@ final signatureProvider = FutureProvider<BirthChart?>((ref) async {
 
       // Geburtsdaten sammeln
       final birthDate = userProfile.birthDate;
+      if (birthDate == null) return null; // Kein Geburtsdatum = keine Berechnung möglich
 
       // Geburtszeit (falls vorhanden)
       DateTime? birthTime;
@@ -74,6 +75,7 @@ final signatureProvider = FutureProvider<BirthChart?>((ref) async {
         birthLatitude: birthLatitude,
         birthLongitude: birthLongitude,
         birthTimezone: birthTimezone,
+        displayName: userProfile.displayName,
         birthName: birthName,
         currentName: currentName,
       );

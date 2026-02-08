@@ -23,6 +23,7 @@ class SignatureService {
   /// - [birthLatitude]: Breitengrad des Geburtsortes (Optional - für Aszendent)
   /// - [birthLongitude]: Längengrad des Geburtsortes (Optional - für Aszendent)
   /// - [birthTimezone]: IANA Timezone ID (z.B. "Europe/Berlin") - für UTC-Konvertierung
+  /// - [displayName]: Rufname (Optional - für Display Name Number, z.B. "Natalie")
   /// - [birthName]: Geburtsname (Optional - für Birth Energy Numerologie)
   /// - [currentName]: Aktueller Name (Optional - für Current Energy Numerologie)
   /// - [fullName]: DEPRECATED - Legacy Parameter, nutze birthName stattdessen
@@ -35,6 +36,7 @@ class SignatureService {
     double? birthLatitude,
     double? birthLongitude,
     String? birthTimezone,
+    String? displayName,
     String? birthName,
     String? currentName,
     @Deprecated('Use birthName instead') String? fullName,
@@ -46,6 +48,7 @@ class SignatureService {
     log('   Geburtsdatum: ${birthDate.toIso8601String()}');
     log('   Hat Geburtszeit: ${birthTime != null}');
     log('   Hat Geburtsort: ${birthLatitude != null && birthLongitude != null}');
+    log('   Display Name: ${displayName ?? "nicht vorhanden"}');
     log('   Birth Name: ${effectiveBirthName ?? "nicht vorhanden"}');
     log('   Current Name: ${currentName ?? "nicht vorhanden"}');
 
@@ -203,6 +206,14 @@ class SignatureService {
       currentName: currentName,
     );
 
+    // Rufnamen-Numerologie (Display Name Number)
+    // Beispiel: "Natalie" → N+A+T+A+L+I+E = 5+1+2+1+3+9+5 = 26 → 8
+    int? displayNameNumber;
+    if (displayName != null && displayName.trim().isNotEmpty) {
+      displayNameNumber = NumerologyCalculator.calculateExpression(displayName.trim());
+      log('🔢 Display Name Number (${displayName.trim()}): $displayNameNumber${displayNameNumber != null && NumerologyCalculator.isMasterNumber(displayNameNumber) ? " ✨" : ""}');
+    }
+
     log('🔢 Life Path: ${numerologyProfile.lifePathNumber}${NumerologyCalculator.isMasterNumber(numerologyProfile.lifePathNumber) ? " ✨" : ""}');
     log('🔢 Birthday: ${numerologyProfile.birthdayNumber}');
     log('🔢 Attitude: ${numerologyProfile.attitudeNumber}');
@@ -254,6 +265,7 @@ class SignatureService {
       baziElement: dominantElement,
       // Numerologie - Kern-Zahlen
       lifePathNumber: numerologyProfile.lifePathNumber,
+      displayNameNumber: displayNameNumber,
       birthdayNumber: numerologyProfile.birthdayNumber,
       attitudeNumber: numerologyProfile.attitudeNumber,
       personalYear: numerologyProfile.personalYear,

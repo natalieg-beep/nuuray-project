@@ -15,15 +15,17 @@ final claudeApiServiceProvider = Provider<ClaudeApiService?>((ref) {
   final apiKey = dotenv.env['ANTHROPIC_API_KEY'];
 
   developer.log(
-    'ClaudeApiService Provider: API Key loaded = ${apiKey != null && apiKey.isNotEmpty ? "YES (${apiKey.substring(0, 10)}...)" : "NO"}',
+    '🔑 [ClaudeApiProvider] API Key loaded = ${apiKey != null && apiKey.isNotEmpty ? "YES (${apiKey.substring(0, 10)}...)" : "NO - CHECK .ENV FILE!"}',
     name: 'ClaudeApiProvider',
   );
 
   if (apiKey == null || apiKey.isEmpty) {
-    developer.log('⚠️ Kein API Key → kein Service (Fallback auf gecachte Horoskope)', name: 'ClaudeApiProvider');
+    developer.log('❌ [ClaudeApiProvider] KEIN API KEY GEFUNDEN!', name: 'ClaudeApiProvider');
+    developer.log('   → Prüfe ob .env Datei existiert und dotenv.load() aufgerufen wurde', name: 'ClaudeApiProvider');
     return null;
   }
 
+  developer.log('✅ [ClaudeApiProvider] Service erstellt', name: 'ClaudeApiProvider');
   return ClaudeApiService(apiKey: apiKey);
 });
 

@@ -163,8 +163,8 @@ class _OnboardingBirthdataCombinedScreenState
         _isSearching = false;
         _errorMessage = null;
 
-        // ✅ NICHT den TextField überschreiben - User-Eingabe bleibt erhalten!
-        // Der gefundene Ort wird in der grünen Success-Box angezeigt
+        // ✅ Gefundenen Ort ins TextField übernehmen
+        _searchController.text = _selectedPlace!;
       });
     } catch (e) {
       if (!mounted) return;
@@ -373,8 +373,19 @@ class _OnboardingBirthdataCombinedScreenState
               decoration: InputDecoration(
                 labelText: l10n.onboardingPlaceSearchLabel,
                 hintText: l10n.onboardingPlaceSearchHint,
-                helperText: l10n.onboardingPlaceSearchHelper,
-                prefixIcon: const Icon(Icons.place_outlined),
+                helperText: _selectedPlace != null
+                    ? '✅ Ort gefunden: $_selectedPlace'
+                    : l10n.onboardingPlaceSearchHelper,
+                helperStyle: _selectedPlace != null
+                    ? TextStyle(
+                        color: Colors.green.shade700,
+                        fontWeight: FontWeight.bold,
+                      )
+                    : null,
+                prefixIcon: Icon(
+                  Icons.place_outlined,
+                  color: _selectedPlace != null ? Colors.green : null,
+                ),
                 suffixIcon: _isSearching
                     ? const Padding(
                         padding: EdgeInsets.all(12),
@@ -384,7 +395,20 @@ class _OnboardingBirthdataCombinedScreenState
                           child: CircularProgressIndicator(strokeWidth: 2),
                         ),
                       )
-                    : null,
+                    : _selectedPlace != null
+                        ? IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              setState(() {
+                                _searchController.clear();
+                                _selectedPlace = null;
+                                _selectedLatitude = null;
+                                _selectedLongitude = null;
+                                _selectedTimezone = null;
+                              });
+                            },
+                          )
+                        : null,
               ),
             ),
             const SizedBox(height: 16),

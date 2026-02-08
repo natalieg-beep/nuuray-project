@@ -9,9 +9,12 @@ Alle Projekt-Dokumente, strukturiert nach Thema.
 ```
 docs/
 ├── README.md                                    ← Du bist hier
+├── SETUP.md                                     ← ✨ Development Setup (NEU!)
+├── QUICK_REFERENCE.md                           ← ✨ Schnellzugriff Commands (NEU!)
 ├── CHANGELOG_DOKUMENTATION.md                   ← Dokumentations-Änderungen
 ├── architecture/
-│   └── PROJECT_BRIEF.md                        ← Vollständige Architektur (alle 3 Apps)
+│   ├── PROJECT_BRIEF.md                        ← Vollständige Architektur (alle 3 Apps)
+│   └── ARCHETYP_SYSTEM.md                      ← ✨ Archetyp-System Konzept (NEU!)
 ├── glow/
 │   ├── README.md                               ← Glow-Dokumentation Übersicht
 │   ├── GLOW_SPEC_V2.md                        ← ✨ AKTUELLE Glow-Spezifikation
@@ -21,11 +24,14 @@ docs/
 │       ├── COSMIC_PROFILE_IMPLEMENTATION.md
 │       ├── GEOCODING_IMPLEMENTATION.md
 │       ├── CLAUDE_API_IMPLEMENTATION.md
+│       ├── ARCHETYP_IMPLEMENTATION_PLAN.md     ← ✨ Archetyp 4-Phasen Plan (NEU!)
 │       ├── HOROSCOPE_STRATEGY.md
 │       └── migration-daily-horoscopes-status.md ← Migration Status Tracking
 ├── daily-logs/                                  ← Tägliche Session-Logs & Zusammenfassungen
 │   ├── README.md
 │   ├── 2026-02-08_session-zusammenfassung.md  ← Session-Ergebnisse
+│   ├── 2026-02-08_archetyp-phase2-api-services.md ← ✨ Archetyp Phase 2 (NEU!)
+│   ├── 2026-02-08_supabase-cli-setup.md        ← Supabase CLI Installation
 │   ├── 2026-02-08_onboarding-2-schritte.md
 │   └── 2025-02-07_*.md                         ← Ältere Session-Logs
 └── archive/                                     ← Veraltete Dokumente
@@ -93,13 +99,18 @@ docs/
 
 | Ich will... | Dann lese... |
 |-------------|--------------|
+| **🚀 App lokal starten** | `SETUP.md` oder `QUICK_REFERENCE.md` ⭐ |
+| **⚡ Schnelle Commands nachschlagen** | `QUICK_REFERENCE.md` ⭐ |
+| **🔧 Development Setup** | `SETUP.md` (Supabase CLI, Flutter, etc.) ⭐ |
 | **Vollständigen Projekt-Überblick** | `architecture/PROJECT_BRIEF.md` |
+| **Archetyp-System verstehen** | `architecture/ARCHETYP_SYSTEM.md` ⭐ NEU! |
 | **Glow Feature entwickeln** | `glow/GLOW_SPEC_V2.md` |
 | **Verstehen, was sich geändert hat** | `glow/SPEC_CHANGELOG.md` |
 | **Cosmic Profile debuggen** | `glow/implementation/COSMIC_PROFILE_IMPLEMENTATION.md` |
 | **Claude API integrieren** | `glow/implementation/CLAUDE_API_IMPLEMENTATION.md` |
 | **Google Places debuggen** | `glow/implementation/GEOCODING_IMPLEMENTATION.md` |
 | **Horoskop-Kosten optimieren** | `glow/implementation/HOROSCOPE_STRATEGY.md` |
+| **Archetyp-System implementieren** | `glow/implementation/ARCHETYP_IMPLEMENTATION_PLAN.md` ⭐ NEU! |
 | **Sehen, was schon funktioniert** | `glow/CHANGELOG.md` |
 | **Session-Log lesen** | `daily-logs/2026-02-08_session-zusammenfassung.md` |
 | **Migration-Status prüfen** | `glow/implementation/migration-daily-horoscopes-status.md` |

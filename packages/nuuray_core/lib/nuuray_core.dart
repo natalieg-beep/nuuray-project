@@ -11,6 +11,8 @@ export 'src/models/moon_phase.dart';
 export 'src/models/daily_energy.dart';
 export 'src/models/zodiac_sign.dart';
 export 'src/models/numerology_profile.dart';
+export 'src/models/archetype/archetype.dart';
+export 'src/models/archetype/archetype_mappings.dart';
 
 // Services (Berechnungen)
 export 'src/services/zodiac_calculator.dart';

@@ -545,6 +545,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get numerologyLifePath => 'Life Path';
 
   @override
+  String get numerologyDisplayName => 'Display Name';
+
+  @override
+  String get numerologyDisplayNameMeaning => 'Your chosen energy';
+
+  @override
   String get numerologyBirthday => 'Birthday';
 
   @override
@@ -672,6 +678,81 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get baziBranchPig => 'Pig';
+
+  @override
+  String get archetypeSectionTitle => 'Your Archetype';
+
+  @override
+  String get archetypeNoSignature => 'No signature available';
+
+  @override
+  String get archetypeTapForDetails => 'Tap for details';
+
+  @override
+  String get archetypePioneer => 'The Pioneer';
+
+  @override
+  String get archetypeDiplomat => 'The Diplomat';
+
+  @override
+  String get archetypeCreative => 'The Creative';
+
+  @override
+  String get archetypeArchitect => 'The Architect';
+
+  @override
+  String get archetypeAdventurer => 'The Adventurer';
+
+  @override
+  String get archetypeMentor => 'The Mentor';
+
+  @override
+  String get archetypeSeeker => 'The Seeker';
+
+  @override
+  String get archetypeStrategist => 'The Strategist';
+
+  @override
+  String get archetypeHumanitarian => 'The Humanitarian';
+
+  @override
+  String get archetypeVisionary => 'The Visionary';
+
+  @override
+  String get archetypeMasterBuilder => 'The Master Builder';
+
+  @override
+  String get archetypeHealer => 'The Healer';
+
+  @override
+  String get baziAdjectiveSteadfast => 'steadfast';
+
+  @override
+  String get baziAdjectiveAdaptable => 'adaptable';
+
+  @override
+  String get baziAdjectiveRadiant => 'radiant';
+
+  @override
+  String get baziAdjectivePerceptive => 'perceptive';
+
+  @override
+  String get baziAdjectiveGrounded => 'grounded';
+
+  @override
+  String get baziAdjectiveNurturing => 'nurturing';
+
+  @override
+  String get baziAdjectiveResolute => 'resolute';
+
+  @override
+  String get baziAdjectiveRefined => 'refined';
+
+  @override
+  String get baziAdjectiveFlowing => 'flowing';
+
+  @override
+  String get baziAdjectiveIntuitive => 'intuitive';
 
   @override
   String get numerologySubtitle => 'Your Life Numbers';

@@ -5,6 +5,7 @@ import 'package:nuuray_ui/nuuray_ui.dart';
 
 import '../../../shared/constants/app_colors.dart';
 import '../providers/auth_provider.dart';
+import '../../profile/providers/user_profile_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -44,6 +45,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     if (!mounted) return;
 
     if (result.isSuccess) {
+      // Provider invalidieren damit Profil neu geladen wird
+      ref.invalidate(userProfileProvider);
+
       // Zum Splash → prüft Onboarding-Status und leitet weiter
       context.go('/splash');
     } else {

@@ -1,187 +1,177 @@
-# 🌙 NUURAY — Mondlicht Apps für Frauen
+# Supabase CLI
 
-**NUURAY** (arabisch *nur* = Licht + türkisch *ay* = Mond) ist eine Markenfamilie aus drei eigenständigen Apps, die Frauen durch die Synthese von westlicher Astrologie, chinesischer Astrologie (Bazi) und Numerologie unterstützen.
+[![Coverage Status](https://coveralls.io/repos/github/supabase/cli/badge.svg?branch=main)](https://coveralls.io/github/supabase/cli?branch=main) [![Bitbucket Pipelines](https://img.shields.io/bitbucket/pipelines/supabase-cli/setup-cli/master?style=flat-square&label=Bitbucket%20Canary)](https://bitbucket.org/supabase-cli/setup-cli/pipelines) [![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/sweatybridge%2Fsetup-cli?label=Gitlab%20Canary)
+](https://gitlab.com/sweatybridge/setup-cli/-/pipelines)
 
----
+[Supabase](https://supabase.io) is an open source Firebase alternative. We're building the features of Firebase using enterprise-grade open source tools.
 
-## 📱 Die drei Apps
+This repository contains all the functionality for Supabase CLI.
 
-| App | Tagline | Status | Zielgruppe |
-|-----|---------|--------|------------|
-| **🌟 Nuuray Glow** | Kosmische Unterhaltung | 🔨 **In Entwicklung** | Frauen 20-40, die Horoskope lieben |
-| **🌊 Nuuray Tide** | Zyklus & Mond | ⏳ Geplant (Phase 3) | Frauen, die ihren Zyklus tracken |
-| **🧭 Nuuray Path** | Coaching & Selbsterkenntnis | ⏳ Geplant (Phase 4) | Frauen, die sich weiterentwickeln wollen |
+- [x] Running Supabase locally
+- [x] Managing database migrations
+- [x] Creating and deploying Supabase Functions
+- [x] Generating types directly from your database schema
+- [x] Making authenticated HTTP requests to [Management API](https://supabase.com/docs/reference/api/introduction)
 
----
+## Getting started
 
-## 🎯 Das Besondere (USP)
+### Install the CLI
 
-Die meisten Horoskop-Apps zeigen nur westliche Astrologie. NUURAY kombiniert **drei Systeme** zu einer einzigen, stimmigen Aussage:
-
-- **🌟 Westliche Astrologie** — Persönlichkeitsstruktur (Sonne, Mond, Aszendent)
-- **🀄 Bazi (Vier Säulen)** — Energetische Konstitution (Day Master, Elemente)
-- **🔢 Numerologie** — Lebensweg und Talente (Life Path, Expression, Soul Urge)
-
-Diese Synthese passiert nicht als Auflistung, sondern als **ein einziger, stimmiger Text** durch die Claude API.
-
----
-
-## 🏗️ Architektur
-
-### Drei Apps, ein Backend
-
-```
-┌─────────────────────────────────────────────────────┐
-│                    SHARED LAYER                      │
-├─────────────┬─────────────────┬─────────────────────┤
-│ nuuray_core │   nuuray_api    │     nuuray_ui       │
-│ Models      │   Supabase      │     Theme           │
-│ Berechnungen│   Claude API    │     Widgets         │
-│ Logik       │   Repositories  │     i18n            │
-├─────────────┴─────────────────┴─────────────────────┤
-│                    SUPABASE                          │
-│  Auth │ PostgreSQL │ Edge Functions │ Storage        │
-└─────────────────────────────────────────────────────┘
-         ↑               ↑               ↑
-    Nuuray Glow     Nuuray Tide     Nuuray Path
-```
-
-### Tech Stack
-
-| Bereich | Technologie |
-|---------|-------------|
-| Frontend | **Flutter** (iOS + Android + Web) |
-| Backend | **Supabase** (PostgreSQL, Auth, Edge Functions) |
-| AI | **Claude API** (Anthropic) — Personalisierte Texte |
-| State Management | **Riverpod** |
-| Routing | **GoRouter** |
-| i18n | **ARB** (Deutsch + Englisch) |
-| Payments | **In-App Purchases** (Apple + Google) |
-
----
-
-## 📂 Projektstruktur
-
-```
-nuuray-project/
-├── CLAUDE.md                  # Projektanweisung für Claude AI
-├── README.md                  # ← Du bist hier
-├── TODO.md                    # Aktuelle Aufgabenliste
-│
-├── apps/
-│   ├── glow/                  # Nuuray Glow (Flutter-App)
-│   ├── tide/                  # Nuuray Tide (geplant)
-│   └── path/                  # Nuuray Path (geplant)
-│
-├── packages/
-│   ├── nuuray_core/           # Shared: Models, Services, Berechnungen
-│   ├── nuuray_api/            # Shared: Supabase Client, Claude API
-│   └── nuuray_ui/             # Shared: Theme, Widgets, i18n
-│
-├── supabase/
-│   ├── migrations/            # SQL-Migrationen (versioniert)
-│   ├── functions/             # Edge Functions (Deno/TypeScript)
-│   └── seed/                  # Seed-Daten
-│
-└── docs/                      # 📚 Vollständige Dokumentation
-    ├── README.md              # Dokumentations-Übersicht (START HIER!)
-    ├── CHANGELOG_DOKUMENTATION.md  # Dokumentations-Änderungen
-    ├── architecture/          # Architektur-Dokumentation
-    │   └── PROJECT_BRIEF.md   # Vollständige Architektur (alle 3 Apps)
-    ├── glow/                  # Glow-spezifische Dokumentation
-    │   ├── README.md          # Glow-Dokumentation Übersicht
-    │   ├── GLOW_SPEC_V2.md    # ✨ AKTUELLE Glow-Spezifikation
-    │   ├── SPEC_CHANGELOG.md  # Konzeptionelle Änderungen
-    │   ├── CHANGELOG.md       # Entwicklungs-History
-    │   └── implementation/    # Technische Implementation-Details
-    ├── daily-logs/            # Tägliche Session-Logs & Zusammenfassungen
-    └── archive/               # Veraltete Dokumente (z.B. GLOW_SPEC_V1.md)
-```
-
----
-
-## 🚀 Quick Start
-
-### Voraussetzungen
-
-- Flutter SDK (>= 3.16.0)
-- Dart SDK (>= 3.2.0)
-- Supabase Account
-- Google Cloud Account (für Places API)
-
-### Installation
+Available via [NPM](https://www.npmjs.com) as dev dependency. To install:
 
 ```bash
-# Repository klonen
-git clone https://github.com/nuuray/nuuray-project.git
-cd nuuray-project
-
-# Dependencies installieren (alle Packages)
-flutter pub get
-
-# Glow-App starten
-cd apps/glow
-flutter run
+npm i supabase --save-dev
 ```
 
-### Environment Setup
+When installing with yarn 4, you need to disable experimental fetch with the following nodejs config.
 
-1. **Supabase:**
-   - Erstelle `.env` in `apps/glow/`
-   - Füge hinzu: `SUPABASE_URL` und `SUPABASE_ANON_KEY`
+```
+NODE_OPTIONS=--no-experimental-fetch yarn add supabase
+```
 
-2. **Google Places API:**
-   - Konfiguriere API Key in Supabase Secrets
-   - Siehe: `docs/glow/implementation/GEOCODING_IMPLEMENTATION.md`
+> **Note**
+For Bun versions below v1.0.17, you must add `supabase` as a [trusted dependency](https://bun.sh/guides/install/trusted) before running `bun add -D supabase`.
 
----
+<details>
+  <summary><b>macOS</b></summary>
 
-## 📚 Dokumentation
+  Available via [Homebrew](https://brew.sh). To install:
 
-> **⭐ START HIER:** [`docs/README.md`](docs/README.md) — Vollständige Dokumentations-Übersicht
+  ```sh
+  brew install supabase/tap/supabase
+  ```
 
-### Wichtigste Dokumente
+  To install the beta release channel:
+  
+  ```sh
+  brew install supabase/tap/supabase-beta
+  brew link --overwrite supabase-beta
+  ```
+  
+  To upgrade:
 
-| Dokument | Beschreibung |
-|----------|--------------|
-| [`CLAUDE.md`](CLAUDE.md) | ⚙️ Projektanweisung für Claude AI (Tech Stack, Konventionen, Git) |
-| [`TODO.md`](TODO.md) | ✅ Aktuelle Aufgabenliste mit Status |
-| [`docs/README.md`](docs/README.md) | 📚 **Dokumentations-Hub** — Navigation zu allen Docs |
-| [`docs/glow/GLOW_SPEC_V2.md`](docs/glow/GLOW_SPEC_V2.md) | 🌟 **Aktuelle Glow-Spezifikation** (2-Schritte Onboarding, Deine Signatur) |
-| [`docs/glow/SPEC_CHANGELOG.md`](docs/glow/SPEC_CHANGELOG.md) | 📝 Konzeptionelle Änderungen (was hat sich geändert?) |
-| [`docs/architecture/PROJECT_BRIEF.md`](docs/architecture/PROJECT_BRIEF.md) | 🏗️ Vollständige Architektur (alle 3 Apps) |
-| [`docs/daily-logs/2026-02-08_session-zusammenfassung.md`](docs/daily-logs/2026-02-08_session-zusammenfassung.md) | 📅 Neueste Session-Zusammenfassung |
+  ```sh
+  brew upgrade supabase
+  ```
+</details>
 
----
+<details>
+  <summary><b>Windows</b></summary>
 
-## 🌍 Sprachen
+  Available via [Scoop](https://scoop.sh). To install:
 
-- **Entwicklungssprache:** Deutsch (Code-Kommentare, Commits, Docs)
-- **Code:** Englisch (Variablen, Klassen, Funktionen)
-- **UI:** Deutsch + Englisch (ARB-Dateien)
-- **Content:** Deutsch + Englisch (Claude API generiert beide)
+  ```powershell
+  scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
+  scoop install supabase
+  ```
 
----
+  To upgrade:
 
-## 👥 Team
+  ```powershell
+  scoop update supabase
+  ```
+</details>
 
-Solo-Entwicklerin: **Natalie Günes**
-Firma: **Be Hamarat Group Teknoloji** (İzmir, Türkei)
+<details>
+  <summary><b>Linux</b></summary>
 
----
+  Available via [Homebrew](https://brew.sh) and Linux packages.
 
-## 📝 Lizenz
+  #### via Homebrew
 
-Proprietär — Alle Rechte vorbehalten.
+  To install:
 
----
+  ```sh
+  brew install supabase/tap/supabase
+  ```
 
-## 🔗 Links
+  To upgrade:
 
-- **Supabase Dashboard:** https://supabase.com/dashboard/project/ykkayjbplutdodummcte
-- **Google Cloud Console:** https://console.cloud.google.com
-- **Claude API:** https://console.anthropic.com
+  ```sh
+  brew upgrade supabase
+  ```
 
----
+  #### via Linux packages
 
-**Stand:** 2026-02-08 | **Version:** 0.3.0 (MVP in Entwicklung)
+  Linux packages are provided in [Releases](https://github.com/supabase/cli/releases). To install, download the `.apk`/`.deb`/`.rpm`/`.pkg.tar.zst` file depending on your package manager and run the respective commands.
+
+  ```sh
+  sudo apk add --allow-untrusted <...>.apk
+  ```
+
+  ```sh
+  sudo dpkg -i <...>.deb
+  ```
+
+  ```sh
+  sudo rpm -i <...>.rpm
+  ```
+
+  ```sh
+  sudo pacman -U <...>.pkg.tar.zst
+  ```
+</details>
+
+<details>
+  <summary><b>Other Platforms</b></summary>
+
+  You can also install the CLI via [go modules](https://go.dev/ref/mod#go-install) without the help of package managers.
+
+  ```sh
+  go install github.com/supabase/cli@latest
+  ```
+
+  Add a symlink to the binary in `$PATH` for easier access:
+
+  ```sh
+  ln -s "$(go env GOPATH)/bin/cli" /usr/bin/supabase
+  ```
+
+  This works on other non-standard Linux distros.
+</details>
+
+<details>
+  <summary><b>Community Maintained Packages</b></summary>
+
+  Available via [pkgx](https://pkgx.sh/). Package script [here](https://github.com/pkgxdev/pantry/blob/main/projects/supabase.com/cli/package.yml).
+  To install in your working directory:
+
+  ```bash
+  pkgx install supabase
+  ```
+
+  Available via [Nixpkgs](https://nixos.org/). Package script [here](https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/tools/supabase-cli/default.nix).
+</details>
+
+### Run the CLI
+
+```bash
+supabase bootstrap
+```
+
+Or using npx:
+
+```bash
+npx supabase bootstrap
+```
+
+The bootstrap command will guide you through the process of setting up a Supabase project using one of the [starter](https://github.com/supabase-community/supabase-samples/blob/main/samples.json) templates.
+
+## Docs
+
+Command & config reference can be found [here](https://supabase.com/docs/reference/cli/about).
+
+## Breaking changes
+
+We follow semantic versioning for changes that directly impact CLI commands, flags, and configurations.
+
+However, due to dependencies on other service images, we cannot guarantee that schema migrations, seed.sql, and generated types will always work for the same CLI major version. If you need such guarantees, we encourage you to pin a specific version of CLI in package.json.
+
+## Developing
+
+To run from source:
+
+```sh
+# Go >= 1.22
+go run . help
+```

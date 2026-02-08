@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nuuray_core/nuuray_core.dart';
 
-import '../models/user_profile.dart';
 import '../services/user_profile_service.dart';
 
 /// Provider für den User Profile Service

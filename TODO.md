@@ -1,7 +1,7 @@
 # NUURAY GLOW — TODO Liste
 
-> Letzte Aktualisierung: 2026-02-08 (i18n VOLLSTÄNDIG! 🌍✨)
-> Stand: Auth ✅, Onboarding ✅, Geocoding ✅, Basic Home ✅, Deine Signatur ✅, Claude API ✅, Erweiterte Numerologie ✅, **Tageshoroskop On-Demand ✅, i18n DE/EN 100% ✅**
+> Letzte Aktualisierung: 2026-02-08 (Rufnamen-Numerologie + Web Platform Fix! 🔢🌐)
+> Stand: Auth ✅, Onboarding ✅, Geocoding ✅, Basic Home ✅, Deine Signatur ✅, Claude API ✅, Erweiterte Numerologie ✅, **Tageshoroskop On-Demand ✅, i18n DE/EN 100% ✅, Profile Edit (Auto-Regenerierung) ✅, Rufnamen-Numerologie ✅, Web Platform Fix ✅**
 >
 > **📚 Neue Dokumentation:**
 > - `docs/deployment/HOROSCOPE_STRATEGY.md` — **NEU!** Tageshoroskop On-Demand vs. Cron Job Strategie
@@ -19,6 +19,28 @@
 - ✅ Auth-State Management mit Riverpod
 - ✅ LoginScreen + SignupScreen
 - ✅ Router mit Auth-Guards (GoRouter + refreshListenable)
+- ✅ **Profile Edit (FINAL mit Auto-Regenerierung!)** — **FERTIG 2026-02-08!** 🔄✨
+  - EditProfileScreen mit inline Form-Feldern (Name, Geburtsdaten, Ort)
+  - Live Google Places Autocomplete für Geburtsort
+  - Change Tracking + Form-Validierung
+  - **Automatische Neuberechnung:** Chart + Archetyp-Signatur sofort nach Speichern
+  - **Kein Logout nötig** - Änderungen sofort sichtbar
+  - Workflow:
+    1. Speichert in DB
+    2. Löscht BirthChart + signature_text
+    3. Invalidiert Provider → Chart wird neu berechnet
+    4. Wartet 500ms → Lädt Chart synchron
+    5. Generiert Archetyp-Signatur NEU via Claude API
+    6. Final Invalidation → UI aktualisiert sich
+  - Settings: "Profil bearbeiten" Button
+  - Siehe: `docs/daily-logs/2026-02-08_profile-edit-FINAL.md`
+- ✅ **Web Platform Fix (Provider Caching)** — **FERTIG 2026-02-08!** 🌐
+  - Problem: Profil konnte in Chrome/Web nicht geladen werden (funktionierte aber in macOS)
+  - Root Cause: Provider wurde VOR Login initialisiert und cached `null`-Ergebnis
+  - Fix: `ref.invalidate(userProfileProvider)` nach erfolgreichem Login
+  - Bonus: Defensive DateTime-Parsing für Web-Kompatibilität
+  - Bonus: `print()` statt `log()` für Chrome Console Visibility
+  - Siehe: `docs/daily-logs/2026-02-08_web-provider-caching-fix.md`
 
 ### Onboarding
 - ✅ **2-Schritte Onboarding-Flow** (**FERTIG 2026-02-08!**) 🎉
@@ -62,13 +84,19 @@
   - Western Astrology Card (Sonne/Mond/Aszendent)
   - Bazi Card (Vier Säulen + Day Master)
   - **Numerology Card (ERWEITERT 2026-02-08!):**
-    - Kern-Zahlen: Life Path, Birthday, Attitude, Personal Year, Maturity
+    - Kern-Zahlen: Life Path, **Display Name (Rufname) ✅**, Birthday, Attitude, Personal Year, Maturity
     - Name Energies: Birth Energy (expandable), Current Energy (expandable)
     - **NEU: Erweiterte Numerologie:**
       - ⚡ Karmic Debt Numbers (13/14/16/19) mit Bedeutungen
       - 🎯 Challenge Numbers (4 Phasen als Chips)
       - 📚 Karmic Lessons (fehlende Zahlen 1-9 als Badges)
       - 🌉 Bridge Numbers (Life Path ↔ Expression, Soul ↔ Personality)
+    - **NEU: Rufnamen-Numerologie (Display Name):** ✅ **FERTIG 2026-02-08!**
+      - Zeigt numerologischen Wert des Rufnamens (z.B. "Natalie" = 8)
+      - Positioniert unter Life Path Number
+      - Kompaktes Design: 40x40 Badge + Label + Bedeutung
+      - Master Number Indicator (✨) für 11/22/33
+      - Siehe: `docs/daily-logs/2026-02-08_rufnamen-numerologie.md`
   - Einheitliches Design mit AppColors (keine Gradients)
   - Provider: `signatureProvider` (vorher: `cosmicProfileProvider`)
   - Folder: `features/signature/` (vorher: `cosmic_profile/`)
@@ -80,6 +108,7 @@
   - Token-Usage Tracking für Kosten-Kalkulation
   - System-Prompts für konsistenten Ton (unterhaltsam, staunend, empowernd)
 - ✅ Supabase Migration: `daily_horoscopes` Tabelle
+- ✅ Supabase Migration: `display_name_number` Spalte in `birth_charts` Tabelle ✅ **FERTIG 2026-02-08!**
 - ✅ **Tageshoroskop: On-Demand Strategie (AKTIV)** — **FERTIG 2026-02-08!**
   - DailyHoroscopeService mit Cache-First + On-Demand Generation
   - Kosten Testphase: $0 | 100 User: ~$6-7/Monat
@@ -192,6 +221,7 @@
 - [ ] App starten und durch Home Screen navigieren
 - [ ] **"Deine Signatur" Dashboard visuell prüfen (alle 3 Cards)**
 - [ ] **Numerologie: Erweiterte Features visuell prüfen:**
+  - [ ] **Display Name Number (Rufname) sichtbar unter Life Path** ✅ **IMPLEMENTIERT!**
   - [ ] Karmic Debt Numbers sichtbar (⚡)
   - [ ] Challenge Numbers als 4 Chips (🎯), Challenge 0 grün
   - [ ] Karmic Lessons als Warning-Badges (📚)
@@ -200,6 +230,7 @@
 - [ ] Neues Onboarding mit 4 Name-Feldern durchspielen
 - [ ] Geocoding Autocomplete testen (✅ Funktioniert grundsätzlich!)
 - [ ] Aszendent-Berechnung verifizieren (✅ Code korrekt!)
+- [ ] **Web Platform testen:** Chrome/Web Login + Profil-Load ✅ **FUNKTIONIERT!**
 
 ---
 
@@ -605,6 +636,40 @@ Wenn Geocoding morgen nicht funktioniert, **Profil manuell updaten**:
   - 🎯 Challenge Numbers (4 Lebensphasen) — Berechnung + UI
   - 📚 Karmic Lessons (Fehlende Zahlen) — Berechnung + UI
   - 🌉 Bridge Numbers (Verbindungen) — Berechnung + UI
-- ✅ BirthChart Model erweitert (7 neue Felder)
+  - 🔢 **Display Name Number (Rufname)** — Berechnung + UI + Migration ✅
+- ✅ BirthChart Model erweitert (7 neue Felder → 8 mit displayNameNumber)
 - ✅ Numerologie-Card UI komplett (Icons, Chips, Badges, Sections)
-- ✅ Dokumentation aktualisiert (TODO.md, Session-Log)
+- ✅ **Web Platform Fix:** Provider Caching nach Login behoben 🌐
+- ✅ **Defensive DateTime Parsing:** Web-kompatible Parsing-Methoden
+- ✅ Dokumentation aktualisiert (TODO.md, Session-Logs)
+
+---
+
+### Session 2026-02-08 (Spätabend) — Rufnamen-Numerologie + Web Platform Fix
+
+**Was wurde gemacht:**
+- ✅ **Rufnamen-Numerologie (Display Name Number):**
+  - BirthChart Model: `displayNameNumber` Feld hinzugefügt
+  - SignatureService: Berechnung via `NumerologyCalculator.calculateExpression()`
+  - Provider: `displayName` aus UserProfile übergeben
+  - UI: Kompakte Card unter Life Path (40x40 Badge + Label + Bedeutung)
+  - Master Number Indicator (✨) für 11/22/33
+  - Migration: `006_add_display_name_number.sql` erstellt
+  - i18n: DE + EN Keys hinzugefügt + 25+ fehlende archetyp Keys nachgetragen
+  - Dokumentation: `docs/daily-logs/2026-02-08_rufnamen-numerologie.md`
+
+- ✅ **Web Platform Fix (Provider Caching):**
+  - Problem: Profil konnte in Chrome/Web nicht geladen werden
+  - Root Cause: `userProfileProvider` wurde VOR Login initialisiert → cached `null`
+  - Fix: `ref.invalidate(userProfileProvider)` nach erfolgreichem Login
+  - Bonus: Defensive DateTime-Parsing (`_parseDateTimeSafe()`, `_parseBirthTime()`)
+  - Bonus: `print()` statt `log()` für Chrome Console Visibility
+  - Dokumentation: `docs/daily-logs/2026-02-08_web-provider-caching-fix.md`
+
+**Technische Highlights:**
+- Vollständiger Stack: Model → Service → Provider → UI → i18n → Migration
+- Pythagorean Numerology: Letter-to-number mapping (A=1, B=2, etc.)
+- Web vs Native Timing: Provider-Initialisierung unterscheidet sich
+- Riverpod Provider Lifecycle: FutureProviders cachen beim ersten Access
+
+**Status:** ✅ Beide Features komplett implementiert und dokumentiert!

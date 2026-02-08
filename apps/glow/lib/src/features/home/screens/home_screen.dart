@@ -1,24 +1,130 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:nuuray_core/nuuray_core.dart';
 import 'package:nuuray_ui/nuuray_ui.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../shared/constants/app_colors.dart';
+import '../../../core/providers/app_providers.dart';
 import '../../profile/providers/user_profile_provider.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../signature/providers/signature_provider.dart';
+import '../../signature/services/archetype_signature_service.dart';
 import '../../signature/widgets/western_astrology_card.dart';
 import '../../signature/widgets/bazi_card.dart';
 import '../../signature/widgets/numerology_card.dart';
 import '../widgets/daily_horoscope_section.dart';
+import '../widgets/archetype_header.dart';
+import '../widgets/mini_system_widgets.dart';
 
 /// Home-Screen: Hauptansicht mit Tageshoroskop, Mondphase, etc.
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  bool _isRegeneratingSignature = false;
+  bool _hasCheckedSignature = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Listen to profile changes and trigger regeneration if needed
+    ref.listenManual(userProfileProvider, (previous, next) {
+      log('👂 [HomeScreen] userProfileProvider changed');
+      next.whenData((profile) {
+        if (profile != null) {
+          log('   Profile loaded: ${profile.displayName}');
+          log('   signature_text: "${profile.signatureText}"');
+          _checkAndRegenerateSignature(profile);
+        }
+      });
+    });
+  }
+
+  /// Prüft ob signature_text NULL ist und regeneriert falls nötig
+  Future<void> _checkAndRegenerateSignature(UserProfile profile) async {
+    log('🔍 [HomeScreen] _checkAndRegenerateSignature aufgerufen');
+    log('   _isRegeneratingSignature: $_isRegeneratingSignature');
+    log('   _hasCheckedSignature: $_hasCheckedSignature');
+    log('   profile.signatureText: "${profile.signatureText}"');
+
+    if (_isRegeneratingSignature || _hasCheckedSignature) {
+      log('⏭️  [HomeScreen] Überspringe - bereits geprüft oder läuft bereits');
+      return;
+    }
+    _hasCheckedSignature = true;
+
+    if (profile.signatureText != null && profile.signatureText!.isNotEmpty) {
+      log('✅ [HomeScreen] Signatur existiert bereits - nichts zu tun');
+      return; // Signatur existiert bereits
+    }
+
+    log('🔄 [HomeScreen] signature_text ist NULL - starte Regenerierung');
+    setState(() => _isRegeneratingSignature = true);
+
+    try {
+      // Lade BirthChart
+      final supabase = Supabase.instance.client;
+      final userId = profile.id;
+
+      final chartData = await supabase
+          .from('birth_charts')
+          .select()
+          .eq('user_id', userId)
+          .maybeSingle();
+
+      if (chartData == null) {
+        log('❌ [HomeScreen] Kein BirthChart gefunden');
+        setState(() => _isRegeneratingSignature = false);
+        return;
+      }
+
+      final birthChart = BirthChart.fromJson(chartData);
+
+      // Claude API Service
+      final claudeService = ref.read(claudeApiServiceProvider);
+      if (claudeService == null) {
+        log('❌ [HomeScreen] Claude API Service nicht verfügbar');
+        setState(() => _isRegeneratingSignature = false);
+        return;
+      }
+
+      // Generiere Signatur
+      final archetypeService = ArchetypeSignatureService(
+        supabase: supabase,
+        claudeService: claudeService,
+      );
+
+      log('🤖 [HomeScreen] Starte Signatur-Generierung...');
+
+      await archetypeService.generateAndCacheArchetypeSignature(
+        userId: userId,
+        birthChart: birthChart,
+        language: profile.language,
+      );
+
+      log('✅ [HomeScreen] Signatur erfolgreich generiert');
+
+      // Invalidiere Provider damit UI neu lädt
+      ref.invalidate(userProfileProvider);
+    } catch (e, stackTrace) {
+      log('❌ [HomeScreen] Fehler bei Signatur-Regenerierung: $e');
+      log('   StackTrace: $stackTrace');
+    } finally {
+      setState(() => _isRegeneratingSignature = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final profileAsync = ref.watch(userProfileProvider);
 
@@ -54,6 +160,15 @@ class HomeScreen extends ConsumerWidget {
                   _buildHeader(context, profile.displayName),
                   const SizedBox(height: 24),
 
+                  // Zeige Regenerierungs-Hinweis falls läuft
+                  if (_isRegeneratingSignature)
+                    _buildRegenerationBanner(context),
+
+                  // === NEU: ARCHETYP-SYSTEM ===
+                  _buildArchetypeSection(context, ref, profile),
+
+                  const SizedBox(height: 24),
+
                   // Tagesenergie-Card
                   _buildDailyEnergyCard(context),
                   const SizedBox(height: 16),
@@ -84,6 +199,43 @@ class HomeScreen extends ConsumerWidget {
             child: Text('${l10n.generalError}: $error'),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildRegenerationBanner(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+      ),
+      child: Row(
+        children: [
+          const SizedBox(
+            width: 20,
+            height: 20,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: AppColors.primary,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              l10n.localeName.startsWith('de')
+                  ? 'Archetyp-Signatur wird generiert...'
+                  : 'Generating archetype signature...',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w500,
+                  ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -121,6 +273,82 @@ class HomeScreen extends ConsumerWidget {
               ),
         ),
       ],
+    );
+  }
+
+  /// Archetyp-Section: Header + 3 Mini-Widgets
+  Widget _buildArchetypeSection(
+      BuildContext context, WidgetRef ref, UserProfile profile) {
+    final l10n = AppLocalizations.of(context)!;
+    final signatureAsync = ref.watch(signatureProvider);
+
+    return signatureAsync.when(
+      data: (birthChart) {
+        if (birthChart == null) {
+          return const SizedBox.shrink();
+        }
+
+        // Erstelle Archetyp aus BirthChart + Profil
+        final archetype = Archetype.fromBirthChart(
+          lifePathNumber: birthChart.lifePathNumber ?? 1,
+          dayMasterStem: birthChart.baziDayStem ?? 'Jia',
+          signatureText: profile.signatureText, // Aus Profile laden!
+        );
+
+        return Column(
+          children: [
+            // Archetyp-Header
+            ArchetypeHeader(
+              archetype: archetype,
+              onTap: () {
+                // Zeige Snackbar mit Hinweis
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(l10n.generalComingSoon),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              },
+            ),
+
+            // 3 Mini-Widgets
+            MiniSystemWidgets(
+              birthChart: birthChart,
+              onWesternTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(l10n.generalComingSoon),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              },
+              onBaziTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(l10n.generalComingSoon),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              },
+              onNumerologyTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(l10n.generalComingSoon),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              },
+            ),
+          ],
+        );
+      },
+      loading: () => const SizedBox(
+        height: 200,
+        child: Center(
+          child: CircularProgressIndicator(color: AppColors.primary),
+        ),
+      ),
+      error: (error, stack) => const SizedBox.shrink(),
     );
   }
 

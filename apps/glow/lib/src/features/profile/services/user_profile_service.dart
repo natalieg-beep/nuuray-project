@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-import '../models/user_profile.dart';
+import 'package:nuuray_core/nuuray_core.dart';
 
 /// Service für User-Profil-Operationen (Supabase)
 class UserProfileService {
@@ -12,9 +11,11 @@ class UserProfileService {
     try {
       final userId = _supabase.auth.currentUser?.id;
       if (userId == null) {
-        log('getUserProfile: Kein User eingeloggt');
+        print('❌ getUserProfile: Kein User eingeloggt');
         return null;
       }
+
+      print('📊 getUserProfile: Lade Profil für User $userId');
 
       final response = await _supabase
           .from('profiles')
@@ -23,13 +24,19 @@ class UserProfileService {
           .maybeSingle();
 
       if (response == null) {
-        log('getUserProfile: Kein Profil gefunden für User $userId');
+        print('❌ getUserProfile: Kein Profil gefunden für User $userId');
         return null;
       }
 
-      return UserProfile.fromJson(response);
-    } catch (e) {
-      log('getUserProfile Fehler: $e');
+      print('✅ getUserProfile: Profil-Daten empfangen: ${response.keys.join(", ")}');
+
+      final profile = UserProfile.fromJson(response);
+      print('✅ getUserProfile: Profil erfolgreich geparst für ${profile.displayName}');
+
+      return profile;
+    } catch (e, stackTrace) {
+      print('❌ getUserProfile Fehler: $e');
+      print('Stack: $stackTrace');
       return null;
     }
   }

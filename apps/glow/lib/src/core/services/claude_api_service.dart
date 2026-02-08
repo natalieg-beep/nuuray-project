@@ -389,6 +389,88 @@ Warm, empathetic, empowering. Like a good coaching conversation.
     ];
     return '${date.day}. ${months[date.month - 1]} ${date.year}';
   }
+
+  /// Generiere Archetyp-Signatur-Satz (einmalig, gecacht)
+  ///
+  /// Erstellt einen personalisierten 2-3 Sätze Text, der alle drei
+  /// astrologischen Systeme zu einer stimmigen Erzählung verwebt.
+  ///
+  /// Kosten: ~200 Input + ~80 Output Tokens = ~$0.001 pro Call
+  ///
+  /// Returns: Signatur-Satz als String (2-3 Sätze, max. 200 Zeichen)
+  Future<String> generateArchetypeSignature({
+    required String archetypeName,
+    required String baziAdjective,
+    required int lifePathNumber,
+    required String sunSign,
+    String? moonSign,
+    String? ascendant,
+    required String dayMasterElement,
+    required String dominantElement,
+    required String language,
+  }) async {
+    // Import Prompt-Template dynamisch
+    final prompt = _buildArchetypeSignaturePrompt(
+      archetypeName: archetypeName,
+      baziAdjective: baziAdjective,
+      lifePathNumber: lifePathNumber,
+      sunSign: sunSign,
+      moonSign: moonSign,
+      ascendant: ascendant,
+      dayMasterElement: dayMasterElement,
+      dominantElement: dominantElement,
+      language: language,
+    );
+
+    // API Call
+    final response = await callClaude(
+      systemPrompt: 'Du bist Expertin für Astrologie und Numerologie. '
+          'Deine Texte sind warm, persönlich und einfühlsam.',
+      userPrompt: prompt,
+    );
+
+    return response.text.trim();
+  }
+
+  /// Baue Archetyp-Signatur Prompt
+  String _buildArchetypeSignaturePrompt({
+    required String archetypeName,
+    required String baziAdjective,
+    required int lifePathNumber,
+    required String sunSign,
+    String? moonSign,
+    String? ascendant,
+    required String dayMasterElement,
+    required String dominantElement,
+    required String language,
+  }) {
+    final languageName = language.toUpperCase() == 'DE' ? 'Deutsch' : 'English';
+
+    return '''
+Erstelle einen persönlichen Signatur-Satz (2-3 Sätze, max. 280 Zeichen)
+für folgendes Profil:
+
+**Sternzeichen:** $sunSign
+**Bazi Day Master:** $dayMasterElement
+**Lebenspfad:** $lifePathNumber
+
+KRITISCH - Diese drei Begriffe MÜSSEN im Text vorkommen:
+1. Sternzeichen: $sunSign
+2. Bazi Element: $dayMasterElement
+3. Lebenspfad-Zahl: $lifePathNumber
+
+Regeln:
+- Verwebe ALLE DREI SYSTEME zu EINEM poetischen Text.
+- Erwähne EXPLIZIT: $sunSign (Sternzeichen), $dayMasterElement (Bazi), $lifePathNumber (Lebenspfad).
+- Beispiel (Deutsch): "Deine feurige Schütze-Natur tanzt mit der kristallklaren Präzision des Yin-Metalls durch die Weiten des Lebens, während die Kraft der Acht den Weg zu wahrer Fülle weist."
+- Beispiel (English): "Your fiery Sagittarius nature dances with Yin Metal's crystalline precision through life's expanses, while the power of Eight points to true abundance."
+- Ton: Warm, staunend, poetisch.
+- Beginne NICHT mit "Du bist".
+- Erwähne NICHT Mond oder Aszendent - NUR die drei Hauptbegriffe!
+- Sprache: $languageName
+- Gib NUR den Signatur-Satz zurück.
+''';
+  }
 }
 
 /// Response-Model für Claude API

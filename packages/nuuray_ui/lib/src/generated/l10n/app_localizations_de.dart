@@ -547,6 +547,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get numerologyLifePath => 'Lebensweg';
 
   @override
+  String get numerologyDisplayName => 'Rufname';
+
+  @override
+  String get numerologyDisplayNameMeaning => 'Deine gewählte Energie';
+
+  @override
   String get numerologyBirthday => 'Geburtstag';
 
   @override
@@ -674,6 +680,81 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get baziBranchPig => 'Schwein';
+
+  @override
+  String get archetypeSectionTitle => 'Dein Archetyp';
+
+  @override
+  String get archetypeNoSignature => 'Keine Signatur verfügbar';
+
+  @override
+  String get archetypeTapForDetails => 'Tippe für Details';
+
+  @override
+  String get archetypePioneer => 'Die Pionierin';
+
+  @override
+  String get archetypeDiplomat => 'Die Diplomatin';
+
+  @override
+  String get archetypeCreative => 'Die Kreative';
+
+  @override
+  String get archetypeArchitect => 'Die Architektin';
+
+  @override
+  String get archetypeAdventurer => 'Die Abenteurerin';
+
+  @override
+  String get archetypeMentor => 'Die Mentorin';
+
+  @override
+  String get archetypeSeeker => 'Die Suchende';
+
+  @override
+  String get archetypeStrategist => 'Die Strategin';
+
+  @override
+  String get archetypeHumanitarian => 'Die Humanistin';
+
+  @override
+  String get archetypeVisionary => 'Die Visionärin';
+
+  @override
+  String get archetypeMasterBuilder => 'Die Meisterbauerin';
+
+  @override
+  String get archetypeHealer => 'Die Heilerin';
+
+  @override
+  String get baziAdjectiveSteadfast => 'beständige';
+
+  @override
+  String get baziAdjectiveAdaptable => 'anpassungsfähige';
+
+  @override
+  String get baziAdjectiveRadiant => 'strahlende';
+
+  @override
+  String get baziAdjectivePerceptive => 'scharfsinnige';
+
+  @override
+  String get baziAdjectiveGrounded => 'geerdete';
+
+  @override
+  String get baziAdjectiveNurturing => 'fürsorgliche';
+
+  @override
+  String get baziAdjectiveResolute => 'entschlossene';
+
+  @override
+  String get baziAdjectiveRefined => 'feine';
+
+  @override
+  String get baziAdjectiveFlowing => 'fließende';
+
+  @override
+  String get baziAdjectiveIntuitive => 'intuitive';
 
   @override
   String get numerologySubtitle => 'Deine Lebenszahlen';

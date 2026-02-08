@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nuuray_ui/nuuray_ui.dart';
 
 import '../../../core/providers/language_provider.dart';
@@ -56,8 +57,9 @@ class SettingsScreen extends ConsumerWidget {
               context,
               icon: Icons.person_outline,
               title: 'Profil bearbeiten',
+              subtitle: 'Name und Geburtsdaten ändern',
               onTap: () {
-                // TODO: Navigate to profile edit
+                context.push('/edit-profile');
               },
             ),
             const SizedBox(height: 32),

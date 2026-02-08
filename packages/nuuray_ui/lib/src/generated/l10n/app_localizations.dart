@@ -1130,6 +1130,18 @@ abstract class AppLocalizations {
   /// **'Lebensweg'**
   String get numerologyLifePath;
 
+  /// No description provided for @numerologyDisplayName.
+  ///
+  /// In de, this message translates to:
+  /// **'Rufname'**
+  String get numerologyDisplayName;
+
+  /// No description provided for @numerologyDisplayNameMeaning.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine gewählte Energie'**
+  String get numerologyDisplayNameMeaning;
+
   /// No description provided for @numerologyBirthday.
   ///
   /// In de, this message translates to:
@@ -1375,6 +1387,156 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Schwein'**
   String get baziBranchPig;
+
+  /// No description provided for @archetypeSectionTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Archetyp'**
+  String get archetypeSectionTitle;
+
+  /// No description provided for @archetypeNoSignature.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Signatur verfügbar'**
+  String get archetypeNoSignature;
+
+  /// No description provided for @archetypeTapForDetails.
+  ///
+  /// In de, this message translates to:
+  /// **'Tippe für Details'**
+  String get archetypeTapForDetails;
+
+  /// No description provided for @archetypePioneer.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Pionierin'**
+  String get archetypePioneer;
+
+  /// No description provided for @archetypeDiplomat.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Diplomatin'**
+  String get archetypeDiplomat;
+
+  /// No description provided for @archetypeCreative.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Kreative'**
+  String get archetypeCreative;
+
+  /// No description provided for @archetypeArchitect.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Architektin'**
+  String get archetypeArchitect;
+
+  /// No description provided for @archetypeAdventurer.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Abenteurerin'**
+  String get archetypeAdventurer;
+
+  /// No description provided for @archetypeMentor.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Mentorin'**
+  String get archetypeMentor;
+
+  /// No description provided for @archetypeSeeker.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Suchende'**
+  String get archetypeSeeker;
+
+  /// No description provided for @archetypeStrategist.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Strategin'**
+  String get archetypeStrategist;
+
+  /// No description provided for @archetypeHumanitarian.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Humanistin'**
+  String get archetypeHumanitarian;
+
+  /// No description provided for @archetypeVisionary.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Visionärin'**
+  String get archetypeVisionary;
+
+  /// No description provided for @archetypeMasterBuilder.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Meisterbauerin'**
+  String get archetypeMasterBuilder;
+
+  /// No description provided for @archetypeHealer.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Heilerin'**
+  String get archetypeHealer;
+
+  /// No description provided for @baziAdjectiveSteadfast.
+  ///
+  /// In de, this message translates to:
+  /// **'beständige'**
+  String get baziAdjectiveSteadfast;
+
+  /// No description provided for @baziAdjectiveAdaptable.
+  ///
+  /// In de, this message translates to:
+  /// **'anpassungsfähige'**
+  String get baziAdjectiveAdaptable;
+
+  /// No description provided for @baziAdjectiveRadiant.
+  ///
+  /// In de, this message translates to:
+  /// **'strahlende'**
+  String get baziAdjectiveRadiant;
+
+  /// No description provided for @baziAdjectivePerceptive.
+  ///
+  /// In de, this message translates to:
+  /// **'scharfsinnige'**
+  String get baziAdjectivePerceptive;
+
+  /// No description provided for @baziAdjectiveGrounded.
+  ///
+  /// In de, this message translates to:
+  /// **'geerdete'**
+  String get baziAdjectiveGrounded;
+
+  /// No description provided for @baziAdjectiveNurturing.
+  ///
+  /// In de, this message translates to:
+  /// **'fürsorgliche'**
+  String get baziAdjectiveNurturing;
+
+  /// No description provided for @baziAdjectiveResolute.
+  ///
+  /// In de, this message translates to:
+  /// **'entschlossene'**
+  String get baziAdjectiveResolute;
+
+  /// No description provided for @baziAdjectiveRefined.
+  ///
+  /// In de, this message translates to:
+  /// **'feine'**
+  String get baziAdjectiveRefined;
+
+  /// No description provided for @baziAdjectiveFlowing.
+  ///
+  /// In de, this message translates to:
+  /// **'fließende'**
+  String get baziAdjectiveFlowing;
+
+  /// No description provided for @baziAdjectiveIntuitive.
+  ///
+  /// In de, this message translates to:
+  /// **'intuitive'**
+  String get baziAdjectiveIntuitive;
 
   /// No description provided for @numerologySubtitle.
   ///

@@ -12,6 +12,7 @@ import '../../features/splash/splash_screen.dart';
 import '../../features/home/screens/home_screen.dart';
 import '../../features/signature/screens/signature_dashboard_screen.dart';
 import '../../features/settings/screens/settings_screen.dart';
+import '../../features/settings/screens/edit_profile_screen.dart';
 
 /// Router Provider
 final routerProvider = Provider<GoRouter>((ref) {
@@ -55,6 +56,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/settings',
         name: 'settings',
         builder: (context, state) => const SettingsScreen(),
+      ),
+      GoRoute(
+        path: '/edit-profile',
+        name: 'edit-profile',
+        builder: (context, state) => const EditProfileScreen(),
       ),
     ],
     redirect: (context, state) {

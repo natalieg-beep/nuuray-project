@@ -62,6 +62,20 @@ class UserProfile extends Equatable {
   /// User-Timezone (für aktuelle Zeit-Berechnungen)
   final String timezone;
 
+  // === ARCHETYP-SYSTEM ===
+  /// Archetyp-Signatur-Satz (Claude API generiert, gecacht)
+  ///
+  /// Einmalig beim Onboarding generiert. Verwebt alle drei Systeme
+  /// (Western, Bazi, Numerologie) zu einer persönlichen Erzählung.
+  ///
+  /// Beispiel: "In dir verbindet sich die präzise Kraft des Metalls
+  ///            mit einer Intuition, die andere erst in Jahren entwickeln..."
+  ///
+  /// Kann null sein wenn:
+  /// - Noch nicht generiert (z.B. API-Fehler beim Onboarding)
+  /// - User hat Onboarding vor Archetyp-System abgeschlossen
+  final String? signatureText;
+
   // === METADATA ===
   final DateTime createdAt;
   final DateTime? updatedAt;
@@ -86,6 +100,7 @@ class UserProfile extends Equatable {
     this.birthLng, // deprecated
     this.language = 'de',
     this.timezone = 'Europe/Berlin',
+    this.signatureText,
     required this.createdAt,
     this.updatedAt,
     this.onboardingCompleted = false,
@@ -110,12 +125,8 @@ class UserProfile extends Equatable {
       fullFirstNames: json['full_first_names'] as String?,
       lastName: json['last_name'] as String?,
       birthName: json['birth_name'] as String?,
-      birthDate: json['birth_date'] != null
-          ? DateTime.parse(json['birth_date'] as String)
-          : null,
-      birthTime: json['birth_time'] != null
-          ? DateTime.parse('2000-01-01 ${json['birth_time']}')
-          : null,
+      birthDate: _parseDateTimeSafe(json['birth_date']),
+      birthTime: _parseBirthTime(json['birth_time']),
       hasBirthTime: json['has_birth_time'] as bool? ?? false,
       birthCity: json['birth_city'] as String? ?? json['birth_place'] as String?,
       birthLatitude: (json['birth_latitude'] as num?)?.toDouble(),
@@ -126,14 +137,42 @@ class UserProfile extends Equatable {
       birthLng: (json['birth_lng'] as num?)?.toDouble(),
       language: json['language'] as String? ?? 'de',
       timezone: json['timezone'] as String? ?? json['birth_timezone'] as String? ?? 'Europe/Berlin',
-      createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'] as String)
-          : DateTime.now(),
-      updatedAt: json['updated_at'] != null
-          ? DateTime.parse(json['updated_at'] as String)
-          : null,
+      signatureText: json['signature_text'] as String?,
+      createdAt: _parseDateTimeSafe(json['created_at']) ?? DateTime.now(),
+      updatedAt: _parseDateTimeSafe(json['updated_at']),
       onboardingCompleted: json['onboarding_completed'] as bool? ?? false,
     );
+  }
+
+  /// Sicheres DateTime-Parsing (Web-kompatibel)
+  static DateTime? _parseDateTimeSafe(dynamic value) {
+    if (value == null) return null;
+    try {
+      return DateTime.parse(value as String);
+    } catch (e) {
+      // Fehler beim Parsing - returniere null statt zu crashen
+      return null;
+    }
+  }
+
+  /// Sicheres Parsing von Zeitstrings (HH:MM:SS Format aus DB)
+  static DateTime? _parseBirthTime(dynamic value) {
+    if (value == null) return null;
+    try {
+      final timeStr = value as String;
+      // Supabase gibt Zeit als "HH:MM:SS" zurück
+      // Wir parsen die Komponenten manuell statt String-Concatenation
+      final parts = timeStr.split(':');
+      if (parts.isEmpty) return null;
+
+      final hour = int.tryParse(parts[0]) ?? 0;
+      final minute = parts.length > 1 ? (int.tryParse(parts[1]) ?? 0) : 0;
+
+      return DateTime(2000, 1, 1, hour, minute);
+    } catch (e) {
+      // Fehler beim Parsing - returniere null statt zu crashen
+      return null;
+    }
   }
 
   Map<String, dynamic> toJson() => {
@@ -147,13 +186,13 @@ class UserProfile extends Equatable {
         ? '${birthTime!.hour.toString().padLeft(2, '0')}:${birthTime!.minute.toString().padLeft(2, '0')}'
         : null,
     'has_birth_time': hasBirthTime,
-    'birth_city': birthCity,
-    'birth_place': birthCity, // Alias für Kompatibilität
+    'birth_place': birthCity, // DB-Spalte heißt birth_place (siehe Migration 003)
     'birth_latitude': birthLatitude,
     'birth_longitude': birthLongitude,
     'birth_timezone': birthTimezone,
     'language': language,
     'timezone': timezone,
+    'signature_text': signatureText,
     'created_at': createdAt.toIso8601String(),
     'updated_at': updatedAt?.toIso8601String(),
     'onboarding_completed': onboardingCompleted,
@@ -173,6 +212,50 @@ class UserProfile extends Equatable {
     birthLongitude,
     birthTimezone,
     language,
+    signatureText,
     onboardingCompleted,
   ];
+
+  /// CopyWith für Updates
+  UserProfile copyWith({
+    String? id,
+    String? displayName,
+    String? fullFirstNames,
+    String? lastName,
+    String? birthName,
+    DateTime? birthDate,
+    DateTime? birthTime,
+    bool? hasBirthTime,
+    String? birthCity,
+    double? birthLatitude,
+    double? birthLongitude,
+    String? birthTimezone,
+    String? language,
+    String? timezone,
+    String? signatureText,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    bool? onboardingCompleted,
+  }) {
+    return UserProfile(
+      id: id ?? this.id,
+      displayName: displayName ?? this.displayName,
+      fullFirstNames: fullFirstNames ?? this.fullFirstNames,
+      lastName: lastName ?? this.lastName,
+      birthName: birthName ?? this.birthName,
+      birthDate: birthDate ?? this.birthDate,
+      birthTime: birthTime ?? this.birthTime,
+      hasBirthTime: hasBirthTime ?? this.hasBirthTime,
+      birthCity: birthCity ?? this.birthCity,
+      birthLatitude: birthLatitude ?? this.birthLatitude,
+      birthLongitude: birthLongitude ?? this.birthLongitude,
+      birthTimezone: birthTimezone ?? this.birthTimezone,
+      language: language ?? this.language,
+      timezone: timezone ?? this.timezone,
+      signatureText: signatureText ?? this.signatureText,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      onboardingCompleted: onboardingCompleted ?? this.onboardingCompleted,
+    );
+  }
 }
