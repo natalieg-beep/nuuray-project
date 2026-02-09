@@ -367,6 +367,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Für präzise Numerologie empfehlen wir, alle Felder auszufüllen. Besonders wichtig: Vornamen + Geburtsname zeigen deine Urenergie.';
 
   @override
+  String get onboardingNameNumerologyHint =>
+      'Für präzise Numerologie empfehlen wir, alle Felder auszufüllen. Besonders wichtig: Vornamen + Geburtsname zeigen deine Urenergie.';
+
+  @override
   String get onboardingBirthdataTitle => 'Wann & wo wurdest du geboren?';
 
   @override
@@ -997,10 +1001,6 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get onboardingNameLastNameHelper =>
       'Aktueller Nachname (falls geändert)';
-
-  @override
-  String get onboardingNameNumerologyHint =>
-      'Für präzise Numerologie empfehlen wir, alle Felder auszufüllen. Besonders wichtig: Vornamen + Geburtsname zeigen deine Urenergie.';
 
   @override
   String get onboardingDateLabel => 'Geburtsdatum *';

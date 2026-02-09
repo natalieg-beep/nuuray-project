@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:nuuray_core/nuuray_core.dart';
 import 'package:nuuray_ui/nuuray_ui.dart';
 
-/// Drei kompakte System-Cards (Western / Bazi / Numerologie)
+/// Drei Dashboard Mini-Widgets (Western / Bazi / Numerologie)
 ///
-/// Layout:
+/// Layout nach DASHBOARD_WIDGETS_SPEC.md:
 /// ```
-/// ┌──────────┬──────────┬──────────┐
-/// │  ☀️      │  🔥      │  🔢      │
-/// │ Western  │  Bazi    │  Numero  │
-/// │ Schütze  │  Gui     │  LP 8    │
-/// └──────────┴──────────┴──────────┘
+/// ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐
+/// │  ♐ SCHÜTZE       │  │  CHINESISCH      │  │  NUMEROLOGIE     │
+/// │  Mond: Waage     │  │  Gui · Yin-Metall│  │  Lebenszahl: 8   │
+/// │  Aszendent: Löwe │  │  Element: Wasser  │  │  Namenszahl: 8   │
+/// │  Element: Feuer  │  │  Tier: Schwein    │  │  Erfolg ·        │
+/// │                  │  │                  │  │  Manifestation   │
+/// └──────────────────┘  └──────────────────┘  └──────────────────┘
 /// ```
-///
-/// Jede Card ist tappbar und navigiert zur Detail-Ansicht des jeweiligen Systems.
 class MiniSystemWidgets extends StatelessWidget {
   final BirthChart birthChart;
   final VoidCallback onWesternTap;
@@ -31,50 +31,41 @@ class MiniSystemWidgets extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-
-    // Lokalisiere Sternzeichen
-    final sunSignLocalized = _getLocalizedZodiacSign(birthChart.sunSign, l10n);
-
-    // Bazi: Day Master = Stem + Branch (z.B. "Xin-Schwein")
     final isGerman = l10n.localeName.startsWith('de');
-    final baziStem = birthChart.baziDayStem ?? '?';
-    final baziBranch = birthChart.baziDayBranch != null
-        ? _getLocalizedBaziBranch(birthChart.baziDayBranch!, isGerman)
-        : '?';
-    final baziDayMaster = '$baziStem-$baziBranch';
-
-    // Numerologie: "Lebenspfad X"
-    final lifePathText = isGerman
-        ? 'Lebenspfad ${birthChart.lifePathNumber ?? "?"}'
-        : 'Life Path ${birthChart.lifePathNumber ?? "?"}';
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Western Astrology Card
           Expanded(
-            child: _MiniCard(
-              icon: '☀️',
-              title: l10n.signatureWesternTitle,
-              subtitle: sunSignLocalized,
+            child: _WesternCard(
+              birthChart: birthChart,
+              isGerman: isGerman,
+              l10n: l10n,
               onTap: onWesternTap,
             ),
           ),
           const SizedBox(width: 12),
+
+          // Bazi Card
           Expanded(
-            child: _MiniCard(
-              icon: '🔥',
-              title: isGerman ? 'Bazi Daymaster' : 'Bazi Day Master',
-              subtitle: baziDayMaster,
+            child: _BaziCard(
+              birthChart: birthChart,
+              isGerman: isGerman,
+              l10n: l10n,
               onTap: onBaziTap,
             ),
           ),
           const SizedBox(width: 12),
+
+          // Numerology Card
           Expanded(
-            child: _MiniCard(
-              icon: '🔢',
-              title: l10n.signatureNumerologyTitle,
-              subtitle: lifePathText,
+            child: _NumerologyCard(
+              birthChart: birthChart,
+              isGerman: isGerman,
+              l10n: l10n,
               onTap: onNumerologyTap,
             ),
           ),
@@ -82,12 +73,100 @@ class MiniSystemWidgets extends StatelessWidget {
       ),
     );
   }
+}
 
-  /// Lokalisiere Sternzeichen-Namen
-  String _getLocalizedZodiacSign(String signKey, AppLocalizations l10n) {
-    final isGerman = l10n.localeName.startsWith('de');
+/// Western Astrology Card
+class _WesternCard extends StatelessWidget {
+  final BirthChart birthChart;
+  final bool isGerman;
+  final AppLocalizations l10n;
+  final VoidCallback onTap;
 
-    switch (signKey) {
+  const _WesternCard({
+    required this.birthChart,
+    required this.isGerman,
+    required this.l10n,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final sunSign = birthChart.sunSign ?? 'aries';
+    final moonSign = birthChart.moonSign;
+    final ascendant = birthChart.ascendantSign;
+
+    // Lokalisiere Sternzeichen
+    final sunSignName = _getLocalizedZodiacSign(sunSign, isGerman);
+    final moonSignName =
+        moonSign != null ? _getLocalizedZodiacSign(moonSign, isGerman) : null;
+    final ascendantName = ascendant != null
+        ? _getLocalizedZodiacSign(ascendant, isGerman)
+        : null;
+
+    // Western Element (aus Sonnenzeichen)
+    final element = DashboardHelpers.getWesternElement(sunSign);
+    final elementName = _getLocalizedWesternElement(element, isGerman);
+
+    // Icon: Sternzeichen-Emoji
+    final icon = DashboardHelpers.getZodiacEmoji(sunSign);
+
+    return _MiniCard(
+      icon: icon,
+      title: isGerman ? 'WESTERN' : 'WESTERN',
+      onTap: onTap,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Sonnenzeichen (GROSS)
+          Text(
+            sunSignName.toUpperCase(),
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF2C2416), // Dunkelbraun
+            ),
+          ),
+          const SizedBox(height: 6),
+
+          // Mond (optional)
+          if (moonSignName != null) ...[
+            Text(
+              '${isGerman ? 'Mond' : 'Moon'}: $moonSignName',
+              style: const TextStyle(
+                fontSize: 11,
+                color: Color(0xFF8B7355), // Bronze
+              ),
+            ),
+            const SizedBox(height: 2),
+          ],
+
+          // Aszendent (optional)
+          if (ascendantName != null) ...[
+            Text(
+              '${isGerman ? 'Aszendent' : 'Ascendant'}: $ascendantName',
+              style: const TextStyle(
+                fontSize: 11,
+                color: Color(0xFF8B7355),
+              ),
+            ),
+            const SizedBox(height: 2),
+          ],
+
+          // Element
+          Text(
+            '${isGerman ? 'Element' : 'Element'}: $elementName',
+            style: const TextStyle(
+              fontSize: 11,
+              color: Color(0xFF8B7355),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _getLocalizedZodiacSign(String signKey, bool isGerman) {
+    switch (signKey.toLowerCase()) {
       case 'aries':
         return isGerman ? 'Widder' : 'Aries';
       case 'taurus':
@@ -117,61 +196,205 @@ class MiniSystemWidgets extends StatelessWidget {
     }
   }
 
-  /// Lokalisiere Bazi Branch (Tierzeichen)
-  String _getLocalizedBaziBranch(String branch, bool isGerman) {
-    switch (branch) {
-      case 'Rat':
-        return isGerman ? 'Ratte' : 'Rat';
-      case 'Ox':
-        return isGerman ? 'Büffel' : 'Ox';
-      case 'Tiger':
-        return isGerman ? 'Tiger' : 'Tiger';
-      case 'Rabbit':
-        return isGerman ? 'Hase' : 'Rabbit';
-      case 'Dragon':
-        return isGerman ? 'Drache' : 'Dragon';
-      case 'Snake':
-        return isGerman ? 'Schlange' : 'Snake';
-      case 'Horse':
-        return isGerman ? 'Pferd' : 'Horse';
-      case 'Goat':
-        return isGerman ? 'Ziege' : 'Goat';
-      case 'Monkey':
-        return isGerman ? 'Affe' : 'Monkey';
-      case 'Rooster':
-        return isGerman ? 'Hahn' : 'Rooster';
-      case 'Dog':
-        return isGerman ? 'Hund' : 'Dog';
-      case 'Pig':
-        return isGerman ? 'Schwein' : 'Pig';
-      default:
-        return branch;
+  String _getLocalizedWesternElement(WesternElement element, bool isGerman) {
+    switch (element) {
+      case WesternElement.fire:
+        return isGerman ? 'Feuer' : 'Fire';
+      case WesternElement.earth:
+        return isGerman ? 'Erde' : 'Earth';
+      case WesternElement.air:
+        return isGerman ? 'Luft' : 'Air';
+      case WesternElement.water:
+        return isGerman ? 'Wasser' : 'Water';
     }
   }
 }
 
-/// Einzelne Mini-Card
-class _MiniCard extends StatelessWidget {
-  final String icon;
-  final String title;
-  final String subtitle;
+/// Bazi Card
+class _BaziCard extends StatelessWidget {
+  final BirthChart birthChart;
+  final bool isGerman;
+  final AppLocalizations l10n;
   final VoidCallback onTap;
 
-  const _MiniCard({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
+  const _BaziCard({
+    required this.birthChart,
+    required this.isGerman,
+    required this.l10n,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final dayStem = birthChart.baziDayStem ?? 'Jia';
+    final dominantElement = birthChart.baziElement ?? 'Wood';
+    final yearBranch = birthChart.baziYearBranch ?? 'Rat';
 
+    // Day Master formatiert: "Gui · Yin-Wasser"
+    final dayMasterFormatted = DashboardHelpers.formatDayMaster(dayStem);
+
+    // Dominantes Element lokalisiert
+    final elementName = _getLocalizedBaziElement(dominantElement, isGerman);
+
+    // Jahrestier lokalisiert
+    final yearAnimal =
+        DashboardHelpers.getYearAnimal(yearBranch, isGerman: isGerman);
+
+    // Icon: Jahrestier-Emoji
+    final icon = DashboardHelpers.getYearAnimalEmoji(yearBranch);
+
+    return _MiniCard(
+      icon: icon,
+      title: isGerman ? 'CHINESISCH' : 'CHINESE',
+      onTap: onTap,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Day Master
+          Text(
+            dayMasterFormatted,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF2C2416),
+            ),
+          ),
+          const SizedBox(height: 6),
+
+          // Dominantes Element
+          Text(
+            '${isGerman ? 'Element' : 'Element'}: $elementName',
+            style: const TextStyle(
+              fontSize: 11,
+              color: Color(0xFF8B7355),
+            ),
+          ),
+          const SizedBox(height: 2),
+
+          // Jahrestier
+          Text(
+            '${isGerman ? 'Tier' : 'Animal'}: $yearAnimal',
+            style: const TextStyle(
+              fontSize: 11,
+              color: Color(0xFF8B7355),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _getLocalizedBaziElement(String element, bool isGerman) {
+    switch (element.toLowerCase()) {
+      case 'wood':
+        return isGerman ? 'Holz' : 'Wood';
+      case 'fire':
+        return isGerman ? 'Feuer' : 'Fire';
+      case 'earth':
+        return isGerman ? 'Erde' : 'Earth';
+      case 'metal':
+        return isGerman ? 'Metall' : 'Metal';
+      case 'water':
+        return isGerman ? 'Wasser' : 'Water';
+      default:
+        return element;
+    }
+  }
+}
+
+/// Numerology Card
+class _NumerologyCard extends StatelessWidget {
+  final BirthChart birthChart;
+  final bool isGerman;
+  final AppLocalizations l10n;
+  final VoidCallback onTap;
+
+  const _NumerologyCard({
+    required this.birthChart,
+    required this.isGerman,
+    required this.l10n,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final lifePathNumber = birthChart.lifePathNumber ?? 1;
+    final displayNameNumber = birthChart.displayNameNumber;
+
+    // Keywords
+    final keywords = DashboardHelpers.getLifePathKeywords(
+      lifePathNumber,
+      isGerman: isGerman,
+    );
+
+    // Icon: Zahlen-Emoji
+    final icon = DashboardHelpers.getNumberEmoji(lifePathNumber);
+
+    return _MiniCard(
+      icon: icon,
+      title: isGerman ? 'NUMEROLOGIE' : 'NUMEROLOGY',
+      onTap: onTap,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Lebenszahl
+          Text(
+            '${isGerman ? 'Lebenszahl' : 'Life Path'}: $lifePathNumber',
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF2C2416),
+            ),
+          ),
+          const SizedBox(height: 6),
+
+          // Namenszahl (optional)
+          if (displayNameNumber != null) ...[
+            Text(
+              '${isGerman ? 'Namenszahl' : 'Name Number'}: $displayNameNumber',
+              style: const TextStyle(
+                fontSize: 11,
+                color: Color(0xFF8B7355),
+              ),
+            ),
+            const SizedBox(height: 4),
+          ],
+
+          // Keywords
+          Text(
+            keywords,
+            style: const TextStyle(
+              fontSize: 11,
+              color: Color(0xFF8B7355),
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Basis-Widget für Mini-Cards
+class _MiniCard extends StatelessWidget {
+  final String icon;
+  final String title;
+  final Widget child;
+  final VoidCallback onTap;
+
+  const _MiniCard({
+    required this.icon,
+    required this.title,
+    required this.child,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
@@ -188,36 +411,29 @@ class _MiniCard extends StatelessWidget {
           ],
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Icon
+            // Icon (größer)
             Text(
               icon,
-              style: const TextStyle(fontSize: 28),
+              style: const TextStyle(fontSize: 32),
             ),
             const SizedBox(height: 8),
 
             // Title
             Text(
               title,
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: const Color(0xFF8B7355), // Bronze
+              style: const TextStyle(
+                fontSize: 10,
                 fontWeight: FontWeight.w600,
+                color: Color(0xFF8B7355), // Bronze
+                letterSpacing: 0.5,
               ),
-              textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 8),
 
-            // Subtitle
-            Text(
-              subtitle,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: const Color(0xFF2C2416), // Dunkelbraun
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
+            // Content
+            child,
           ],
         ),
       ),

@@ -124,6 +124,7 @@
   "onboardingNameCurrentHint": "e.g. Günes",
   "onboardingNameCurrentHelper": "Current last name (if changed)",
   "onboardingNameInfoText": "For precise numerology, we recommend filling in all fields. Especially important: First names + Birth name show your original energy.",
+  "onboardingNameNumerologyHint": "Your display name reveals much about your energy. In numerology, each letter has a numerical value — we use this to calculate your personal name number.",
 
   "onboardingBirthdataTitle": "When & where were you born?",
   "onboardingBirthdataSubtitle": "Your birth data determines your cosmic signature.",

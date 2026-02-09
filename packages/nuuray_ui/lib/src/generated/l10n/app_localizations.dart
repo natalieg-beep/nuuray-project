@@ -794,6 +794,12 @@ abstract class AppLocalizations {
   /// **'Für präzise Numerologie empfehlen wir, alle Felder auszufüllen. Besonders wichtig: Vornamen + Geburtsname zeigen deine Urenergie.'**
   String get onboardingNameInfoText;
 
+  /// No description provided for @onboardingNameNumerologyHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Für präzise Numerologie empfehlen wir, alle Felder auszufüllen. Besonders wichtig: Vornamen + Geburtsname zeigen deine Urenergie.'**
+  String get onboardingNameNumerologyHint;
+
   /// No description provided for @onboardingBirthdataTitle.
   ///
   /// In de, this message translates to:
@@ -2011,12 +2017,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Aktueller Nachname (falls geändert)'**
   String get onboardingNameLastNameHelper;
-
-  /// No description provided for @onboardingNameNumerologyHint.
-  ///
-  /// In de, this message translates to:
-  /// **'Für präzise Numerologie empfehlen wir, alle Felder auszufüllen. Besonders wichtig: Vornamen + Geburtsname zeigen deine Urenergie.'**
-  String get onboardingNameNumerologyHint;
 
   /// No description provided for @onboardingDateLabel.
   ///

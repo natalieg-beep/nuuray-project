@@ -124,6 +124,7 @@
   "onboardingNameCurrentHint": "z.B. Günes",
   "onboardingNameCurrentHelper": "Aktueller Nachname (falls geändert)",
   "onboardingNameInfoText": "Für präzise Numerologie empfehlen wir, alle Felder auszufüllen. Besonders wichtig: Vornamen + Geburtsname zeigen deine Urenergie.",
+  "onboardingNameNumerologyHint": "Dein Rufname verrät viel über deine Energie. In der Numerologie hat jeder Buchstabe einen Zahlenwert — daraus berechnen wir deine persönliche Namenszahl.",
 
   "onboardingBirthdataTitle": "Wann & wo wurdest du geboren?",
   "onboardingBirthdataSubtitle": "Deine Geburtsdaten bestimmen deine kosmische Signatur.",
