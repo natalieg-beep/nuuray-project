@@ -14,10 +14,13 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 // Konfiguration
-const supabaseUrl = 'https://yrbsgzlswnzrtqscgapy.supabase.co';
+const supabaseUrl = 'https://ykkayjbplutdodummcte.supabase.co';
 const claudeApiUrl = 'https://api.anthropic.com/v1/messages';
 
 void main(List<String> args) async {
+  // .env Datei laden (falls vorhanden)
+  _loadEnvFile();
+
   // Args parsen
   final locale = args.contains('--locale')
       ? args[args.indexOf('--locale') + 1]
@@ -31,7 +34,7 @@ void main(List<String> args) async {
 
   // Env-Variablen prüfen
   final supabaseKey = Platform.environment['SUPABASE_SERVICE_ROLE_KEY'];
-  final claudeKey = Platform.environment['CLAUDE_API_KEY'];
+  final claudeKey = Platform.environment['ANTHROPIC_API_KEY'] ?? Platform.environment['CLAUDE_API_KEY'];
 
   if (supabaseKey == null || claudeKey == null) {
     print('❌ Fehler: SUPABASE_SERVICE_ROLE_KEY und CLAUDE_API_KEY müssen gesetzt sein.');
@@ -281,4 +284,29 @@ class GenerationResult {
   const GenerationResult({required this.description, required this.cost});
   final String description;
   final double cost;
+}
+
+/// Lädt .env Datei in Umgebungsvariablen
+void _loadEnvFile() {
+  try {
+    final envFile = File('apps/glow/.env');
+    if (!envFile.existsSync()) {
+      return;
+    }
+
+    final lines = envFile.readAsLinesSync();
+    for (final line in lines) {
+      final trimmed = line.trim();
+      if (trimmed.isEmpty || trimmed.startsWith('#')) continue;
+
+      final parts = trimmed.split('=');
+      if (parts.length >= 2) {
+        final key = parts[0].trim();
+        final value = parts.sublist(1).join('=').trim();
+        Platform.environment[key] = value;
+      }
+    }
+  } catch (e) {
+    // Ignoriere Fehler beim Laden
+  }
 }
