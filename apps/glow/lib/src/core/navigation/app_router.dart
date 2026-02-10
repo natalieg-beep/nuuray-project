@@ -10,9 +10,12 @@ import '../../features/auth/providers/auth_provider.dart';
 import '../../features/onboarding/screens/onboarding_flow_screen.dart';
 import '../../features/splash/splash_screen.dart';
 import '../../features/home/screens/home_screen.dart';
-import '../../features/signature/screens/signature_dashboard_screen.dart';
+import '../../features/signature/screens/signature_screen.dart';
+import '../../features/moon/screens/moon_screen.dart';
+import '../../features/insights/screens/insights_screen.dart';
 import '../../features/settings/screens/settings_screen.dart';
 import '../../features/settings/screens/edit_profile_screen.dart';
+import '../widgets/scaffold_with_nav_bar.dart';
 
 /// Router Provider
 final routerProvider = Provider<GoRouter>((ref) {
@@ -22,6 +25,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/splash',
     routes: [
+      // Auth & Onboarding Routes (ohne Bottom Nav)
       GoRoute(
         path: '/splash',
         name: 'splash',
@@ -42,16 +46,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: 'onboarding',
         builder: (context, state) => const OnboardingFlowScreen(),
       ),
-      GoRoute(
-        path: '/home',
-        name: 'home',
-        builder: (context, state) => const HomeScreen(),
-      ),
-      GoRoute(
-        path: '/signature',
-        name: 'signature',
-        builder: (context, state) => const SignatureDashboardScreen(),
-      ),
+
+      // Settings & Profile Routes (ohne Bottom Nav, aber mit Back Button)
       GoRoute(
         path: '/settings',
         name: 'settings',
@@ -61,6 +57,43 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/edit-profile',
         name: 'edit-profile',
         builder: (context, state) => const EditProfileScreen(),
+      ),
+
+      // Main App Routes (mit Bottom Navigation)
+      ShellRoute(
+        builder: (context, state, child) {
+          return ScaffoldWithNavBar(child: child);
+        },
+        routes: [
+          GoRoute(
+            path: '/home',
+            name: 'home',
+            pageBuilder: (context, state) => NoTransitionPage(
+              child: const HomeScreen(),
+            ),
+          ),
+          GoRoute(
+            path: '/signature',
+            name: 'signature',
+            pageBuilder: (context, state) => NoTransitionPage(
+              child: const SignatureScreen(),
+            ),
+          ),
+          GoRoute(
+            path: '/moon',
+            name: 'moon',
+            pageBuilder: (context, state) => NoTransitionPage(
+              child: const MoonScreen(),
+            ),
+          ),
+          GoRoute(
+            path: '/insights',
+            name: 'insights',
+            pageBuilder: (context, state) => NoTransitionPage(
+              child: const InsightsScreen(),
+            ),
+          ),
+        ],
       ),
     ],
     redirect: (context, state) {

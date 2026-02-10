@@ -152,7 +152,7 @@ class NuurayTheme {
         elevation: 0,
         scrolledUnderElevation: 0.5,
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: c.surface,
         elevation: 0,
         shape: RoundedRectangleBorder(
