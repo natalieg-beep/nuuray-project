@@ -57,17 +57,17 @@ class SignatureScreen extends ConsumerWidget {
 
                 // 2. Western Astrology Section
                 WesternAstrologySection(
-                  westernChart: birthChart.westernChart,
+                  birthChart: birthChart,
                 ),
 
                 // 3. Bazi Section
                 BaziSection(
-                  baziChart: birthChart.baziChart,
+                  birthChart: birthChart,
                 ),
 
                 // 4. Numerology Section
                 NumerologySection(
-                  numerologyChart: birthChart.numerologyChart,
+                  birthChart: birthChart,
                 ),
 
                 // 5. Premium Synthesis Section

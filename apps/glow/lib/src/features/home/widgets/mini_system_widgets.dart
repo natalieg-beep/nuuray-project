@@ -35,41 +35,44 @@ class MiniSystemWidgets extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Western Astrology Card
-          Expanded(
-            child: _WesternCard(
-              birthChart: birthChart,
-              isGerman: isGerman,
-              l10n: l10n,
-              onTap: onWesternTap,
+      child: IntrinsicHeight(
+        // Sorgt dafür dass alle Cards gleich hoch werden
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Western Astrology Card
+            Expanded(
+              child: _WesternCard(
+                birthChart: birthChart,
+                isGerman: isGerman,
+                l10n: l10n,
+                onTap: onWesternTap,
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
+            const SizedBox(width: 12),
 
-          // Bazi Card
-          Expanded(
-            child: _BaziCard(
-              birthChart: birthChart,
-              isGerman: isGerman,
-              l10n: l10n,
-              onTap: onBaziTap,
+            // Bazi Card
+            Expanded(
+              child: _BaziCard(
+                birthChart: birthChart,
+                isGerman: isGerman,
+                l10n: l10n,
+                onTap: onBaziTap,
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
+            const SizedBox(width: 12),
 
-          // Numerology Card
-          Expanded(
-            child: _NumerologyCard(
-              birthChart: birthChart,
-              isGerman: isGerman,
-              l10n: l10n,
-              onTap: onNumerologyTap,
+            // Numerology Card
+            Expanded(
+              child: _NumerologyCard(
+                birthChart: birthChart,
+                isGerman: isGerman,
+                l10n: l10n,
+                onTap: onNumerologyTap,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -337,28 +340,44 @@ class _NumerologyCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Lebenszahl
-          Text(
-            '${isGerman ? 'Lebenszahl' : 'Life Path'}: $lifePathNumber',
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF2C2416),
-            ),
-          ),
-          const SizedBox(height: 6),
-
-          // Namenszahl (optional)
+          // Zahlen (kompakt: "8 · 8")
           if (displayNameNumber != null) ...[
             Text(
-              '${isGerman ? 'Namenszahl' : 'Name Number'}: $displayNameNumber',
+              '$lifePathNumber · $displayNameNumber',
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF2C2416),
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              isGerman ? 'Lebens- und Namenszahl' : 'Life Path & Name Number',
               style: const TextStyle(
                 fontSize: 11,
                 color: Color(0xFF8B7355),
               ),
             ),
+          ] else ...[
+            // Nur Lebenszahl (wenn keine Namenszahl)
+            Text(
+              '$lifePathNumber',
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF2C2416),
+              ),
+            ),
             const SizedBox(height: 4),
+            Text(
+              isGerman ? 'Lebenszahl' : 'Life Path',
+              style: const TextStyle(
+                fontSize: 11,
+                color: Color(0xFF8B7355),
+              ),
+            ),
           ],
+          const SizedBox(height: 6),
 
           // Keywords
           Text(
@@ -394,6 +413,7 @@ class _MiniCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        // IntrinsicHeight in der Parent-Row sorgt für gleiche Höhe
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -412,6 +432,7 @@ class _MiniCard extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max, // Wichtig: Column nimmt volle Höhe
           children: [
             // Icon (größer)
             Text(

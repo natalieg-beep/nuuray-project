@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:nuuray_core/nuuray_core.dart';
 import '../../../core/widgets/expandable_card.dart';
 
-/// Western Astrology Section (Simplified)
+/// Western Astrology Section
 ///
-/// Arbeitet direkt mit BirthChart-Model
+/// Zeigt Sonne, Mond, Aszendent in expandable Cards.
 class WesternAstrologySection extends StatelessWidget {
   const WesternAstrologySection({
-    required this.birthChart,
+    required this.westernChart,
     super.key,
   });
 
-  final BirthChart birthChart;
+  final WesternChart westernChart;
 
   @override
   Widget build(BuildContext context) {
@@ -47,32 +47,31 @@ class WesternAstrologySection extends StatelessWidget {
         // Sonne Card
         ExpandableCard(
           icon: '☀️',
-          title: '${_capitalizeSign(birthChart.sunSign)} in Sonne',
-          subtitle: '${birthChart.sunDegree?.toStringAsFixed(1) ?? "–"}° ${_capitalizeSign(birthChart.sunSign)}',
+          title: '${_getSignName(westernChart.sunSign)} in Sonne',
+          subtitle: '${westernChart.sunDegree.toStringAsFixed(1)}° ${_getSignName(westernChart.sunSign)}',
           content: _buildPlaceholderContent(
             'Deine Kern-Identität, Lebenskraft und bewusster Ausdruck. '
             'Die Sonne zeigt, wer du im Innersten bist und wie du in der Welt leuchtest.',
           ),
         ),
 
-        // Mond Card (falls vorhanden)
-        if (birthChart.moonSign != null)
-          ExpandableCard(
-            icon: '🌙',
-            title: '${_capitalizeSign(birthChart.moonSign!)} in Mond',
-            subtitle: '${birthChart.moonDegree?.toStringAsFixed(1) ?? "–"}° ${_capitalizeSign(birthChart.moonSign!)}',
-            content: _buildPlaceholderContent(
-              'Deine emotionale Natur, Bedürfnisse und innere Welt. '
-              'Der Mond zeigt, wie du fühlst und was dich nährt.',
-            ),
+        // Mond Card
+        ExpandableCard(
+          icon: '🌙',
+          title: '${_getSignName(westernChart.moonSign)} in Mond',
+          subtitle: '${westernChart.moonDegree.toStringAsFixed(1)}° ${_getSignName(westernChart.moonSign)}',
+          content: _buildPlaceholderContent(
+            'Deine emotionale Natur, Bedürfnisse und innere Welt. '
+            'Der Mond zeigt, wie du fühlst und was dich nährt.',
           ),
+        ),
 
-        // Aszendent Card (falls vorhanden)
-        if (birthChart.ascendantSign != null)
+        // Aszendent Card
+        if (westernChart.risingSign != null)
           ExpandableCard(
             icon: '⬆️',
-            title: '${_capitalizeSign(birthChart.ascendantSign!)} im Aszendent',
-            subtitle: '${birthChart.ascendantDegree?.toStringAsFixed(1) ?? "–"}° ${_capitalizeSign(birthChart.ascendantSign!)}',
+            title: '${_getSignName(westernChart.risingSign!)} im Aszendent',
+            subtitle: '${westernChart.risingDegree?.toStringAsFixed(1) ?? "–"}° ${_getSignName(westernChart.risingSign!)}',
             content: _buildPlaceholderContent(
               'Deine äußere Erscheinung, erste Eindrücke und wie du auf die Welt zugehst. '
               'Der Aszendent ist deine Maske und dein Tor zur Welt.',
@@ -115,7 +114,7 @@ class WesternAstrologySection extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  'Detaillierte Beschreibung aus Content Library folgt',
+                  'Detaillierte Beschreibung aus Content Library folgt in Phase 3',
                   style: TextStyle(
                     fontSize: 13,
                     color: Colors.grey[600],
@@ -130,8 +129,21 @@ class WesternAstrologySection extends StatelessWidget {
     );
   }
 
-  String _capitalizeSign(String sign) {
-    if (sign.isEmpty) return sign;
-    return sign[0].toUpperCase() + sign.substring(1);
+  String _getSignName(ZodiacSign sign) {
+    const signNames = {
+      ZodiacSign.aries: 'Widder',
+      ZodiacSign.taurus: 'Stier',
+      ZodiacSign.gemini: 'Zwillinge',
+      ZodiacSign.cancer: 'Krebs',
+      ZodiacSign.leo: 'Löwe',
+      ZodiacSign.virgo: 'Jungfrau',
+      ZodiacSign.libra: 'Waage',
+      ZodiacSign.scorpio: 'Skorpion',
+      ZodiacSign.sagittarius: 'Schütze',
+      ZodiacSign.capricorn: 'Steinbock',
+      ZodiacSign.aquarius: 'Wassermann',
+      ZodiacSign.pisces: 'Fische',
+    };
+    return signNames[sign] ?? sign.toString();
   }
 }
