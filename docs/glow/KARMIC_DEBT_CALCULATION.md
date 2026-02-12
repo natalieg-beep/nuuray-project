@@ -23,6 +23,20 @@ Karmic Debt Numbers sind **Schuldzahlen** aus einem früheren Leben. Sie verstec
 
 Karmic Debt Numbers sind **NICHT die finalen Zahlen**, sondern erscheinen in **Zwischensummen** BEVOR die Reduktion auf eine einzelne Ziffer erfolgt.
 
+### ⚡ HYBRID-METHODE (Update 2026-02-12)
+
+**Wir prüfen BEIDE traditionelle Methoden:**
+
+**Methode A (Traditionell):** Part-by-Part Reduktion
+- Jeder Namensteil wird ERST reduziert, DANN summiert
+- Findet Karmic Debts wie 19 in reduzierten Teilen
+
+**Methode B (Modern):** Gesamt-Addition
+- ALLE Buchstaben summieren, DANN einmal reduzieren
+- Erhält Meisterzahlen (33, 22, 11)
+
+**Best of Both:** Wir prüfen alle Zwischenstufen!
+
 **Beispiel:** Life Path Number Berechnung
 
 ```
@@ -74,37 +88,46 @@ if (sum == 13 || sum == 14 || sum == 16 || sum == 19) {
 
 ### 2. Karmic Debt in Expression Number
 
-**Prüfe die Gesamtsumme aller Buchstaben (BEVOR finale Reduktion)**
+**HYBRID-PRÜFUNG (Methode A + B):**
 
 ```dart
-// Summe ALLER Buchstaben ohne Zwischenreduktion
+// METHODE B: Gesamt-Summe (erhält Meisterzahlen)
 int totalSum = 0;
 for (final part in nameParts) {
   totalSum += _sumLetters(part);
 }
-
-// Prüfe direkte Summe
 if (totalSum == 13 || totalSum == 14 || totalSum == 16 || totalSum == 19) {
   return totalSum;
 }
 
-// Prüfe Zwischenreduktion (falls Summe > 19)
+// Zwischenreduktion prüfen
 if (totalSum > 19) {
   final reduced = _sumDigits(totalSum);
   if (reduced == 13 || reduced == 14 || reduced == 16 || reduced == 19) {
     return reduced;
   }
 }
+
+// METHODE A: Summe der reduzierten Teile (traditionell)
+int partReducedSum = 0;
+for (final part in nameParts) {
+  final partSum = _sumLetters(part);
+  partReducedSum += _reduceToSingleDigit(partSum);
+}
+if (partReducedSum == 13 || partReducedSum == 14 || partReducedSum == 16 || partReducedSum == 19) {
+  return partReducedSum; // ⚡ Karmic Debt gefunden!
+}
 ```
 
-**Beispiel:**
-- Name: "Natalie Frauke Günes"
-- N+A+T+A+L+I+E = 26
-- F+R+A+U+K+E = 26
-- G+Ü+N+E+S = 26 (Ü→UE normalisiert)
-- Gesamtsumme: **78**
-- Reduktion: 7+8 = 15 → 1+5 = 6
-- **Kein Karmic Debt** (weder 78 noch 15 ist 13/14/16/19)
+**Beispiel 1: "Natalie Frauke Günes"**
+- Methode B: 26+26+26 = 78 → 15 → 6 (kein Karmic Debt)
+- Methode A: (26→8)+(26→8)+(26→8) = 24 → 6 (kein Karmic Debt)
+- **Ergebnis:** Kein Karmic Debt
+
+**Beispiel 2: "Natalie Frauke Pawlowski"**
+- Methode B: 26+26+39 = 91 → 10 → 1 (kein Karmic Debt)
+- Methode A: (26→8)+(26→8)+(39→3) = **19** ← Karmic Debt! ⚡
+- **Ergebnis:** Karmic Debt 19 (Machtmissbrauch → Geben lernen)
 
 ---
 

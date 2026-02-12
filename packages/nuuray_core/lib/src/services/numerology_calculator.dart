@@ -263,6 +263,14 @@ class NumerologyCalculator {
   /// Berechnet Karmic Debt Number für Expression
   ///
   /// Prüft die Zwischensumme aller Buchstaben VOR der finalen Reduktion.
+  ///
+  /// **ERWEITERTE PRÜFUNG (Hybrid Methode A + B):**
+  /// - Methode B: Gesamtsumme aller Buchstaben (erhält Meisterzahlen)
+  /// - Methode A: Summe der reduzierten Namensteile (traditionelle Numerologie)
+  ///
+  /// Beispiel: "Natalie Frauke Pawlowski"
+  /// - Methode B: 26+26+39 = 91 → keine Karmic Debt
+  /// - Methode A: (26→8)+(26→8)+(39→3) = 19 → Karmic Debt 19! ⚡
   static int? calculateKarmicDebtExpression(String fullName) {
     if (fullName.trim().isEmpty) return null;
 
@@ -271,13 +279,13 @@ class NumerologyCalculator {
 
     if (nameParts.isEmpty) return null;
 
-    // Gesamtsumme OHNE finale Reduktion
+    // METHODE B: Gesamtsumme OHNE finale Reduktion
     int totalSum = 0;
     for (final part in nameParts) {
       totalSum += _sumLetters(part);
     }
 
-    // Prüfe ob Summe eine Schuldzahl ist
+    // Prüfe ob Gesamt-Summe eine Schuldzahl ist
     if (totalSum == 13 || totalSum == 14 || totalSum == 16 || totalSum == 19) {
       return totalSum;
     }
@@ -290,12 +298,29 @@ class NumerologyCalculator {
       }
     }
 
+    // METHODE A: Summe der reduzierten Teile (traditionelle Methode)
+    // Jeder Namensteil wird ERST reduziert, DANN summiert
+    int partReducedSum = 0;
+    for (final part in nameParts) {
+      final partSum = _sumLetters(part);
+      partReducedSum += _reduceToSingleDigit(partSum);
+    }
+
+    // Prüfe ob Summe der reduzierten Teile eine Schuldzahl ist
+    if (partReducedSum == 13 || partReducedSum == 14 || partReducedSum == 16 || partReducedSum == 19) {
+      return partReducedSum;
+    }
+
     return null;
   }
 
   /// Berechnet Karmic Debt Number für Soul Urge
   ///
   /// Prüft die Zwischensumme aller Vokale VOR der finalen Reduktion.
+  ///
+  /// **ERWEITERTE PRÜFUNG (Hybrid Methode A + B):**
+  /// - Methode B: Gesamtsumme aller Vokale (erhält Meisterzahlen)
+  /// - Methode A: Summe der reduzierten Vokal-Teile (traditionelle Numerologie)
   static int? calculateKarmicDebtSoulUrge(String fullName) {
     if (fullName.trim().isEmpty) return null;
 
@@ -304,7 +329,7 @@ class NumerologyCalculator {
 
     if (nameParts.isEmpty) return null;
 
-    // Gesamtsumme der Vokale OHNE finale Reduktion
+    // METHODE B: Gesamtsumme der Vokale OHNE finale Reduktion
     int totalVowelSum = 0;
     for (final part in nameParts) {
       final vowelsInPart = part.split('').where((c) => _vowels.contains(c)).join('');
@@ -313,7 +338,7 @@ class NumerologyCalculator {
       }
     }
 
-    // Prüfe ob Summe eine Schuldzahl ist
+    // Prüfe ob Gesamt-Summe eine Schuldzahl ist
     if (totalVowelSum == 13 || totalVowelSum == 14 || totalVowelSum == 16 || totalVowelSum == 19) {
       return totalVowelSum;
     }
@@ -324,6 +349,21 @@ class NumerologyCalculator {
       if (reduced == 13 || reduced == 14 || reduced == 16 || reduced == 19) {
         return reduced;
       }
+    }
+
+    // METHODE A: Summe der reduzierten Vokal-Teile (traditionelle Methode)
+    int partReducedSum = 0;
+    for (final part in nameParts) {
+      final vowelsInPart = part.split('').where((c) => _vowels.contains(c)).join('');
+      if (vowelsInPart.isNotEmpty) {
+        final partSum = _sumLetters(vowelsInPart);
+        partReducedSum += _reduceToSingleDigit(partSum);
+      }
+    }
+
+    // Prüfe ob Summe der reduzierten Teile eine Schuldzahl ist
+    if (partReducedSum == 13 || partReducedSum == 14 || partReducedSum == 16 || partReducedSum == 19) {
+      return partReducedSum;
     }
 
     return null;
