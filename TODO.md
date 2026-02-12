@@ -138,7 +138,8 @@
   - Numerology Section: Lädt Life Path, Soul Urge, Expression Numbers
   - FutureBuilder für async Content-Loading
   - In-Memory Caching durch ContentLibraryService
-- ✅ **Content Library KOMPLETT generiert** (254/254 Texte DE = 100% komplett) — **FERTIG 2026-02-12!** 🎉
+- ✅ **Content Library KOMPLETT generiert (DE)** (254/254 Texte = 100%) — **FERTIG 2026-02-12!** 🎉
+  - ⏳ **Englische Texte (EN) fehlen noch** (0/254 Texte) — Siehe Backlog "Internationalisierung"
   - ✅ Sun/Moon/Rising Signs (36 × DE) — Mit verbesserten Prompts regeneriert
   - ✅ Life Path Numbers (12 × DE)
   - ✅ Soul Urge Numbers (12 × DE)
@@ -360,6 +361,21 @@ packages/nuuray_core/test/
     - B) Seed-SQL mit Placeholder-Texten (schnell für MVP, aber generisch)
   - **TODO:** Mit Content Library Prompt Überarbeitung zusammen angehen
   - **Siehe:** Bazi Section zeigt korrekte Vier Säulen + Element Balance, nur Day Master Description fehlt
+
+### 🌍 Internationalisierung (i18n)
+- [ ] **Englische Content Library generieren** — **254 Texte (EN)** 🌐
+  - **Methode:** Claude API mit Brand Soul Prompts (Option A - empfohlen!)
+  - **Kosten:** ~$0.76 (einmalige Investition)
+  - **Dauer:** ~20 Minuten
+  - **Warum Claude statt DeepL:**
+    - ✅ Konsistente Brand Voice auch auf Englisch
+    - ✅ Kulturell angepasste Texte (nicht 1:1 Übersetzung)
+    - ✅ Gleiche Qualität wie Deutsche Texte
+    - ❌ DeepL = maschinell, verliert Brand Soul
+  - **Script:** `dart scripts/seed_content_library.dart --locale=en`
+  - **Kategorien (17):** Sun/Moon/Rising Signs, Bazi Day Masters, Life Path, Expression, Soul Urge, Personality, Birthday, Attitude, Personal Year, Maturity, Display Name, Karmic Debt, Challenges, Karmic Lessons, Bridges
+  - **Status:** 0/254 Texte (0%) — Auf Backlog, nach MVP-Launch
+  - **Siehe:** `docs/daily-logs/2026-02-12_session-zusammenfassung.md` (Session 4)
 
 ### 🔧 Bugfixes & Verbesserungen
 - [x] **Code Quality: Null-Safety Cleanup** ✅ **ERLEDIGT 2026-02-12**
