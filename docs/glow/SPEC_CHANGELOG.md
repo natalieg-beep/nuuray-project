@@ -46,18 +46,19 @@ Schütze ☀️ • Waage 🌙 • Löwe ⬆️
 
 ---
 
-### 3. Onboarding: 3 Schritte → 2 Schritte
+### 3. Onboarding: 3 Schritte (Name → Gender → Geburtsdaten)
 
 **Alt:**
 - Schritt 1: Name (4 Felder)
 - Schritt 2: Geburtsdatum + -zeit
 - Schritt 3: Geburtsort
 
-**Neu:**
-- **Schritt 1: Name & Identität** (3 Felder, klarer strukturiert)
-- **Schritt 2: Geburtsdaten** (alles kombiniert)
+**Neu (AKTUELL):**
+- **Schritt 1: Name & Identität** (Rufname, Vornamen, Geburtsnamen, Nachname)
+- **Schritt 2: Gender** (Female, Male, Diverse, Prefer not to say)
+- **Schritt 3: Geburtsdaten** (Datum + Zeit + Ort kombiniert)
 
-**Schneller:** 2-3 Minuten statt 3-4 Minuten!
+**Dauer:** ~2-3 Minuten
 
 #### Name-Felder neu strukturiert:
 
@@ -158,7 +159,7 @@ Schütze ☀️ • Waage 🌙 • Löwe ⬆️
 
 1. ✅ "Deine Signatur" statt "Cosmic Profile"
 2. ✅ Dashboard auf Home Screen (immer sichtbar)
-3. ✅ Onboarding: 2 Schritte statt 3
+3. ✅ Onboarding: 3 Schritte (Name → Gender → Geburtsdaten)
 4. ✅ Name-Felder neu strukturiert (display_name, full_birth_name, current_last_name)
 5. ✅ Aktueller Nachname fließt in Numerologie ein
 6. ✅ Jahresvorschau hinzugefügt (Premium, On-Demand)
@@ -170,7 +171,7 @@ Schütze ☀️ • Waage 🌙 • Löwe ⬆️
 ## 🚀 Nächste Schritte
 
 **Sofort:**
-1. Onboarding neu implementieren (2 Schritte)
+1. ✅ Onboarding neu implementiert (3 Schritte: Name → Gender → Geburtsdaten)
 2. "Deine Signatur" Dashboard auf Home Screen
 3. Datenbank-Migration (Tabellen umbenennen, neue Felder)
 4. Settings Screen mit Sprach-Auswahl

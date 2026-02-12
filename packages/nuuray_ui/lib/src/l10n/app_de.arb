@@ -183,7 +183,7 @@
   "signatureAscendantRequiresCoordinates": "Aszendent: Geburtsort-Koordinaten erforderlich",
 
   "signatureBaziTitle": "Bazi (四柱)",
-  "signatureBaziSubtitle": "Vier Säulen des Schicksals",
+  "signatureBaziSubtitle": "Was du brauchst — deine energetische Architektur",
   "signatureBaziDayMaster": "Tages-Meister",
   "signatureBaziYear": "Jahr",
   "signatureBaziMonth": "Monat",
@@ -197,7 +197,7 @@
   "baziElementWater": "Wasser",
 
   "signatureNumerologyTitle": "Numerologie",
-  "signatureNumerologySubtitle": "Deine Lebenszahlen",
+  "signatureNumerologySubtitle": "Wohin du gehst — dein Seelenrhythmus",
   "numerologyLifePath": "Lebensweg",
   "numerologyDisplayName": "Rufname",
   "numerologyDisplayNameMeaning": "Deine gewählte Energie",
@@ -409,14 +409,17 @@
   "onboardingPlaceNetworkError": "Netzwerkfehler",
   "onboardingPlaceSkip": "Geburtsort überspringen",
 
+  "signatureOverviewIntro": "Deine Signatur setzt sich aus drei Perspektiven zusammen — jede zeigt einen anderen Aspekt von dir.",
+  "signatureOverviewOutro": "Und so fügt sich alles zusammen:",
+
   "signatureWesternTitle": "Western Astrology",
-  "signatureWesternSubtitle": "Deine Planetenpositionen",
+  "signatureWesternSubtitle": "Wer du bist — deine psychologische Signatur",
   "signatureSun": "Sonne",
   "signatureMoon": "Mond",
   "signatureAscendant": "Aszendent",
 
   "signatureBaziTitle": "Bazi (四柱)",
-  "signatureBaziSubtitle": "Vier Säulen des Schicksals",
+  "signatureBaziSubtitle": "Was du brauchst — deine energetische Architektur",
   "signatureBaziDayMaster": "Tages-Meister",
   "signatureBaziYear": "Jahr",
   "signatureBaziMonth": "Monat",
@@ -425,7 +428,7 @@
   "signatureBaziDominantElement": "Dominantes Element:",
 
   "signatureNumerologyTitle": "Numerologie",
-  "signatureNumerologySubtitle": "Deine Lebenszahlen",
+  "signatureNumerologySubtitle": "Wohin du gehst — dein Seelenrhythmus",
 
   "horoscopeDailyTitle": "Dein Tageshoroskop",
   "horoscopePersonalSection": "Persönlich für dich",

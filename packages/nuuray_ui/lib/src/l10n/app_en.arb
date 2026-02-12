@@ -183,7 +183,7 @@
   "signatureAscendantRequiresCoordinates": "Ascendant: Birth place coordinates required",
 
   "signatureBaziTitle": "Bazi (四柱)",
-  "signatureBaziSubtitle": "Four Pillars of Destiny",
+  "signatureBaziSubtitle": "What you need — your energetic architecture",
   "signatureBaziDayMaster": "Day Master",
   "signatureBaziYear": "Year",
   "signatureBaziMonth": "Month",
@@ -197,7 +197,7 @@
   "baziElementWater": "Water",
 
   "signatureNumerologyTitle": "Numerology",
-  "signatureNumerologySubtitle": "Your Life Numbers",
+  "signatureNumerologySubtitle": "Where you're headed — your soul rhythm",
   "numerologyLifePath": "Life Path",
   "numerologyDisplayName": "Display Name",
   "numerologyDisplayNameMeaning": "Your chosen energy",
@@ -404,14 +404,17 @@
   "onboardingPlaceNetworkError": "Network error",
   "onboardingPlaceSkip": "Skip place of birth",
 
+  "signatureOverviewIntro": "Your signature is made up of three perspectives — each reveals a different aspect of you.",
+  "signatureOverviewOutro": "And this is how it all comes together:",
+
   "signatureWesternTitle": "Western Astrology",
-  "signatureWesternSubtitle": "Your Planetary Positions",
+  "signatureWesternSubtitle": "Who you are — your psychological signature",
   "signatureSun": "Sun",
   "signatureMoon": "Moon",
   "signatureAscendant": "Ascendant",
 
   "signatureBaziTitle": "Bazi (四柱)",
-  "signatureBaziSubtitle": "Four Pillars of Destiny",
+  "signatureBaziSubtitle": "What you need — your energetic architecture",
   "signatureBaziDayMaster": "Day Master",
   "signatureBaziYear": "Year",
   "signatureBaziMonth": "Month",
@@ -420,7 +423,7 @@
   "signatureBaziDominantElement": "Dominant Element:",
 
   "signatureNumerologyTitle": "Numerology",
-  "signatureNumerologySubtitle": "Your Life Numbers",
+  "signatureNumerologySubtitle": "Where you're headed — your soul rhythm",
 
   "horoscopeDailyTitle": "Your Daily Horoscope",
   "horoscopePersonalSection": "Personalized for You",

@@ -50,7 +50,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       // Erfolgreich registriert → Zum Onboarding
       context.go('/onboarding');
     } else {
-      final l10n = AppLocalizations.of(context)!;
+      final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(result.error ?? l10n.authSignupFailed),
@@ -62,7 +62,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: AppColors.background,

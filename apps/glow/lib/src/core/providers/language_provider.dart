@@ -10,6 +10,14 @@ final languageProvider = StateNotifierProvider<LanguageNotifier, Locale>((ref) {
   return LanguageNotifier(ref);
 });
 
+/// Provider für den aktuellen Locale-Code als String (z.B. 'de', 'en')
+///
+/// Wird von Content Library Service und anderen Services verwendet.
+final currentLocaleProvider = Provider<String>((ref) {
+  final locale = ref.watch(languageProvider);
+  return locale.languageCode;
+});
+
 class LanguageNotifier extends StateNotifier<Locale> {
   final Ref ref;
 
@@ -22,9 +30,9 @@ class LanguageNotifier extends StateNotifier<Locale> {
     final profileAsync = ref.read(userProfileProvider);
 
     profileAsync.whenData((profile) {
-      if (profile != null && profile.language != null) {
+      if (profile != null) {
         // Konvertiere DB-Sprache (DE/EN) zu Locale
-        final languageCode = profile.language!.toLowerCase();
+        final languageCode = profile.language.toLowerCase();
         state = Locale(languageCode);
       }
     });

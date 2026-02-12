@@ -61,7 +61,7 @@ class DailyHoroscopeService {
       print('🤖 [Horoskop] ClaudeService vorhanden, generiere Horoskop...');
 
       try {
-        final horoscope = await _claudeService!.generateDailyHoroscope(
+        final horoscope = await _claudeService.generateDailyHoroscope(
           zodiacSign: zodiacSign,
           language: language,
           date: targetDate,
@@ -123,7 +123,7 @@ class DailyHoroscopeService {
       language: language,
     );
 
-    final response = await _claudeService!.callClaude(
+    final response = await _claudeService.callClaude(
       systemPrompt: _getMiniPersonalizationSystemPrompt(language),
       userPrompt: prompt,
     );
@@ -159,7 +159,7 @@ class DailyHoroscopeService {
       language: language,
     );
 
-    final response = await _claudeService!.callClaude(
+    final response = await _claudeService.callClaude(
       systemPrompt: _getDeepPersonalizationSystemPrompt(language),
       userPrompt: prompt,
     );

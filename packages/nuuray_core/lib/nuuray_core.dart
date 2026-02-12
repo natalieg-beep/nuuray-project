@@ -25,3 +25,6 @@ export 'src/services/signature_service.dart';
 // Utils
 export 'src/utils/date_helpers.dart';
 export 'src/utils/dashboard_helpers.dart';
+
+// L10n
+export 'src/l10n/zodiac_names.dart';

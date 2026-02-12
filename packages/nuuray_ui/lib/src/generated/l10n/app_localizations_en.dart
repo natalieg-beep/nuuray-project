@@ -504,7 +504,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signatureBaziTitle => 'Bazi (四柱)';
 
   @override
-  String get signatureBaziSubtitle => 'Four Pillars of Destiny';
+  String get signatureBaziSubtitle =>
+      'What you need — your energetic architecture';
 
   @override
   String get signatureBaziDayMaster => 'Day Master';
@@ -543,7 +544,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signatureNumerologyTitle => 'Numerology';
 
   @override
-  String get signatureNumerologySubtitle => 'Your Life Numbers';
+  String get signatureNumerologySubtitle =>
+      'Where you\'re headed — your soul rhythm';
 
   @override
   String get numerologyLifePath => 'Life Path';
@@ -1047,10 +1049,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingPlaceSkip => 'Skip place of birth';
 
   @override
+  String get signatureOverviewIntro =>
+      'Your signature is made up of three perspectives — each reveals a different aspect of you.';
+
+  @override
+  String get signatureOverviewOutro => 'And this is how it all comes together:';
+
+  @override
   String get signatureWesternTitle => 'Western Astrology';
 
   @override
-  String get signatureWesternSubtitle => 'Your Planetary Positions';
+  String get signatureWesternSubtitle =>
+      'Who you are — your psychological signature';
 
   @override
   String get signatureSun => 'Sun';

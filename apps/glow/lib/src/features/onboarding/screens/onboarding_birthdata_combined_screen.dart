@@ -132,7 +132,7 @@ class _OnboardingBirthdataCombinedScreenState
       if (!mounted) return;
 
       if (response.status == 404) {
-        final l10n = AppLocalizations.of(context)!;
+        final l10n = AppLocalizations.of(context);
         setState(() {
           _isSearching = false;
           _errorMessage = l10n.onboardingPlaceNotFound;
@@ -145,7 +145,7 @@ class _OnboardingBirthdataCombinedScreenState
       }
 
       if (response.status != 200) {
-        final l10n = AppLocalizations.of(context)!;
+        final l10n = AppLocalizations.of(context);
         setState(() {
           _isSearching = false;
           _errorMessage = '${l10n.generalError} ${response.status}: ${response.data}';
@@ -168,7 +168,7 @@ class _OnboardingBirthdataCombinedScreenState
       });
     } catch (e) {
       if (!mounted) return;
-      final l10n = AppLocalizations.of(context)!;
+      final l10n = AppLocalizations.of(context);
       setState(() {
         _isSearching = false;
         _errorMessage = '${l10n.onboardingPlaceNetworkError}: $e';
@@ -237,7 +237,7 @@ class _OnboardingBirthdataCombinedScreenState
   }
 
   void _handleComplete() {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     if (_selectedDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -263,7 +263,7 @@ class _OnboardingBirthdataCombinedScreenState
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context);
     final dateFormat = DateFormat('dd.MM.yyyy', locale.toString());
 

@@ -51,7 +51,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       // Zum Splash → prüft Onboarding-Status und leitet weiter
       context.go('/splash');
     } else {
-      final l10n = AppLocalizations.of(context)!;
+      final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(result.error ?? l10n.authLoginFailed),
@@ -63,7 +63,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: AppColors.background,

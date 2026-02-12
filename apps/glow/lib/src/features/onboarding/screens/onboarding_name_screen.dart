@@ -85,7 +85,7 @@ class _OnboardingNameScreenState extends State<OnboardingNameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return SingleChildScrollView(
       child: Padding(

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nuuray_core/nuuray_core.dart';
+import '../../../core/providers/app_providers.dart';
 import '../../profile/providers/user_profile_provider.dart';
 
 /// Signature Provider
@@ -79,6 +80,27 @@ final signatureProvider = FutureProvider<BirthChart?>((ref) async {
         birthName: birthName,
         currentName: currentName,
       );
+
+      // 🔥 FIX: Chart in Datenbank speichern (UPSERT)
+      try {
+        final supabase = ref.read(supabaseClientProvider);
+
+        // Upsert: Insert or Update if exists
+        final chartJson = birthChart.toJson();
+        chartJson['user_id'] = userProfile.id;
+
+        await supabase
+            .from('birth_charts')
+            .upsert(
+              chartJson,
+              onConflict: 'user_id', // Konflikt auf user_id → Update statt Insert
+            );
+
+        print('✅ Birth Chart gespeichert in Datenbank (UPSERT)');
+      } catch (e) {
+        print('⚠️ Fehler beim Speichern des Charts: $e');
+        // Chart trotzdem zurückgeben (nur Cache fehlt)
+      }
 
       return birthChart;
     },

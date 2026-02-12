@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nuuray_core/nuuray_core.dart';
 import '../../../core/widgets/expandable_card.dart';
+import '../../../core/providers/app_providers.dart';
+import '../../../core/providers/language_provider.dart';
 
-/// Western Astrology Section (Simplified)
+/// Western Astrology Section
 ///
-/// Arbeitet direkt mit BirthChart-Model
-class WesternAstrologySection extends StatelessWidget {
+/// Zeigt Sonne, Mond, Aszendent mit Content aus Content Library
+class WesternAstrologySection extends ConsumerWidget {
   const WesternAstrologySection({
     required this.birthChart,
     super.key,
@@ -14,7 +17,10 @@ class WesternAstrologySection extends StatelessWidget {
   final BirthChart birthChart;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final contentService = ref.watch(contentLibraryServiceProvider);
+    final locale = ref.watch(currentLocaleProvider);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -45,93 +51,101 @@ class WesternAstrologySection extends StatelessWidget {
         ),
 
         // Sonne Card
-        ExpandableCard(
+        _buildSignCard(
+          context: context,
+          contentService: contentService,
+          locale: locale,
           icon: '☀️',
-          title: '${_capitalizeSign(birthChart.sunSign)} in Sonne',
-          subtitle: '${birthChart.sunDegree?.toStringAsFixed(1) ?? "–"}° ${_capitalizeSign(birthChart.sunSign)}',
-          content: _buildPlaceholderContent(
-            'Deine Kern-Identität, Lebenskraft und bewusster Ausdruck. '
-            'Die Sonne zeigt, wer du im Innersten bist und wie du in der Welt leuchtest.',
-          ),
+          category: 'sun_sign',
+          sign: birthChart.sunSign,
+          degree: birthChart.sunDegree,
+          label: 'Sonne',
         ),
 
         // Mond Card (falls vorhanden)
         if (birthChart.moonSign != null)
-          ExpandableCard(
+          _buildSignCard(
+            context: context,
+            contentService: contentService,
+            locale: locale,
             icon: '🌙',
-            title: '${_capitalizeSign(birthChart.moonSign!)} in Mond',
-            subtitle: '${birthChart.moonDegree?.toStringAsFixed(1) ?? "–"}° ${_capitalizeSign(birthChart.moonSign!)}',
-            content: _buildPlaceholderContent(
-              'Deine emotionale Natur, Bedürfnisse und innere Welt. '
-              'Der Mond zeigt, wie du fühlst und was dich nährt.',
-            ),
+            category: 'moon_sign',
+            sign: birthChart.moonSign!,
+            degree: birthChart.moonDegree,
+            label: 'Mond',
           ),
 
         // Aszendent Card (falls vorhanden)
         if (birthChart.ascendantSign != null)
-          ExpandableCard(
+          _buildSignCard(
+            context: context,
+            contentService: contentService,
+            locale: locale,
             icon: '⬆️',
-            title: '${_capitalizeSign(birthChart.ascendantSign!)} im Aszendent',
-            subtitle: '${birthChart.ascendantDegree?.toStringAsFixed(1) ?? "–"}° ${_capitalizeSign(birthChart.ascendantSign!)}',
-            content: _buildPlaceholderContent(
-              'Deine äußere Erscheinung, erste Eindrücke und wie du auf die Welt zugehst. '
-              'Der Aszendent ist deine Maske und dein Tor zur Welt.',
-            ),
+            category: 'rising_sign',
+            sign: birthChart.ascendantSign!,
+            degree: birthChart.ascendantDegree,
+            label: 'Aszendent',
           ),
       ],
     );
   }
 
-  Widget _buildPlaceholderContent(String text) {
+  Widget _buildSignCard({
+    required BuildContext context,
+    required dynamic contentService,
+    required String locale,
+    required String icon,
+    required String category,
+    required String sign,
+    required double? degree,
+    required String label,
+  }) {
+    return FutureBuilder<String?>(
+      future: contentService.getDescription(
+        category: category,
+        key: sign.toLowerCase(),
+        locale: locale,
+      ),
+      builder: (context, snapshot) {
+        final description = snapshot.data;
+
+        final localizedSign = ZodiacNames.getName(sign, locale);
+
+        return ExpandableCard(
+          icon: icon,
+          title: '$localizedSign in $label',
+          subtitle: '${degree?.toStringAsFixed(1) ?? "–"}° $localizedSign',
+          content: _buildContent(description),
+        );
+      },
+    );
+  }
+
+  Widget _buildContent(String? description) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Divider(height: 24),
-        Text(
-          text,
-          style: TextStyle(
-            fontSize: 15,
-            color: Colors.grey[700],
-            height: 1.6,
-          ),
-        ),
-        const SizedBox(height: 16),
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: const Color(0xFFFFF8E7).withValues(alpha: 0.3),
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: const Color(0xFFD4AF37).withValues(alpha: 0.2),
+        if (description != null)
+          Text(
+            description,
+            style: TextStyle(
+              fontSize: 15,
+              color: Colors.grey[800],
+              height: 1.6,
+            ),
+          )
+        else
+          Text(
+            'Lädt Beschreibung...',
+            style: TextStyle(
+              fontSize: 15,
+              color: Colors.grey[500],
+              fontStyle: FontStyle.italic,
             ),
           ),
-          child: Row(
-            children: [
-              Icon(
-                Icons.auto_awesome,
-                size: 16,
-                color: Colors.grey[600],
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  'Detaillierte Beschreibung aus Content Library folgt',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey[600],
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
       ],
     );
-  }
-
-  String _capitalizeSign(String sign) {
-    if (sign.isEmpty) return sign;
-    return sign[0].toUpperCase() + sign.substring(1);
   }
 }

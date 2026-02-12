@@ -1,7 +1,22 @@
 # NUURAY — Archetyp-System (Konzeption)
 
-> Dieses Dokument beschreibt das Archetyp-System für Nuuray Glow.
-> Es ist die Referenz für die Implementierung in `nuuray_core` und die UI im Dashboard.
+> ⚠️ **WICHTIG: Dieses Dokument ist teilweise VERALTET!**
+>
+> **Aktueller Stand (2026-02-12):**
+> - ✅ **Archetyp-Titel wird INDIVIDUELL via Claude API generiert** (NICHT hardcoded!)
+> - ✅ **Signatur-Satz wird INDIVIDUELL via Claude API generiert**
+> - ✅ **KEINE 12 hardcodierten Archetyp-Namen nötig**
+> - ✅ **KEINE 10 hardcodierten Bazi-Adjektive nötig**
+> - ✅ **KEINE Detail-Screens für 12 Archetypen nötig**
+> - ✅ **Archetyp-System = Synthese aller 3 Systeme via Claude (bereits fertig!)**
+> - ✅ **Implementiert in:** `archetype_signature_service.dart` + `archetype_signature_prompt.dart`
+>
+> **Siehe Klarstellung:** `docs/daily-logs/2026-02-12_archetyp-konzept-klarstellung.md`
+>
+> ---
+>
+> **Was folgt ist die URSPRÜNGLICHE Konzeption (hardcodiert).**
+> **Die tatsächliche Implementierung ist flexibler und individueller!**
 
 ---
 

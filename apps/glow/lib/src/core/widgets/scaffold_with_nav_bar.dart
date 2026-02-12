@@ -27,9 +27,9 @@ class ScaffoldWithNavBar extends StatelessWidget {
       selectedIndex = 0;
     } else if (currentLocation.startsWith('/signature')) {
       selectedIndex = 1;
-    } else if (currentLocation.startsWith('/moon')) {
-      selectedIndex = 2;
     } else if (currentLocation.startsWith('/insights')) {
+      selectedIndex = 2;
+    } else if (currentLocation.startsWith('/moon')) {
       selectedIndex = 3;
     }
 
@@ -50,14 +50,14 @@ class ScaffoldWithNavBar extends StatelessWidget {
           label: 'Signatur',
         ),
         NavigationDestination(
-          icon: Icon(Icons.nightlight_outlined),
-          selectedIcon: Icon(Icons.nightlight),
-          label: 'Mond',
-        ),
-        NavigationDestination(
           icon: Icon(Icons.insights_outlined),
           selectedIcon: Icon(Icons.insights),
           label: 'Insights',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.nightlight_outlined),
+          selectedIcon: Icon(Icons.nightlight),
+          label: 'Mond',
         ),
       ],
     );
@@ -72,10 +72,10 @@ class ScaffoldWithNavBar extends StatelessWidget {
         context.go('/signature');
         break;
       case 2:
-        context.go('/moon');
+        context.go('/insights');
         break;
       case 3:
-        context.go('/insights');
+        context.go('/moon');
         break;
     }
   }

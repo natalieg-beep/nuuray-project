@@ -1,10 +1,18 @@
 # NUURAY GLOW — TODO Liste
 
-> Letzte Aktualisierung: 2026-02-08 (Rufnamen-Numerologie + Web Platform Fix! 🔢🌐)
-> Stand: Auth ✅, Onboarding ✅, Geocoding ✅, Basic Home ✅, Deine Signatur ✅, Claude API ✅, Erweiterte Numerologie ✅, **Tageshoroskop On-Demand ✅, i18n DE/EN 100% ✅, Profile Edit (Auto-Regenerierung) ✅, Rufnamen-Numerologie ✅, Web Platform Fix ✅**
+> Letzte Aktualisierung: 2026-02-12 (Archetyp-Konzept klargestellt — 5-7 Wochen gespart! 🎉)
+> Stand: Auth ✅, Onboarding ✅, Geocoding ✅, Basic Home ✅, Deine Signatur ✅, **Archetyp-System (Claude-Synthese) ✅**, Claude API ✅, Erweiterte Numerologie ✅, **Tageshoroskop On-Demand ✅, i18n DE/EN 100% ✅, Profile Edit (Auto-Regenerierung) ✅, Rufnamen-Numerologie ✅, Web Platform Fix ✅, Content Library ✅, Gender Tracking ✅, Bazi Vier Säulen + Element Balance ✅, Code Quality Cleanup ✅, Reports UI Foundation ✅**
 >
 > **📚 Neue Dokumentation:**
-> - `docs/deployment/HOROSCOPE_STRATEGY.md` — **NEU!** Tageshoroskop On-Demand vs. Cron Job Strategie
+> - **`docs/CLAUDE_BRIEFING_CONTENT_STRATEGY.md`** — **NEU! 2026-02-12** 🎯 **Klare Aufstellung für Claude Chats** (Archetyp vs. Content Library)
+> - **`docs/daily-logs/2026-02-12_content-strategy-klarstellung.md`** — **NEU!** Verwirrung aufgelöst: Archetyp ≠ Content Library
+> - `docs/glow/MVP_VS_POST_LAUNCH_V2.md` — **NEU! 2026-02-12** 🚀 Launch-Ready Roadmap (4-5 Monate)
+> - `docs/daily-logs/2026-02-12_archetyp-konzept-klarstellung.md` — **NEU!** Archetyp = Synthese (KEINE Detail-Screens!)
+> - `docs/glow/GLOW_REPORTS_OTP.md` — **NEU! 2026-02-12** 📊 Reports & OTPs (SoulMate Finder, Soul Purpose, etc.)
+> - `docs/daily-logs/2026-02-12_reports-ui-foundation.md` — **NEU!** Reports UI Foundation (Insights Screen + Settings)
+> - `docs/daily-logs/2026-02-12_reports-otp-dokumentation.md` — **NEU!** Reports Dokumentations-Gap geschlossen
+> - `docs/daily-logs/2026-02-12_code-quality-cleanup.md` — **NEU!** Null-Safety Cleanup (43 Warnings behoben)
+> - `docs/deployment/HOROSCOPE_STRATEGY.md` — Tageshoroskop On-Demand vs. Cron Job Strategie
 > - `docs/glow/GLOW_SPEC_V2.md` — Aktualisierte vollständige Projektbeschreibung
 > - `docs/glow/SPEC_CHANGELOG.md` — Changelog der konzeptionellen Änderungen
 
@@ -121,7 +129,278 @@
 
 ---
 
-## ⏳ NÄCHSTE SCHRITTE
+## ✅ SESSION 2026-02-10
+
+### Content Library Integration
+- ✅ **ContentLibraryService** in Signature Screens integriert
+  - Western Astrology Section: Lädt Texte für Sonne/Mond/Aszendent
+  - Bazi Section: Lädt Day Master Beschreibung
+  - Numerology Section: Lädt Life Path, Soul Urge, Expression Numbers
+  - FutureBuilder für async Content-Loading
+  - In-Memory Caching durch ContentLibraryService
+- ✅ **Content Library KOMPLETT generiert** (254/254 Texte DE = 100% komplett) — **FERTIG 2026-02-12!** 🎉
+  - ✅ Sun/Moon/Rising Signs (36 × DE) — Mit verbesserten Prompts regeneriert
+  - ✅ Life Path Numbers (12 × DE)
+  - ✅ Soul Urge Numbers (12 × DE)
+  - ✅ Expression Numbers (12 × DE)
+  - ✅ **Bazi Day Masters** (60 × DE) — Bereits vorhanden (10. Feb)
+  - ✅ **Personality Numbers** (12 × DE) — NEU!
+  - ✅ **Birthday Numbers** (31 × DE) — NEU!
+  - ✅ **Attitude Numbers** (12 × DE) — NEU!
+  - ✅ **Personal Year** (9 × DE) — NEU!
+  - ✅ **Maturity Numbers** (12 × DE) — NEU!
+  - ✅ **Display Name Numbers** (12 × DE) — NEU!
+  - ✅ **Karmic Debt** (4 × DE) — NEU!
+  - ✅ **Challenge Numbers** (12 × DE) — NEU!
+  - ✅ **Karmic Lessons** (9 × DE) — NEU!
+  - ✅ **Bridge Numbers** (9 × DE) — NEU!
+  - ✅ **Prompt-Qualität: 80-90% Brand Soul konform** (4 category-specific prompts)
+  - 🟡 **Englische Texte (EN) fehlen noch** (254 Texte, ~$0.76)
+  - Kosten bisher: ~$0.90 | Gesamt-Kosten bei EN-Generierung: ~$1.66
+- ✅ **RLS Policy Fix:** `daily_horoscopes` INSERT für authenticated users
+
+### Gender-Tracking im Onboarding
+- ✅ **DB Migration:** `20260210_add_gender_to_profiles.sql`
+  - Spalte `gender TEXT CHECK (gender IN ('female', 'male', 'diverse', 'prefer_not_to_say'))`
+  - Index für Abfragen
+- ✅ **UserProfile Model erweitert:** `gender` Feld hinzugefügt
+- ✅ **Onboarding UI:** Neuer Screen `onboarding_gender_screen.dart`
+  - 4 Optionen: Weiblich 👩, Männlich 👨, Divers ✨, Keine Angabe 🤐
+  - Auto-advance nach 400ms (smooth UX)
+- ✅ **Onboarding Flow:** Jetzt 3 Schritte (Name → Gender → Geburtsdaten)
+- ✅ **Zweck:** Personalisierte Content-Generierung (Horoskope, Coaching)
+
+### Deutsche Sternzeichen-Namen
+- ✅ **ZodiacNames i18n Map** erstellt (`nuuray_core/src/l10n/zodiac_names.dart`)
+  - Deutsche Map: `sagittarius` → `Schütze`
+  - Englische Map: `sagittarius` → `Sagittarius`
+  - Helper: `ZodiacNames.getName(sign, locale)`
+- ✅ **Western Astrology Section:** Nutzt lokalisierte Namen
+  - **Vorher:** "Sagittarius in Sonne" ❌
+  - **Nachher:** "Schütze in Sonne" ✅
+
+---
+
+## ✅ SESSION 2026-02-12
+
+### Code Quality Cleanup
+- ✅ **Null-Safety Warnings behoben** (43 Stück)
+  - `language_provider.dart`: Redundante Null-Checks entfernt
+  - Alle `AppLocalizations.of(context)!` → `AppLocalizations.of(context)` gefixt
+  - `daily_horoscope_service.dart`: `_claudeService!` → `_claudeService`
+  - `numerology_card.dart`: Flow-analysis sichere Null-Checks
+  - Backup-File gelöscht: `onboarding_birthdata_combined_screen_backup.dart`
+  - **Ergebnis:** 0 `unnecessary_non_null_assertion` Warnings
+- ✅ **Signatur Screen Cleanup:**
+  - `signature_dashboard_screen.dart` gelöscht (veraltet, ungenutzt)
+  - Nur `signature_screen.dart` ist aktiv
+
+### Reports Documentation & Strategy
+- ✅ **GLOW_REPORTS_OTP.md erstellt** — Vollständige Report-Strategie
+  - Vision: Reports als Premium-Produkte (OTPs statt Abo)
+  - Report-Katalog: Alle 10 Report-Typen mit Preisen (€4,99 - €9,99)
+  - Report-Struktur: Luxury Dossier Format (8 Sektionen)
+  - Design-System: Cosmic Nude Palette, Typografie, Layout
+  - Technische Architektur: StructuredReport Model, PDF-Generator, Claude API
+  - Entwicklungs-Phasen: MVP (SoulMate Finder) → Core → Expansion
+  - Monetarisierung: Pricing-Tiers, Bundle-Angebote, Freemium
+  - UI/UX: Insights-Tab, Home Section, Settings-Bibliothek
+  - Kauf-Flow: 6-Schritte-Journey (Discovery → Purchase → Generation → View)
+- ✅ **TODO.md aktualisiert:**
+  - Partner-Check aus "Bezahlung/Premium" → Neue Section "📊 Reports & OTPs"
+  - Phase 1/2/3 Roadmap hinzugefügt
+- ✅ **docs/README.md aktualisiert:**
+  - GLOW_REPORTS_OTP.md in Projektstruktur eingefügt
+  - Schnellzugriff-Link hinzugefügt
+- ✅ **Session-Log:** `docs/daily-logs/2026-02-12_reports-otp-dokumentation.md`
+
+### Archetyp-System Klarstellung
+- ✅ **Archetyp-System = Synthese aller 3 Systeme** (Claude-generiert, FERTIG!)
+  - Archetyp-Titel: Individuell via Claude API (z.B. "Die bühnenreife Perfektionistin")
+  - Signatur-Satz: Verwebt Western + Bazi + Numerologie
+  - Home Screen + Signatur Screen Integration ✅
+  - **KEINE hardcodierten Namen nötig**
+  - **KEINE 12 Detail-Screens nötig**
+  - **5-7 Wochen Entwicklungszeit gespart!** 🎉
+  - Siehe: `docs/daily-logs/2026-02-12_archetyp-konzept-klarstellung.md`
+  - Siehe: `docs/glow/MVP_VS_POST_LAUNCH_V2.md`
+
+### Reports UI Foundation
+- ✅ **Bottom Navigation neu sortiert:**
+  - **Vorher:** `[Home] [Signatur] [Mond] [Insights]`
+  - **Nachher:** `[Home] [Signatur] [Insights] [Mond]`
+  - Insights direkt neben Signatur (thematisch zusammenhängend)
+  - File: `apps/glow/lib/src/core/widgets/scaffold_with_nav_bar.dart`
+- ✅ **Insights Screen erstellt** — Report-Katalog mit allen 10 Reports
+  - File: `apps/glow/lib/src/features/insights/screens/insights_screen.dart`
+  - **10 Reports aus Beyond Horoscope:**
+    1. SoulMate Finder (€4,99) — Partner-Check
+    2. Soul Purpose (€7,99) — Seelenmission
+    3. Shadow & Light (€7,99) — Schatten-Integration
+    4. The Purpose Path (€6,99) — Berufung
+    5. Golden Money Blueprint (€7,99) — Geld-Energie
+    6. Body Vitality (€5,99) — Lebensenergie
+    7. Aesthetic Style Guide (€5,99) — Kosmischer Stil
+    8. Cosmic Parenting (€6,99) — Elternschaft
+    9. Relocation Astrology (€7,99) — Idealer Ort
+    10. Yearly Energy Forecast (€9,99) — Persönliches Jahr
+  - **UI:** Material Cards mit farbigen Icons, Preis-Badges, "Coming Soon" Labels
+  - **Layout:** 8 Kategorien (Beziehungen, Seele, Berufung, Geld, Gesundheit, Lifestyle, Ortswechsel, Prognosen)
+  - **Interaktion:** Tap zeigt "Coming Soon" Snackbar
+- ✅ **Settings Screen erweitert** — "Meine Inhalte" Section
+  - File: `apps/glow/lib/src/features/settings/screens/settings_screen.dart`
+  - **Neue Section zwischen "Account" und "Information":**
+    - 📚 Meine Reports (Gekaufte Reports & Analysen)
+    - ⭐ Premium (Dein Abo verwalten)
+  - **Aktuell:** Beide zeigen "Coming Soon" Snackbar
+  - **Später:** Navigation zu Report-Bibliothek bzw. Premium-Verwaltung
+- ✅ **Session-Log:** `docs/daily-logs/2026-02-12_reports-ui-foundation.md`
+
+**Status:** ✅ UI Foundation komplett — Funktionalität kommt nach MVP-Launch
+
+## ⏳ NÄCHSTE SCHRITTE (AKTUELL)
+
+### 🔴 **KRITISCH: Berechnungs-Validierung aller 3 Systeme** ⚠️
+**Priorität: SEHR HOCH** 🚨
+
+Heute (2026-02-11) wurde ein **kritischer Bug im Bazi Calculator** entdeckt und gefixt:
+- **Problem:** Julian Day Referenzdatum war falsch (Tag-Säule um 1-2 Tage verschoben)
+- **Fix:** Neue empirische Referenz (3. Okt 1983 = Jia-Rat) + Offset-Korrektur
+- **Verifiziert:** 30.11.1983 22:32 = Ren-Xu (Yang Water + Dog) ✅
+
+**⚠️ TODO: Alle Berechnungen MÜSSEN jetzt systematisch getestet werden!**
+
+#### 📋 **Test-Plan:**
+1. **Western Astrology Calculator:**
+   - [ ] Sonnenzeichen: 10-20 bekannte Geburtsdaten testen
+   - [ ] Mondzeichen: 5-10 Testfälle mit bekannten Ergebnissen
+   - [ ] Aszendent: 5-10 Testfälle (mit Koordinaten!)
+   - [ ] Gradzahlen: Stimmen die Degree-Werte?
+
+2. **Bazi Calculator:**
+   - [ ] **Day Pillar:** 10-20 bekannte Geburtsdaten mit externen Bazi-Rechnern abgleichen
+   - [ ] **Month Pillar:** Solar Terms korrekt? (Monatsgrenzen prüfen!)
+   - [ ] **Year Pillar:** Lichun-Grenze korrekt? (Geburt vor/nach 4. Februar)
+   - [ ] **Hour Pillar:** 2-Stunden-Blöcke korrekt?
+   - [ ] **Element Balance:** Zählung von Stems + Branches korrekt?
+
+3. **Numerology Calculator:**
+   - [ ] **Life Path:** 10 bekannte Beispiele testen (inkl. Meisterzahlen 11/22/33)
+   - [ ] **Expression/Soul Urge/Personality:** Methode B (Gesamt-Addition) verifizieren
+   - [ ] **Display Name Number:** Rufnamen-Berechnung korrekt?
+   - [ ] **Karmic Debt:** 13/14/16/19 Detection funktioniert?
+   - [ ] **Challenge Numbers:** 4 Phasen korrekt berechnet?
+   - [ ] **Karmic Lessons:** Fehlende Zahlen korrekt identifiziert?
+
+#### 🧪 **Test-Dateien erstellen:**
+```
+packages/nuuray_core/test/
+├── western_astrology_calculator_test.dart  ← Unit Tests mit bekannten Daten
+├── bazi_calculator_test.dart               ← Unit Tests mit verifizierten Bazi-Charts
+└── numerology_calculator_test.dart         ← Unit Tests mit bekannten Numerologie-Profilen
+```
+
+#### 📚 **Test-Daten sammeln:**
+- Nutze externe Quellen (astro.com, cafeastrology.com für Western)
+- Nutze Bazi-Rechner (fourpillars.net, chineseastrology.com)
+- Nutze Numerologie-Rechner (tokenrock.com, psychicscience.org)
+
+#### ⚠️ **Warum ist das KRITISCH?**
+- **Alle BirthCharts in der DB basieren auf diesen Berechnungen!**
+- Wenn ein Calculator falsch ist, sind ALLE User-Daten falsch!
+- Neuberechnung = aufwendig + User merken Änderungen
+- **Besser JETZT testen, bevor Launch!**
+
+---
+
+### 🔴 **KRITISCH: Testing nach Archetyp-Bugfix** ⚠️
+- [ ] **Profile Edit → signature_text bleibt erhalten?**
+  - Login → Edit Profile (z.B. Name ändern) → Speichern
+  - Erwartung: Archetyp-Titel bleibt gleich
+- [ ] **Logout/Login → Archetyp bleibt konstant?**
+  - Notiere Archetyp-Titel → Logout → Login
+  - Erwartung: Archetyp-Titel ist identisch
+- [ ] **Home Screen = Signatur Screen?**
+  - Home Screen: Notiere Titel
+  - Signatur-Detail-Screen: Notiere Titel
+  - Erwartung: Beide Titel sind IDENTISCH
+- 📝 **Bugfix:** `user_profile_service.dart` überschrieb `signature_text` mit `null`
+- ✅ **Gefixt:** Nur non-null Felder werden in Update-Map gepackt
+- 📋 **Siehe:** `docs/daily-logs/2026-02-10_archetyp-signatur-bugfix.md`
+
+### ✅ **Signatur Screen: Archetyp-Header Fix** (2026-02-11)
+- ✅ **Problem identifiziert:** Es gibt ZWEI Signature Screens!
+  - `signature_dashboard_screen.dart` (alt/ungenutzt?)
+  - `signature_screen.dart` (aktiv - **das war das richtige File!**)
+- ✅ **Archetyp-Header eingefügt** in `signature_screen.dart`
+  - Zeigt nur Titel (keine Synthese, kein Tap-Hint)
+  - Nutzt `profile.signatureText` als Datenquelle (identisch mit Home Screen)
+- ✅ **`ArchetypeHeader` Widget erweitert:**
+  - Parameter `showSynthesis: bool` hinzugefügt (default: true)
+  - Home Screen: `showSynthesis: true` (Titel + Synthese + Tap-Hint)
+  - Signatur Screen: `showSynthesis: false` (nur Titel)
+- ✅ **Provider-Struktur gefixt:** Nested `.when()` für Profile + BirthChart
+- 📋 **Siehe:** `docs/daily-logs/2026-02-11_signatur-screen-archetyp-fix.md`
+- ⚠️ **TODO:** Klären was mit `signature_dashboard_screen.dart` passieren soll (löschen?)
+
+### 🎨 **CONTENT QUALITY: Brand Soul Compliance**
+- [ ] **Content Library Prompt Überarbeitung** (siehe `docs/CONTENT_LIBRARY_PROMPT_ANLEITUNG.md`)
+  - [ ] 4 neue kategorie-spezifische Prompts implementieren (sun_sign, moon_sign, bazi_day_master, life_path_number)
+  - [ ] Test-Run: 4 Texte generieren (Schütze, Waage-Mond, Yin-Metall, Lebenszahl 8)
+  - [ ] Review & 7-Fragen-Check
+  - [ ] Volle Generierung: 264 Texte neu generieren
+  - [ ] Qualitäts-Stichprobe nach Generierung
+
+- [ ] **🐉 Bazi Day Master Content Library befüllen** (60 Kombinationen)
+  - **Problem:** Content Library Tabelle ist leer → Day Master Card zeigt "Lädt Beschreibung..." Fallback
+  - **Aktuell:** Keine Einträge in Kategorie `bazi_day_master`
+  - **Benötigt:** 60 Beschreibungen (10 Stems × 12 Branches) in DE + EN = **120 Texte**
+  - **Optionen:**
+    - A) Edge Function mit Claude API Batch-Generierung (empfohlen, folgt Brand Voice)
+    - B) Seed-SQL mit Placeholder-Texten (schnell für MVP, aber generisch)
+  - **TODO:** Mit Content Library Prompt Überarbeitung zusammen angehen
+  - **Siehe:** Bazi Section zeigt korrekte Vier Säulen + Element Balance, nur Day Master Description fehlt
+
+### 🔧 Bugfixes & Verbesserungen
+- [x] **Code Quality: Null-Safety Cleanup** ✅ **ERLEDIGT 2026-02-12**
+  - [x] `language_provider.dart`: Redundanten `profile.language != null` Check entfernt
+  - [x] `language_provider.dart`: Unnötiges `!` bei `profile.language!.toLowerCase()` entfernt
+  - [x] **Alle 43 `AppLocalizations.of(context)!` → `AppLocalizations.of(context)` gefixt**
+  - [x] `daily_horoscope_service.dart`: 3× `_claudeService!.` → `_claudeService.` gefixt
+  - [x] `numerology_card.dart`: `currentName!` → `currentName` (flow-analysis safe)
+  - [x] Backup-File gelöscht: `onboarding_birthdata_combined_screen_backup.dart`
+  - **Ergebnis:** 0 `unnecessary_non_null_assertion` Warnings (von 43+) 🎯
+  - **Flutter Analyze:** Nur noch harmlose Warnings (unused imports, deprecated methods)
+
+- [x] **Signatur Screen Cleanup:** ✅ **ERLEDIGT 2026-02-12**
+  - [x] Geprüft: `signature_dashboard_screen.dart` wird NICHT verwendet
+  - [x] File gelöscht (war veraltet, nur `signature_screen.dart` ist aktiv)
+  - [x] Routing bestätigt: `signature_screen.dart` ist im Router registriert
+
+- [ ] **Gender Migration deployen:**
+  ```sql
+  -- In Supabase Dashboard SQL Editor ausführen:
+  ALTER TABLE profiles ADD COLUMN gender TEXT CHECK (gender IN ('female', 'male', 'diverse', 'prefer_not_to_say'));
+  CREATE INDEX idx_profiles_gender ON profiles(gender);
+  ```
+- [ ] **Bazi Debug:** Warum lädt Beschreibung nicht?
+  - User-Profil prüfen: Welcher Wert in `baziElement`?
+  - Content Library prüfen: Existiert Eintrag für diesen Key?
+  - FutureBuilder Debug: Supabase Query-Fehler?
+- [ ] **Numerologie Section vervollständigen:**
+  - Fehlende Zahlen: Birthday, Attitude, Maturity, Personal Year
+  - Birth Energy (expandable): birthExpressionNumber, birthSoulUrgeNumber, birthPersonalityNumber
+  - Current Energy (expandable): currentExpressionNumber, currentSoulUrgeNumber, currentPersonalityNumber
+  - Erweiterte Numerologie: Karmic Debt, Challenge Numbers, Karmic Lessons, Bridge Numbers
+  - Content Library Seeds für fehlende Kategorien generieren
+- [ ] **Content Review + Neu-Generierung:**
+  - Seed-Prompts mit `{gender}` Variable erweitern
+  - Bessere Prompts: Konkreter, emotionaler, überraschender (weniger Plattitüden)
+  - Content Library komplett neu generieren (~$0.50 Kosten)
+- [ ] **Bazi Vier Säulen** (großes Feature - später):
+  - Bazi Calculator erweitern (Year, Month, Day, Hour Pillar)
+  - Tabellen-UI für alle 4 Säulen
+  - Content Library für Säulen-Kombinationen
 
 ### 📚 Dokumentation & Konzept-Updates
 - [x] **Onboarding-Anpassung:** ✅ **FERTIG 2026-02-08!**
@@ -330,6 +609,35 @@
 
 ## 📋 BACKLOG (Nach Testing)
 
+### Signature Screen: UI-Verbesserungen
+- [ ] **Kurze Beschreibungen unter Titeln hinzufügen** (wie bei Numerologie)
+  - Western Astrology: Sonne/Mond/Aszendent mit Subtitle (z.B. "Dein grundlegendes Wesen")
+  - Bazi: Day Master mit Subtitle (z.B. "Deine energetische Konstitution")
+  - Aktuell: Nur Numerologie hat Subtitles ("Dein grundlegender Lebensweg" etc.)
+  - Siehe: Numerologie Cards als Referenz
+
+- [ ] **Challenges: Zeige aktuelle Phase des Users**
+  - Berechne aktuelle Phase basierend auf Alter (welche der 4 Challenges)
+  - Visueller Indicator: Highlight + "Aktuelle Phase" Badge
+  - Phase 1: 0 bis ca. 28 Jahre
+  - Phase 2: 28 bis ca. 56 Jahre
+  - Phase 3: Mittleres Alter
+  - Phase 4: Reifes Alter / Später im Leben
+
+### Dokumentation
+- ✅ **Karmic Debt Berechnung dokumentiert** — `docs/glow/KARMIC_DEBT_CALCULATION.md`
+  - Konzept: Versteckte Zahlen in Zwischensummen (13, 14, 16, 19)
+  - Berechnung: Life Path, Expression, Soul Urge
+  - Bedeutung aller 4 Schuldzahlen
+  - Code-Referenz: `numerology_calculator.dart` (Zeilen 225-330)
+
+- ✅ **Karmic Debt für Namen integriert** — `docs/daily-logs/2026-02-12_karmic-debt-name-integration.md` ⚡
+  - UI: Expression + Soul Urge Karmic Debt in Birth/Current Energy Sections
+  - Design: Amber Badges mit ⚡ Icon + Content Library Integration
+  - Thematisch korrekt: Namen-Karmic-Debt bei Namen-Energien (nicht separate Cards)
+  - Beispiel: "Natalie Frauke Pawlowski" → Expression 19/1 (Machtmissbrauch → Geben lernen)
+  - Status: ✅ Implementiert, ready to test!
+
 ### Cosmic Profile: Verbesserungen
 - [ ] **Detail-Ansichten** für jedes System (klickbar auf "Mehr erfahren")
   - Western Astrology: Alle Planeten + Häuser (Premium)
@@ -403,8 +711,63 @@
 - [ ] subscriptions Tabelle (Supabase)
 - [ ] Wochen-Horoskop (Premium)
 - [ ] Monats-Horoskop (Premium)
-- [ ] Partner-Check (Premium)
 - [ ] Detailansichten für Cosmic Profile (Premium)
+
+### 📊 Reports & OTPs (One-Time Purchases)
+
+> **Dokumentation:** Siehe `docs/glow/GLOW_REPORTS_OTP.md` 📄
+> **Code-Basis:** `/altesProjektBeyondHoroscope/` (Models, PDF-Generator, Theme)
+> **Status:** 🎨 UI Foundation ✅ — Backend/Funktionalität kommt NACH MVP-Launch
+> **Preisstrategie:** Einmalige Käufe (€4,99 - €9,99), nicht im Abo enthalten
+
+**✅ UI Foundation (2026-02-12):**
+- ✅ **Bottom Nav:** Insights-Tab zwischen Signatur & Mond
+- ✅ **Insights Screen:** Alle 10 Reports mit Kategorien, Preisen, Icons
+- ✅ **Settings:** "Meine Reports" + "Premium" Section (Platzhalter)
+- ✅ **Dokumentation:** `docs/daily-logs/2026-02-12_reports-ui-foundation.md`
+
+**Phase 1: MVP Report (SoulMate Finder / Partner-Check) — NACH Glow Launch**
+- [ ] **Report-System Foundation**
+  - [ ] `StructuredReport` Model in `nuuray_core` portieren
+  - [ ] `LuxuryPdfGenerator` in `nuuray_api` integrieren
+  - [ ] Fonts (Noto Sans, Nunito) zu assets hinzufügen
+  - [ ] PDF-Sharing (Web: Download, Native: Share Sheet)
+
+- [ ] **SoulMate Finder / Partner-Check Report** (€4,99)
+  - [ ] UI: Partner-Daten-Eingabe-Screen (2 Geburtsdaten)
+  - [ ] Compatibility Score Berechnung:
+    - Western Astrology: Synastrie-Aspekte
+    - Bazi: Element-Harmonie
+    - Numerologie: Life Path Kompatibilität
+  - [ ] Claude API Prompt: Partner-Check (Brand Voice-kompatibel)
+  - [ ] Report-Preview-Screen (Teaser + Sample-Seiten)
+  - [ ] In-App Purchase: SoulMate Finder Produkt (€4,99)
+  - [ ] Report-Viewer-Screen (PDF in-app + Download + Share)
+  - [ ] Report-Bibliothek: "Meine Reports" (gekaufte Reports)
+
+**Phase 2: Core Reports (nach SoulMate Finder)**
+- [ ] **Soul Purpose Report** (€7,99)
+  - Seelenmission, Nordknoten, Life Path Number
+- [ ] **Yearly Forecast Report** (€9,99)
+  - Persönliches Jahr, Solar Return, Transite
+
+**Phase 3: Expansion Reports (später)**
+- [ ] **Shadow & Light Report** (€7,99) — Pluto, Lilith, Schatten-Integration
+- [ ] **The Purpose Path Report** (€6,99) — MC (Berufung), Expression Number
+- [ ] **Body Vitality Report** (€5,99) — 6. Haus, Saturn, Gesundheit
+
+**UI/UX: Wo leben Reports?**
+- [ ] Bottom Navigation: Neuer Tab "Explore" (Report-Katalog)
+- [ ] Home Screen: "Empfohlene Reports" Section
+- [ ] Profil: "Meine Reports" (Bibliothek gekaufter Reports)
+
+**Content-Vorbereitung:**
+- [ ] Partner-Check Prompt (Brand Voice, siehe `NUURAY_BRAND_SOUL.md`)
+- [ ] Soul Purpose Prompt
+- [ ] Yearly Forecast Prompt
+- [ ] Test-Generierungen (5-10 Reports manuell reviewen)
+
+---
 
 ### Push-Notifications
 - [ ] Firebase Cloud Messaging Setup

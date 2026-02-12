@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:nuuray_core/nuuray_core.dart';
 import 'package:nuuray_ui/nuuray_ui.dart';
 
-/// Archetyp-Header: Zeigt Name + Adjektiv + Signatur-Satz prominent
+/// Archetyp-Header: Zeigt Claude-generierten Titel + Synthese prominent
+///
+/// Der Titel wird direkt aus `signature_text` geparst (Zeile 1).
+/// Die Synthese ist der Rest des Textes (Zeile 3+).
 ///
 /// Layout:
 /// ```
 /// ┌─────────────────────────────────────┐
 /// │ ✨ Dein Archetyp                     │
 /// │                                     │
-/// │ Die intuitive Strategin             │ ← Groß, bold
+/// │ Die großzügige Perfektionistin      │ ← Zeile 1 aus signature_text
 /// │                                     │
-/// │ "In dir verbindet sich die präzise  │ ← Kursiv, weicher
-/// │  Kraft des Metalls mit einer..."    │
+/// │ "Alles in dir will nach vorne —     │ ← Zeile 3+ aus signature_text
+/// │  Schütze-Feuer, Löwe-Aszendent..."  │
 /// │                                     │
 /// │              Tippe für Details  →   │ ← Hint
 /// └─────────────────────────────────────┘
@@ -20,29 +23,48 @@ import 'package:nuuray_ui/nuuray_ui.dart';
 class ArchetypeHeader extends StatelessWidget {
   final Archetype archetype;
   final VoidCallback onTap;
+  final bool showSynthesis;
 
   const ArchetypeHeader({
     super.key,
     required this.archetype,
     required this.onTap,
+    this.showSynthesis = true, // Default: Synthese anzeigen
   });
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
 
-    // Lokalisiere Name + Adjektiv
-    // Namen haben Artikel: "Die Strategin"
-    // Adjektive ohne Artikel: "feine"
-    // → "Die feine Strategin"
-    final archetypeName = _getLocalizedName(l10n, archetype.nameKey);
-    final baziAdjective = _getLocalizedAdjective(l10n, archetype.adjectiveKey);
+    // DEBUG: Was kommt im Widget an?
+    print('🎨 [ArchetypeHeader] hasSignature: ${archetype.hasSignature}');
+    print('🎨 [ArchetypeHeader] signatureText: "${archetype.signatureText}"');
 
-    // Kombiniere: Entferne "Die" vom Namen, füge "Die [Adjektiv]" hinzu
-    // "Die Strategin" → "Strategin" → "Die feine Strategin"
-    final nameWithoutArticle = archetypeName.replaceFirst('Die ', '');
-    final fullTitle = 'Die $baziAdjective $nameWithoutArticle';
+    // Parse Titel und Synthese aus signature_text
+    // Neuer Prompt generiert: Zeile 1 = Titel, Zeile 2 = leer, Zeile 3+ = Synthese
+    String displayTitle;
+    String displaySynthesis;
+
+    if (archetype.hasSignature) {
+      final lines = archetype.signatureText!.split('\n');
+
+      // Zeile 1 = Titel (z.B. "Die großzügige Perfektionistin")
+      displayTitle = lines.first.trim();
+      print('🎨 [ArchetypeHeader] displayTitle: "$displayTitle"');
+
+      // Zeile 3+ = Synthese (Zeile 2 ist leer)
+      // Filtere leere Zeilen und join mit Leerzeichen
+      final synthesisLines = lines.skip(2).where((line) => line.trim().isNotEmpty);
+      displaySynthesis = synthesisLines.join(' ').trim();
+    } else {
+      // Fallback für User ohne neue Signatur (alte Kombination)
+      final archetypeName = _getLocalizedName(l10n, archetype.nameKey);
+      final baziAdjective = _getLocalizedAdjective(l10n, archetype.adjectiveKey);
+      final nameWithoutArticle = archetypeName.replaceFirst('Die ', '');
+      displayTitle = 'Die $baziAdjective $nameWithoutArticle';
+      displaySynthesis = l10n.archetypeNoSignature;
+    }
 
     return GestureDetector(
       onTap: onTap,
@@ -90,54 +112,49 @@ class ArchetypeHeader extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-            // Archetyp-Name (groß)
+            // Archetyp-Titel (groß, bold)
             Text(
-              fullTitle,
+              displayTitle,
               style: theme.textTheme.headlineSmall?.copyWith(
                 color: const Color(0xFF2C2416), // Dunkelbraun
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 12),
 
-            // Signatur-Satz (kursiv, weicher)
-            if (archetype.hasSignature)
+            // Synthese-Text + Tap-Hint (nur wenn showSynthesis = true)
+            if (showSynthesis) ...[
+              const SizedBox(height: 12),
+
+              // Synthese-Text (kursiv, weicher)
               Text(
-                archetype.signatureText!,
+                displaySynthesis,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: const Color(0xFF2C2416).withOpacity(0.8),
                   fontStyle: FontStyle.italic,
                   height: 1.5,
                 ),
-              )
-            else
-              Text(
-                l10n.archetypeNoSignature,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: const Color(0xFF8B7355),
-                  fontStyle: FontStyle.italic,
-                ),
               ),
 
-            // Tap-Hint
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  l10n.archetypeTapForDetails,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: const Color(0xFF8B7355),
+              // Tap-Hint
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    l10n.archetypeTapForDetails,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: const Color(0xFF8B7355),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 4),
-                const Icon(
-                  Icons.arrow_forward_ios,
-                  size: 12,
-                  color: Color(0xFF8B7355),
-                ),
-              ],
-            ),
+                  const SizedBox(width: 4),
+                  const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 12,
+                    color: Color(0xFF8B7355),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),

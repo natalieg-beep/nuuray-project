@@ -11,6 +11,7 @@ import '../../auth/providers/auth_provider.dart';
 import '../../profile/providers/user_profile_provider.dart';
 import '../../signature/services/archetype_signature_service.dart';
 import 'onboarding_name_screen.dart';
+import 'onboarding_gender_screen.dart';
 import 'onboarding_birthdata_combined_screen.dart';
 
 /// Onboarding-Flow: 2 Schritte (Name → Geburtsdaten kombiniert)
@@ -30,6 +31,7 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen> {
   String? _fullFirstNames;
   String? _lastName;
   String? _birthName;
+  String? _gender;
 
   DateTime? _birthDate;
   TimeOfDay? _birthTime;
@@ -49,7 +51,7 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen> {
   }
 
   void _nextPage() {
-    if (_currentPage < 1) {
+    if (_currentPage < 2) {  // Jetzt 3 Screens: Name → Gender → Geburtsdaten
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -104,6 +106,28 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen> {
       log('✅ [Archetyp] BirthChart erfolgreich berechnet');
       log('   Life Path: ${birthChart.lifePathNumber}');
       log('   Bazi Day Stem: ${birthChart.baziDayStem}');
+
+      // 1.5. Chart in Datenbank speichern (UPSERT)
+      log('💾 [Archetyp] Speichere Chart in Datenbank...');
+      try {
+        final supabase = ref.read(supabaseClientProvider);
+
+        // Upsert: Insert or Update if exists
+        final chartJson = birthChart.toJson();
+        chartJson['user_id'] = userId;
+
+        await supabase
+            .from('birth_charts')
+            .upsert(
+              chartJson,
+              onConflict: 'user_id', // Konflikt auf user_id → Update statt Insert
+            );
+
+        log('✅ [Archetyp] Chart erfolgreich in Datenbank gespeichert (UPSERT)');
+      } catch (e) {
+        log('⚠️ [Archetyp] Fehler beim Speichern des Charts: $e');
+        // Weiter machen - Chart ist berechnet, nur DB-Cache fehlt
+      }
 
       // 2. Claude API Service aus Provider holen
       final claudeService = ref.read(claudeApiServiceProvider);
@@ -189,6 +213,7 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen> {
       fullFirstNames: _fullFirstNames,
       lastName: _lastName,
       birthName: _birthName,
+      gender: _gender,
       birthDate: _birthDate!,
       birthTime: birthTimeAsDateTime,
       hasBirthTime: _hasBirthTime,
@@ -258,7 +283,7 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          'Schritt ${_currentPage + 1} von 2',
+          'Schritt ${_currentPage + 1} von 3',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -287,7 +312,7 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: LinearProgressIndicator(
-              value: (_currentPage + 1) / 2,
+              value: (_currentPage + 1) / 3,
               backgroundColor: AppColors.surfaceDark,
               valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
               minHeight: 4,
@@ -295,7 +320,7 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen> {
           ),
           const SizedBox(height: 16),
 
-          // PageView mit den 2 Screens
+          // PageView mit den 3 Screens
           Expanded(
             child: PageView(
               controller: _pageController,
@@ -321,7 +346,21 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen> {
                   },
                 ),
 
-                // Schritt 2: Geburtsdaten KOMBINIERT (Datum + Zeit + Ort)
+                // Schritt 2: Geschlechtsidentität
+                OnboardingGenderScreen(
+                  initialGender: _gender,
+                  onGenderSelected: (gender) {
+                    setState(() {
+                      _gender = gender;
+                    });
+                    // Auto-advance nach 400ms
+                    Future.delayed(const Duration(milliseconds: 400), () {
+                      if (mounted) _nextPage();
+                    });
+                  },
+                ),
+
+                // Schritt 3: Geburtsdaten KOMBINIERT (Datum + Zeit + Ort)
                 OnboardingBirthdataCombinedScreen(
                   initialBirthDate: _birthDate,
                   initialBirthTime: _birthTime,

@@ -173,22 +173,30 @@ class BaziCalculator {
   ///
   /// Der Day Master (Tages-Stem) ist die wichtigste Komponente im Bazi.
   /// Er repräsentiert das Selbst, die Identität, den Kern der Persönlichkeit.
+  ///
+  /// WICHTIG: Der 60-Tage-Zyklus (Jiazi-Zyklus) folgt einer festen Sequenz!
+  /// Referenz empirisch kalibriert: 24. Januar 1900 = Jia-Rat (甲子)
   static Map<String, String> calculateDayPillar(DateTime birthDate) {
-    // Berechne Julian Day für präzises Datum
+    // Berechne Julian Day für präzises Datum (lokale Zeit!)
     final julianDay = _calculateJulianDay(birthDate);
 
-    // Referenz: 1. Januar 1900 = Jiazi (Jia-Rat), JD = 2415021
-    // Der 60-Tage-Zyklus (Stem 10 × Branch 12 = 60)
-    const referenceJD = 2415021.0;
+    // Referenz: 3. Oktober 1983 = Jiazi (Jia-Rat), Tag 0 des 60-Tage-Zyklus
+    // Arbeite direkt mit bekanntem Datum statt historischer Referenz
+    const referenceJD = 2445611.0; // 3. Okt 1983, 12:00 (Mittag)
 
-    final daysSinceReference = (julianDay - referenceJD).floor();
+    // Tage seit Referenz (ohne Fractional Part für Tag-Grenze bei Mitternacht)
+    final daysSinceReference = (julianDay - referenceJD + 0.5).floor();
 
-    // Index im 60-Tage-Zyklus
-    final stemIndex = daysSinceReference % 10;
-    final branchIndex = daysSinceReference % 12;
+    // Index im 60-Tage-Zyklus (Jiazi-Zyklus)
+    final cycleIndex = ((daysSinceReference % 60) + 60) % 60; // Positiver Modulo
 
-    final stem = _heavenlyStems[stemIndex < 0 ? stemIndex + 10 : stemIndex];
-    final branch = _earthlyBranches[branchIndex < 0 ? branchIndex + 12 : branchIndex];
+    // Der 60-Tage-Zyklus: Stem (10) und Branch (12) laufen parallel
+    // Tag 0: Jia-Rat (0,0), Tag 1: Yi-Ox (1,1), ..., Tag 58: Ren-Xu (8,10)
+    final stemIndex = cycleIndex % 10;
+    final branchIndex = cycleIndex % 12;
+
+    final stem = _heavenlyStems[stemIndex];
+    final branch = _earthlyBranches[branchIndex];
 
     return {
       'stem': stem,           // = Day Master!
@@ -320,15 +328,17 @@ class BaziCalculator {
   }
 
   /// Berechnet die Julian Day Number (JD) für präzise Tagesberechnung
+  ///
+  /// WICHTIG: Nutzt LOKALE Zeit, nicht UTC!
+  /// Bazi basiert auf Solar Time am Geburtsort, nicht auf UTC.
   static double _calculateJulianDay(DateTime dateTime) {
-    final utc = dateTime.toUtc();
-
-    int year = utc.year;
-    int month = utc.month;
-    final day = utc.day;
-    final hour = utc.hour;
-    final minute = utc.minute;
-    final second = utc.second;
+    // NICHT zu UTC konvertieren - lokale Zeit verwenden!
+    int year = dateTime.year;
+    int month = dateTime.month;
+    final day = dateTime.day;
+    final hour = dateTime.hour;
+    final minute = dateTime.minute;
+    final second = dateTime.second;
 
     if (month <= 2) {
       year -= 1;

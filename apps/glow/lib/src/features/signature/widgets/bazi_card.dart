@@ -25,7 +25,7 @@ class BaziCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return Container(
       padding: const EdgeInsets.all(24),
@@ -293,7 +293,7 @@ class BaziCard extends StatelessWidget {
   }
 
   String _getElementName(String element, BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     switch (element.toLowerCase()) {
       case 'wood':
@@ -316,7 +316,7 @@ class BaziCard extends StatelessWidget {
   }
 
   String _translateBranch(BuildContext context, String branch) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     switch (branch) {
       case 'Rat':

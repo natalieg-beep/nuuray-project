@@ -1,4 +1,4 @@
-# Cosmic Profile — Implementation Dokumentation
+# Deine Signatur — Implementation Dokumentation
 
 **Erstellt:** 2026-02-06
 **Status:** ✅ MVP komplett (UI + Berechnungen)
@@ -7,7 +7,7 @@
 
 ## Übersicht
 
-Das Cosmic Profile ist das Herzstück von Nuuray Glow. Es vereint drei astrologische Systeme zu einem ganzheitlichen Persönlichkeitsprofil:
+Das Deine Signatur ist das Herzstück von Nuuray Glow. Es vereint drei astrologische Systeme zu einem ganzheitlichen Persönlichkeitsprofil:
 
 1. **Western Astrology** (Westliche Astrologie): Sonne, Mond, Aszendent
 2. **Bazi** (Chinesische Vier Säulen): Heavenly Stems + Earthly Branches, Day Master
@@ -347,11 +347,11 @@ class NumerologyProfile {
 
 ### Dashboard Screen
 
-**Datei:** `apps/glow/lib/src/features/cosmic_profile/screens/cosmic_profile_dashboard_screen.dart`
+**Datei:** `apps/glow/lib/src/features/signature/screens/signature_dashboard_screen.dart`
 
 ```dart
 CosmicProfileDashboardScreen
-  ├─ AppBar mit Titel "Dein Cosmic Profile"
+  ├─ AppBar mit Titel "Dein Deine Signatur"
   ├─ cosmicProfileProvider (lädt BirthChart)
   └─ SingleChildScrollView
       ├─ WesternAstrologyCard
@@ -467,7 +467,7 @@ Container(
 
 ### Navigation Integration
 
-**Home Screen:** Neue "Dein Cosmic Profile" Card zwischen Horoskop und Quick Actions:
+**Home Screen:** Neue "Dein Deine Signatur" Card zwischen Horoskop und Quick Actions:
 
 ```dart
 Widget _buildCosmicProfileCard(BuildContext context) {
@@ -482,7 +482,7 @@ Widget _buildCosmicProfileCard(BuildContext context) {
       child: Row(
         children: [
           Icon(Icons.auto_awesome, size: 32),
-          Text('Dein Cosmic Profile'),
+          Text('Dein Deine Signatur'),
           Text('Entdecke deine kosmische DNA aus Western Astrology, Bazi und Numerologie'),
           Icon(Icons.arrow_forward_ios),
         ],
@@ -507,8 +507,8 @@ GoRoute(
 
 ### Test Suite
 
-1. **`cosmic_profile_test.dart`** — Integration Test
-   - Berechnet komplettes Cosmic Profile für Natalie
+1. **`signature_test.dart`** — Integration Test
+   - Berechnet komplettes Deine Signatur für Natalie
    - Validiert alle drei Systeme zusammen
    - Status: ✅ Alle Tests bestanden
 
@@ -552,7 +552,7 @@ GoRoute(
    - **Action:** Mit User klären, möglicherweise andere Methode oder Fehler im Algorithmus
 
 2. **Home Screen zeigt nichts an**
-   - User hat Screenshot gesendet, Cosmic Profile Card ist nicht sichtbar
+   - User hat Screenshot gesendet, Deine Signatur Card ist nicht sichtbar
    - **Action:** Debug-Session durchführen, möglicherweise Build-Problem
 
 3. **Geburtsort-Koordinaten fehlen**
@@ -576,21 +576,21 @@ GoRoute(
    - **Action:** Separate Screens für Western/Bazi/Numerology Details
 
 7. **Supabase Caching**
-   - Berechnete Cosmic Profiles sollen in `cosmic_profiles` Tabelle gecacht werden
+   - Berechnete Deine Signaturs sollen in `signatures` Tabelle gecacht werden
    - **Action:** Migration + Service-Anpassung
 
 ---
 
 ## Nächste Schritte
 
-1. ✅ **Cosmic Profile Berechnungen** → Komplett
+1. ✅ **Deine Signatur Berechnungen** → Komplett
 2. ✅ **UI Dashboard** → Komplett
 3. ✅ **Navigation Integration** → Komplett
 4. 🔨 **Debugging:** Home Screen Card nicht sichtbar → NEXT
 5. ⏳ **Premium Status setzen** → SQL-Migration bereit
 6. ⏳ **Soul Urge Validierung** → Mit User klären
 7. ⏳ **Geburtsort-Koordinaten** → Google Places Integration
-8. ⏳ **Supabase Caching** → Cosmic Profiles Tabelle
+8. ⏳ **Supabase Caching** → Deine Signaturs Tabelle
 
 ---
 

@@ -1049,7 +1049,7 @@ abstract class AppLocalizations {
   /// No description provided for @signatureBaziSubtitle.
   ///
   /// In de, this message translates to:
-  /// **'Vier Säulen des Schicksals'**
+  /// **'Was du brauchst — deine energetische Architektur'**
   String get signatureBaziSubtitle;
 
   /// No description provided for @signatureBaziDayMaster.
@@ -1127,7 +1127,7 @@ abstract class AppLocalizations {
   /// No description provided for @signatureNumerologySubtitle.
   ///
   /// In de, this message translates to:
-  /// **'Deine Lebenszahlen'**
+  /// **'Wohin du gehst — dein Seelenrhythmus'**
   String get signatureNumerologySubtitle;
 
   /// No description provided for @numerologyLifePath.
@@ -2108,6 +2108,18 @@ abstract class AppLocalizations {
   /// **'Geburtsort überspringen'**
   String get onboardingPlaceSkip;
 
+  /// No description provided for @signatureOverviewIntro.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Signatur setzt sich aus drei Perspektiven zusammen — jede zeigt einen anderen Aspekt von dir.'**
+  String get signatureOverviewIntro;
+
+  /// No description provided for @signatureOverviewOutro.
+  ///
+  /// In de, this message translates to:
+  /// **'Und so fügt sich alles zusammen:'**
+  String get signatureOverviewOutro;
+
   /// No description provided for @signatureWesternTitle.
   ///
   /// In de, this message translates to:
@@ -2117,7 +2129,7 @@ abstract class AppLocalizations {
   /// No description provided for @signatureWesternSubtitle.
   ///
   /// In de, this message translates to:
-  /// **'Deine Planetenpositionen'**
+  /// **'Wer du bist — deine psychologische Signatur'**
   String get signatureWesternSubtitle;
 
   /// No description provided for @signatureSun.

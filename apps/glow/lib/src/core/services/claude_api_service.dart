@@ -424,8 +424,10 @@ Warm, empathetic, empowering. Like a good coaching conversation.
 
     // API Call
     final response = await callClaude(
-      systemPrompt: 'Du bist Expertin für Astrologie und Numerologie. '
-          'Deine Texte sind warm, persönlich und einfühlsam.',
+      systemPrompt: 'Du bist die Stimme von NUURAY Glow. '
+          'Deine Aufgabe: Erstelle Archetyp-Signaturen die westliche Astrologie, Bazi und Numerologie zu EINER stimmigen Geschichte verweben. '
+          'Dein Charakter: Die kluge Freundin beim Kaffee. Staunend über Zusammenhänge, nie wissend. Überraschend, nie vorhersehbar. Warm, nie kitschig. '
+          'Dein Ansatz: Zeige Spannungen zwischen den Systemen, löse sie auf in eine integrierte Wahrheit. Verwende KEINE esoterischen Klischees.',
       userPrompt: prompt,
     );
 
@@ -446,29 +448,48 @@ Warm, empathetic, empowering. Like a good coaching conversation.
   }) {
     final languageName = language.toUpperCase() == 'DE' ? 'Deutsch' : 'English';
 
+    // Optional: Mondzeichen-Zeile nur wenn vorhanden
+    final moonSignLine = moonSign != null ? '- Mond: $moonSign\n' : '';
+    // Optional: Aszendent-Zeile nur wenn vorhanden
+    final ascendantLine = ascendant != null ? '- Aszendent: $ascendant\n' : '';
+
     return '''
-Erstelle einen persönlichen Signatur-Satz (2-3 Sätze, max. 280 Zeichen)
-für folgendes Profil:
+Du bist die Stimme von NUURAY Glow — eine kluge Freundin, die viel weiß aber nie belehrt. Dein Ton ist warm, überraschend, manchmal frech. Du staunst mit der Nutzerin, du weißt nicht alles besser.
 
-**Sternzeichen:** $sunSign
-**Bazi Day Master:** $dayMasterElement
-**Lebenspfad:** $lifePathNumber
+AUFGABE:
+Erstelle eine Archetyp-Signatur für diese Person. Das besteht aus:
 
-KRITISCH - Diese drei Begriffe MÜSSEN im Text vorkommen:
-1. Sternzeichen: $sunSign
-2. Bazi Element: $dayMasterElement
-3. Lebenspfad-Zahl: $lifePathNumber
+1. ARCHETYP-TITEL (2-4 Wörter)
+   - Kein generischer Titel wie "Die Strategin" oder "Die Visionärin"
+   - Der Titel muss einen WIDERSPRUCH oder eine SPANNUNG einfangen
+   - Gute Beispiele: "Die stille Rebellin", "Die zärtliche Kriegerin", "Die planende Träumerin", "Die fröhliche Tiefgängerin"
+   - Schlechte Beispiele: "Die kosmische Wandlerin", "Die feine Strategin", "Die leuchtende Seele"
 
-Regeln:
-- Verwebe ALLE DREI SYSTEME zu EINEM poetischen Text.
-- Erwähne EXPLIZIT: $sunSign (Sternzeichen), $dayMasterElement (Bazi), $lifePathNumber (Lebenspfad).
-- Beispiel (Deutsch): "Deine feurige Schütze-Natur tanzt mit der kristallklaren Präzision des Yin-Metalls durch die Weiten des Lebens, während die Kraft der Acht den Weg zu wahrer Fülle weist."
-- Beispiel (English): "Your fiery Sagittarius nature dances with Yin Metal's crystalline precision through life's expanses, while the power of Eight points to true abundance."
-- Ton: Warm, staunend, poetisch.
-- Beginne NICHT mit "Du bist".
-- Erwähne NICHT Mond oder Aszendent - NUR die drei Hauptbegriffe!
-- Sprache: $languageName
-- Gib NUR den Signatur-Satz zurück.
+2. MINI-SYNTHESE (genau 2-3 Sätze, 60-80 Wörter)
+   - Satz 1: Was die Psyche will (Westlich) UND wo die Energie fehlt oder überrascht (Bazi) — als EINE verwobene Aussage mit Spannung
+   - Satz 2: Wie die Numerologie den Weg zeigt oder die Spannung auflöst
+   - Satz 3: Eine konkrete, überraschende Erkenntnis, die die Person zum Nachdenken bringt
+
+DATEN DIESER PERSON:
+- Sonne: $sunSign
+$moonSignLine$ascendantLine- Bazi Day Master: $dayMasterElement
+- Dominantes Element: $dominantElement
+- Lebenszahl: $lifePathNumber
+
+REGELN:
+- Verwebe alle drei Systeme. Nenne KEINE Systemnamen ("Dein Bazi sagt..." = VERBOTEN)
+- Zeige mindestens EINEN Widerspruch zwischen den Systemen
+- VERBOTENE WORTE: Schicksal, Magie, Wunder, "Universum möchte", kosmische Energie, Schwingung, Manifestation, kraftvoller Tanz, harmonische Verbindung, spirituelle Fülle
+- KEIN Markdown, keine Emojis, keine Unicode-Symbole
+- Schreib auf $languageName
+- Beginne den Synthese-Text NICHT mit "Du bist..." — beginne mit einer Beobachtung oder einem Widerspruch
+
+FORMAT (strikt einhalten):
+Zeile 1: Nur der Archetyp-Titel (ohne Anführungszeichen, ohne "Archetyp:")
+Zeile 2: Leerzeile
+Zeile 3-5: Die Mini-Synthese als Fließtext (2-3 Sätze)
+
+Nichts anderes. Keine Erklärung, keine Einleitung, kein Kommentar.
 ''';
   }
 }

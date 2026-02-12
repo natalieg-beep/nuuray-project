@@ -30,7 +30,7 @@ class MiniSystemWidgets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final isGerman = l10n.localeName.startsWith('de');
 
     return Padding(

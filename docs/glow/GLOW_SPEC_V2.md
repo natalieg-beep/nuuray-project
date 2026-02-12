@@ -561,7 +561,7 @@ Button geklickt
 |--------|-------|-------------------|------------|
 | **Splash** | Loading + Auto-Routing | Nein | → Auth/Onboarding/Home |
 | **Login/Signup** | Email-Auth | Nein | → Onboarding oder Home |
-| **Onboarding (2 Schritte)** | Geburtsdaten erfassen | Ja (vorher Login) | → Home |
+| **Onboarding (3 Schritte)** | Geburtsdaten erfassen | Ja (vorher Login) | → Home |
 | **Home** | Dashboard + Tageshoroskop | Ja | BottomNav: Home |
 | **Deine Signatur** | Vollständiges Profil | Ja | BottomNav: Profil |
 | **Daily Horoscope Detail** | Ausführliches Tageshoroskop | Ja | Von Home |
@@ -610,7 +610,7 @@ Logik:
 
 ---
 
-#### Onboarding (2 Schritte)
+#### Onboarding (3 Schritte)
 
 **Schritt 1: Name & Identität**
 ```
@@ -1095,7 +1095,8 @@ App öffnen
   → Login/Signup (30s)
   → Onboarding Intro (optional, 15s)
   → Onboarding Schritt 1: Name (30s)
-  → Onboarding Schritt 2: Geburtsdaten (60s inkl. Google Places)
+  → Onboarding Schritt 2: Gender (15s)
+  → Onboarding Schritt 3: Geburtsdaten (60s inkl. Google Places)
   → Berechnung läuft (3-5s)
   → Home Screen mit "Deine Signatur" Dashboard
   → "🎉 Deine Signatur ist fertig!" (Celebration)
@@ -1839,14 +1840,18 @@ Length: 50 words.
 
 ## 12. Entwicklungs-Roadmap
 
-### 12.1 MVP (Minimal Viable Product) — 4-6 Wochen
+> ⚠️ **STRATEGIE-ÄNDERUNG (2026-02-12):**
+> KEIN schneller MVP! Stattdessen: **Launch-Ready App mit allen Kern-Features** (4-5 Monate)
+> Siehe: `docs/glow/MVP_VS_POST_LAUNCH_V2.md`
 
-**Ziel:** Lauffähige App mit Kern-Features, bereit für Early Adopters
+### 12.1 Launch-Ready Features (Phase 1-3)
+
+**Ziel:** Vollständige App mit allen Kern-Features, bereit für öffentlichen Launch
 
 | Feature | Status | Priorität | Dauer |
 |---------|--------|-----------|-------|
 | ✅ Auth (Email) | Fertig | P0 | — |
-| ✅ Onboarding (2 Schritte!) | Fertig | P0 | — |
+| ✅ Onboarding (3 Schritte!) | Fertig | P0 | Name → Gender → Geburtsdaten |
 | ✅ Geocoding (Google Places) | Fertig | P0 | — |
 | ✅ "Deine Signatur" Dashboard | Fertig | P0 | — |
 | ⏳ Tageshoroskop (gecacht) | In Arbeit | P0 | 3 Tage |
@@ -1858,11 +1863,13 @@ Length: 50 words.
 | ⏳ i18n (Deutsch + Englisch) | TODO | P0 | 2 Tage |
 | ⏳ Deployment (TestFlight) | TODO | P0 | 2 Tage |
 
-**Total:** ~14 Tage (Vollzeit) oder ~4-5 Wochen (Teilzeit)
+**Total:** ~18-22 Wochen = **4-5 Monate** (mit Parallelisierung)
+
+**Wichtig:** Alle Features aus Phase 1-3 werden VOR Launch fertiggestellt!
 
 ---
 
-### 12.2 Post-MVP: Retention & Monetarisierung — 2-3 Wochen
+### 12.2 Post-Launch Features (Phase 4+)
 
 | Feature | Priorität | Dauer |
 |---------|-----------|-------|
@@ -1929,7 +1936,7 @@ Length: 50 words.
 
 **Diese Woche:**
 1. ✅ Projektbeschreibung finalisieren (← FERTIG!)
-2. ⏳ Onboarding neu implementieren (2 Schritte + neue Name-Felder)
+2. ✅ Onboarding neu implementiert (3 Schritte: Name → Gender → Geburtsdaten)
 3. ⏳ "Deine Signatur" Dashboard auf Home Screen
 4. ⏳ Claude API Integration testen
 5. ⏳ Tageshoroskop-Screen implementieren
@@ -1985,7 +1992,7 @@ Length: 50 words.
 - Premium-Ausbau: 12-14 Wochen
 
 **Nächste Schritte:**
-1. Onboarding neu implementieren (2 Schritte)
+1. ✅ Onboarding neu implementiert (3 Schritte: Name → Gender → Geburtsdaten)
 2. "Deine Signatur" auf Home Screen
 3. Claude API testen
 4. Settings mit Sprach-Auswahl

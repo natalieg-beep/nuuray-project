@@ -30,7 +30,7 @@ class _NumerologyCardState extends State<NumerologyCard> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     // Extract numbers from BirthChart
     final lifePathNumber = widget.birthChart.lifePathNumber;
@@ -347,7 +347,7 @@ class _NumerologyCardState extends State<NumerologyCard> {
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            currentName!,
+                            currentName,
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                   color: AppColors.textSecondary,
                                 ),
@@ -505,7 +505,7 @@ class _NumerologyCardState extends State<NumerologyCard> {
     required int? soulUrge,
     required int? personality,
   }) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -576,7 +576,7 @@ class _NumerologyCardState extends State<NumerologyCard> {
 
   /// Baut die erweiterte Numerologie-Sektion (Karmic Debt, Challenges, Lessons, Bridges)
   Widget _buildAdvancedNumerology(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final karmicDebtLifePath = widget.birthChart.karmicDebtLifePath;
     final karmicDebtExpression = widget.birthChart.karmicDebtExpression;
     final karmicDebtSoulUrge = widget.birthChart.karmicDebtSoulUrge;
@@ -882,7 +882,7 @@ class _NumerologyCardState extends State<NumerologyCard> {
 
   /// Gibt die Bedeutung einer Karmic Debt Number zurück
   String _getKarmicDebtMeaning(BuildContext context, int number) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     switch (number) {
       case 13:
@@ -899,7 +899,7 @@ class _NumerologyCardState extends State<NumerologyCard> {
   }
 
   String _getLifePathMeaning(int number) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     switch (number) {
       case 1:

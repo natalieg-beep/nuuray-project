@@ -15,7 +15,7 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final currentLocale = ref.watch(languageProvider);
     final languageNotifier = ref.read(languageProvider.notifier);
 
@@ -60,6 +60,42 @@ class SettingsScreen extends ConsumerWidget {
               subtitle: 'Name und Geburtsdaten ändern',
               onTap: () {
                 context.push('/edit-profile');
+              },
+            ),
+            const SizedBox(height: 32),
+
+            // Reports Section
+            _buildSectionHeader(context, 'Meine Inhalte'),
+            const SizedBox(height: 12),
+            _buildListTile(
+              context,
+              icon: Icons.auto_stories_outlined,
+              title: 'Meine Reports',
+              subtitle: 'Gekaufte Reports & Analysen',
+              onTap: () {
+                // TODO: Navigate to report library
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Report-Bibliothek - Coming Soon!'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 8),
+            _buildListTile(
+              context,
+              icon: Icons.stars_outlined,
+              title: 'Premium',
+              subtitle: 'Dein Abo verwalten',
+              onTap: () {
+                // TODO: Navigate to premium management
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Premium-Verwaltung - Coming Soon!'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
               },
             ),
             const SizedBox(height: 32),

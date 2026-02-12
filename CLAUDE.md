@@ -2,10 +2,14 @@
 
 > **📚 Vollständige Dokumentation:**
 > - **START HIER:** [`docs/README.md`](docs/README.md) — Dokumentations-Hub mit Navigation zu allen Docs
-> - [`docs/glow/GLOW_SPEC_V2.md`](docs/glow/GLOW_SPEC_V2.md) — ✨ AKTUELLE Glow-Spezifikation (2-Schritte Onboarding)
+> - 🌙 **[`docs/NUURAY_BRAND_SOUL.md`](docs/NUURAY_BRAND_SOUL.md)** — ⭐ PFLICHTLEKTÜRE für Claude API Prompts, Content-Generierung & UI-Texte
+> - [`docs/glow/GLOW_SPEC_V2.md`](docs/glow/GLOW_SPEC_V2.md) — ✨ AKTUELLE Glow-Spezifikation (3-Schritte Onboarding)
+> - [`docs/glow/GLOW_REPORTS_OTP.md`](docs/glow/GLOW_REPORTS_OTP.md) — 📊 Reports & OTPs (alle 10 Reports)
+> - [`docs/glow/MVP_VS_POST_LAUNCH_V2.md`](docs/glow/MVP_VS_POST_LAUNCH_V2.md) — 🚀 Launch-Ready Roadmap (4-5 Monate)
+> - [`docs/CLAUDE_BRIEFING_CONTENT_STRATEGY.md`](docs/CLAUDE_BRIEFING_CONTENT_STRATEGY.md) — 🎯 Archetyp vs. Content Library (Klarstellung)
 > - [`docs/glow/SPEC_CHANGELOG.md`](docs/glow/SPEC_CHANGELOG.md) — Konzeptionelle Änderungen
 > - [`docs/architecture/PROJECT_BRIEF.md`](docs/architecture/PROJECT_BRIEF.md) — Vollständige Architektur (alle 3 Apps)
-> - [`docs/daily-logs/2026-02-08_session-zusammenfassung.md`](docs/daily-logs/2026-02-08_session-zusammenfassung.md) — Neueste Session
+> - [`docs/daily-logs/2026-02-12_content-strategy-klarstellung.md`](docs/daily-logs/2026-02-12_content-strategy-klarstellung.md) — Neueste Session (Content-Strategie)
 > - [`TODO.md`](TODO.md) — Aktuelle Aufgabenliste
 
 ---
@@ -58,6 +62,16 @@ nuuray-project/
 └── docs/                  ← Projekt-Dokumentation
 ```
 
+## Wichtige Dokumente
+
+| Datei | Inhalt | Wann relevant |
+|-------|--------|---------------|
+| [`docs/NUURAY_BRAND_SOUL.md`](docs/NUURAY_BRAND_SOUL.md) | 🌙 **Markenstimme, Tonalität, Synthese-Philosophie, Prompt-Regeln** | **Bei JEDEM Claude API Prompt, bei Content-Generierung, bei UI-Texten** |
+| [`docs/README.md`](docs/README.md) | Dokumentations-Hub mit Navigation | Orientierung im Projekt |
+| [`docs/glow/GLOW_SPEC_V2.md`](docs/glow/GLOW_SPEC_V2.md) | Vollständige Glow-Spezifikation | Feature-Entwicklung für Glow |
+| [`docs/architecture/PROJECT_BRIEF.md`](docs/architecture/PROJECT_BRIEF.md) | Architektur aller 3 Apps | Technische Entscheidungen |
+| [`TODO.md`](TODO.md) | Aktuelle Aufgabenliste | Entwicklungs-Status |
+
 ## Architektur-Regeln
 
 ### Shared Packages
@@ -105,6 +119,16 @@ User öffnet App
 - Variablen: `{sternzeichen}`, `{mondphase}`, `{tagesenergie}`, `{sprache}`.
 - Ton pro App definiert: Glow = unterhaltsam & staunend, Tide = achtsam & empowernd, Path = warm & reflektiert.
 - **Nie den gesamten Chart in den Prompt packen.** Nur die relevanten Datenpunkte für den jeweiligen Content-Typ.
+
+### Brand Voice — PFLICHTLEKTÜRE vor jedem Content-Call
+**⚠️ WICHTIG: Vor dem Schreiben von Claude API Prompts, Content-Texten oder UI-Copy: Lies [`docs/NUURAY_BRAND_SOUL.md`](docs/NUURAY_BRAND_SOUL.md)**
+
+- **NIEMALS ein System isoliert.** IMMER alle drei verweben (Western Astrology, Bazi, Numerologie).
+- **Widersprüche sind Features, keine Bugs.** Spannungen zwischen den Systemen zeigen, dann auflösen.
+- **Jeder generierte Text muss den 7-Fragen-Qualitätscheck bestehen** (siehe Brand Soul Dokument).
+- **Verbotene Worte:** "Die Sterne sagen...", "Das Universum möchte...", "Schicksal", "Wunder", "Magie", "Kosmische Energie", "Positive Schwingungen"
+- **Der 5-Schritt-Bogen:** Hook → Spannung → Bazi-Tiefe → Auflösung → Impuls
+- **Ton-Modifikatoren pro App:** Glow = kluge Freundin beim Kaffee, Tide = achtsame Begleiterin, Path = weise Mentorin
 
 ## Supabase — Konventionen
 

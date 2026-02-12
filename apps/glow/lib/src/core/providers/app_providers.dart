@@ -2,6 +2,7 @@ import 'dart:developer' as developer;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:nuuray_api/nuuray_api.dart';
 
 import '../services/claude_api_service.dart';
 
@@ -49,4 +50,10 @@ final isAuthenticatedProvider = Provider<bool>((ref) {
     loading: () => false,
     error: (_, __) => false,
   );
+});
+
+/// Content Library Service Provider
+final contentLibraryServiceProvider = Provider<ContentLibraryService>((ref) {
+  final client = ref.watch(supabaseClientProvider);
+  return ContentLibraryService(supabaseClient: client);
 });

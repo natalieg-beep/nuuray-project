@@ -18,10 +18,11 @@ docs/
 ├── glow/
 │   ├── README.md                               ← Glow-Dokumentation Übersicht
 │   ├── GLOW_SPEC_V2.md                        ← ✨ AKTUELLE Glow-Spezifikation
+│   ├── GLOW_REPORTS_OTP.md                    ← ✨ Reports & OTPs (NEU! 2026-02-12)
 │   ├── SPEC_CHANGELOG.md                      ← ✨ Konzeptionelle Änderungen
 │   ├── CHANGELOG.md                            ← Code-Entwicklungs-History
 │   └── implementation/                         ← Technische Implementierungs-Details
-│       ├── COSMIC_PROFILE_IMPLEMENTATION.md
+│       ├── SIGNATURE_IMPLEMENTATION.md
 │       ├── GEOCODING_IMPLEMENTATION.md
 │       ├── CLAUDE_API_IMPLEMENTATION.md
 │       ├── ARCHETYP_IMPLEMENTATION_PLAN.md     ← ✨ Archetyp 4-Phasen Plan (NEU!)
@@ -43,6 +44,18 @@ docs/
 
 ## 📖 Hauptdokumente (nach Verwendung)
 
+### 0. Für **Content & Brand Voice** 🌙
+📄 **`NUURAY_BRAND_SOUL.md`** ⭐ **PFLICHTLEKTÜRE**
+- Markenstimme & Tonalität (Glow, Tide, Path)
+- **Synthese-Philosophie:** NIEMALS ein System isoliert, IMMER alle drei verweben
+- Verbotene Worte & Muster ("Die Sterne sagen...", "Schicksal", "Magie")
+- Der 5-Schritt-Bogen für NUURAY-Texte
+- Claude API Prompt-Regeln & System-Prompts
+- 7-Fragen-Qualitätscheck für Content
+- **⚠️ VOR jedem Claude API Call, Content-Text oder UI-Copy lesen!**
+
+---
+
 ### 1. Für **Projekt-Überblick**
 📄 **`architecture/PROJECT_BRIEF.md`**
 - Alle 3 Apps (Glow, Tide, Path)
@@ -61,7 +74,7 @@ docs/
 
 📄 **`glow/SPEC_CHANGELOG.md`** (NEU!)
 - Was hat sich geändert?
-- "Cosmic Profile" → "Deine Signatur"
+- "Deine Signatur" → "Deine Signatur"
 - Onboarding 3 → 2 Schritte
 - Sprachen-Strategie
 
@@ -99,14 +112,16 @@ docs/
 
 | Ich will... | Dann lese... |
 |-------------|--------------|
+| **🌙 Content schreiben / Claude API Prompts** | `NUURAY_BRAND_SOUL.md` ⭐⭐⭐ PFLICHT! |
 | **🚀 App lokal starten** | `SETUP.md` oder `QUICK_REFERENCE.md` ⭐ |
 | **⚡ Schnelle Commands nachschlagen** | `QUICK_REFERENCE.md` ⭐ |
 | **🔧 Development Setup** | `SETUP.md` (Supabase CLI, Flutter, etc.) ⭐ |
 | **Vollständigen Projekt-Überblick** | `architecture/PROJECT_BRIEF.md` |
 | **Archetyp-System verstehen** | `architecture/ARCHETYP_SYSTEM.md` ⭐ NEU! |
 | **Glow Feature entwickeln** | `glow/GLOW_SPEC_V2.md` |
+| **📊 Reports & OTPs verstehen** | `glow/GLOW_REPORTS_OTP.md` ⭐ NEU! (2026-02-12) |
 | **Verstehen, was sich geändert hat** | `glow/SPEC_CHANGELOG.md` |
-| **Cosmic Profile debuggen** | `glow/implementation/COSMIC_PROFILE_IMPLEMENTATION.md` |
+| **Deine Signatur debuggen** | `glow/implementation/COSMIC_PROFILE_IMPLEMENTATION.md` |
 | **Claude API integrieren** | `glow/implementation/CLAUDE_API_IMPLEMENTATION.md` |
 | **Google Places debuggen** | `glow/implementation/GEOCODING_IMPLEMENTATION.md` |
 | **Horoskop-Kosten optimieren** | `glow/implementation/HOROSCOPE_STRATEGY.md` |
@@ -129,7 +144,7 @@ Siehe `glow/README.md` → Abschnitt "Inkonsistenzen zwischen Code & Docs"
 
 **Aktueller Stand (2026-02-08):**
 1. ✅ **Onboarding:** Code = 2 Schritte, Spec V2 = 2 Schritte (**GELÖST!**)
-2. ⚠️ **Naming:** Code = "Cosmic Profile", Spec V2 = "Deine Signatur" (**TODO**)
+2. ⚠️ **Naming:** Code = "Deine Signatur", Spec V2 = "Deine Signatur" (**TODO**)
 
 ---
 

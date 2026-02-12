@@ -29,9 +29,11 @@ class UserProfileService {
       }
 
       print('✅ getUserProfile: Profil-Daten empfangen: ${response.keys.join(", ")}');
+      print('🔍 DEBUG signature_text aus DB: "${response['signature_text']}"');
 
       final profile = UserProfile.fromJson(response);
       print('✅ getUserProfile: Profil erfolgreich geparst für ${profile.displayName}');
+      print('🔍 DEBUG signature_text im Model: "${profile.signatureText}"');
 
       return profile;
     } catch (e, stackTrace) {
@@ -56,12 +58,15 @@ class UserProfileService {
         log('Erstelle neues Profil');
         final data = profile.toJson();
 
+        // WICHTIG: signature_text wird bei INSERT nicht gesetzt (wird später generiert)
+        data.remove('signature_text');
+
         // Debug: Zeige was wir senden
-        log('Sende Daten an Supabase: $data');
+        log('Sende Daten an Supabase: ${data.keys.join(", ")}');
 
         await _supabase.from('profiles').insert(data);
 
-        log('Profil erstellt für User ${profile.id}');
+        log('✅ Profil erstellt für User ${profile.id}');
         return true;
       }
     } catch (e, stackTrace) {
@@ -72,17 +77,77 @@ class UserProfileService {
   }
 
   /// Profil aktualisieren
+  ///
+  /// WICHTIG: Diese Methode updatet nur die Felder die im UserProfile-Objekt
+  /// gesetzt sind. Felder die NULL sind werden NICHT überschrieben.
+  /// Insbesondere wird signature_text NIEMALS überschrieben (muss manuell
+  /// gesetzt werden via separate Methode).
   Future<bool> updateUserProfile(UserProfile profile) async {
     try {
-      await _supabase
-          .from('profiles')
-          .update(profile.copyWith(updatedAt: DateTime.now()).toJson())
-          .eq('id', profile.id);
+      // Erstelle Update-Map nur mit non-null Feldern
+      final Map<String, dynamic> updateData = {};
 
-      log('Profil aktualisiert für User ${profile.id}');
+      // Basis-Felder (immer setzen falls vorhanden)
+      if (profile.displayName.isNotEmpty) {
+        updateData['display_name'] = profile.displayName;
+      }
+      if (profile.fullFirstNames != null) {
+        updateData['full_first_names'] = profile.fullFirstNames;
+      }
+      if (profile.birthName != null) {
+        updateData['birth_name'] = profile.birthName;
+      }
+      if (profile.lastName != null) {
+        updateData['last_name'] = profile.lastName;
+      }
+      if (profile.gender != null) {
+        updateData['gender'] = profile.gender;
+      }
+
+      // Geburtsdaten
+      if (profile.birthDate != null) {
+        updateData['birth_date'] = profile.birthDate!.toIso8601String().split('T').first;
+      }
+      if (profile.birthTime != null) {
+        updateData['birth_time'] = '${profile.birthTime!.hour.toString().padLeft(2, '0')}:${profile.birthTime!.minute.toString().padLeft(2, '0')}';
+      }
+      updateData['has_birth_time'] = profile.hasBirthTime;
+
+      if (profile.birthCity != null) {
+        updateData['birth_place'] = profile.birthCity; // DB-Spalte heißt birth_place
+      }
+      if (profile.birthLatitude != null) {
+        updateData['birth_latitude'] = profile.birthLatitude;
+      }
+      if (profile.birthLongitude != null) {
+        updateData['birth_longitude'] = profile.birthLongitude;
+      }
+      if (profile.birthTimezone != null) {
+        updateData['birth_timezone'] = profile.birthTimezone;
+      }
+
+      // Sprache & Timezone
+      updateData['language'] = profile.language;
+      updateData['timezone'] = profile.timezone;
+
+      // Onboarding
+      updateData['onboarding_completed'] = profile.onboardingCompleted;
+
+      // WICHTIG: signature_text wird NICHT überschrieben!
+      // Das wird nur via generateAndCacheArchetypeSignature() gesetzt.
+
+      // Updated-At immer setzen
+      updateData['updated_at'] = DateTime.now().toIso8601String();
+
+      log('📝 updateUserProfile: Update-Felder: ${updateData.keys.join(", ")}');
+
+      await _supabase.from('profiles').update(updateData).eq('id', profile.id);
+
+      log('✅ Profil aktualisiert für User ${profile.id}');
       return true;
-    } catch (e) {
-      log('updateUserProfile Fehler: $e');
+    } catch (e, stackTrace) {
+      log('❌ updateUserProfile Fehler: $e');
+      log('   StackTrace: $stackTrace');
       return false;
     }
   }

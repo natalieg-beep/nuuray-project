@@ -25,6 +25,11 @@ class UserProfile extends Equatable {
   /// z.B. "Schmidt" - Für Numerologie (falls anders als lastName)
   final String? birthName;
 
+  // === GENDER ===
+  /// Geschlechtsidentität für personalisierte Content-Generierung
+  /// Werte: 'female', 'male', 'diverse', 'prefer_not_to_say'
+  final String? gender;
+
   // === BIRTH DATA ===
   /// Geburtsdatum (Pflichtfeld nach Onboarding)
   final DateTime? birthDate;
@@ -89,6 +94,7 @@ class UserProfile extends Equatable {
     this.fullFirstNames,
     this.lastName,
     this.birthName,
+    this.gender,
     this.birthDate,
     this.birthTime,
     this.hasBirthTime = false,
@@ -125,6 +131,7 @@ class UserProfile extends Equatable {
       fullFirstNames: json['full_first_names'] as String?,
       lastName: json['last_name'] as String?,
       birthName: json['birth_name'] as String?,
+      gender: json['gender'] as String?,
       birthDate: _parseDateTimeSafe(json['birth_date']),
       birthTime: _parseBirthTime(json['birth_time']),
       hasBirthTime: json['has_birth_time'] as bool? ?? false,
@@ -181,6 +188,7 @@ class UserProfile extends Equatable {
     'full_first_names': fullFirstNames,
     'last_name': lastName,
     'birth_name': birthName,
+    'gender': gender,
     'birth_date': birthDate?.toIso8601String().split('T').first,
     'birth_time': birthTime != null
         ? '${birthTime!.hour.toString().padLeft(2, '0')}:${birthTime!.minute.toString().padLeft(2, '0')}'
@@ -205,6 +213,7 @@ class UserProfile extends Equatable {
     fullFirstNames,
     lastName,
     birthName,
+    gender,
     birthDate,
     birthTime,
     hasBirthTime,
@@ -223,6 +232,7 @@ class UserProfile extends Equatable {
     String? fullFirstNames,
     String? lastName,
     String? birthName,
+    String? gender,
     DateTime? birthDate,
     DateTime? birthTime,
     bool? hasBirthTime,
@@ -243,6 +253,7 @@ class UserProfile extends Equatable {
       fullFirstNames: fullFirstNames ?? this.fullFirstNames,
       lastName: lastName ?? this.lastName,
       birthName: birthName ?? this.birthName,
+      gender: gender ?? this.gender,
       birthDate: birthDate ?? this.birthDate,
       birthTime: birthTime ?? this.birthTime,
       hasBirthTime: hasBirthTime ?? this.hasBirthTime,

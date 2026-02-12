@@ -150,7 +150,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       if (!mounted) return;
 
       if (response.status == 404) {
-        final l10n = AppLocalizations.of(context)!;
+        final l10n = AppLocalizations.of(context);
         setState(() {
           _isSearching = false;
           _errorMessage = l10n.onboardingPlaceNotFound;
@@ -269,23 +269,16 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       }
       log('✅ [EditProfile] Profil gespeichert');
 
-      // WICHTIG: Lösche BirthChart + signature_text, damit beides neu berechnet wird
+      // WICHTIG: Lösche signature_text, damit es neu generiert wird
+      // (BirthChart wird automatisch per UPSERT überschrieben)
       try {
         final supabase = Supabase.instance.client;
 
-        // 1. Lösche BirthChart
-        await supabase
-            .from('birth_charts')
-            .delete()
-            .eq('user_id', currentProfile.id);
-        log('✅ [EditProfile] BirthChart gelöscht');
-
-        // 2. Lösche signature_text
         await supabase
             .from('profiles')
             .update({'signature_text': null})
             .eq('id', currentProfile.id);
-        log('✅ [EditProfile] Signature Text gelöscht');
+        log('✅ [EditProfile] Signature Text gelöscht (Chart wird per UPSERT aktualisiert)');
       } catch (e) {
         log('⚠️  [EditProfile] Fehler beim Löschen: $e');
       }
@@ -361,7 +354,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: AppColors.background,

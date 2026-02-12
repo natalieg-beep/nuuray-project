@@ -54,7 +54,7 @@ class DailyHoroscopeSection extends ConsumerWidget {
     required String horoscopeText,
     required BirthChart birthChart,
   }) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     // Zodiac Sign Emoji/Symbol holen
     final zodiacSymbols = {
@@ -198,7 +198,7 @@ class DailyHoroscopeSection extends ConsumerWidget {
   }
 
   Widget _buildLoading(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return Card(
       elevation: 2,
@@ -222,7 +222,7 @@ class DailyHoroscopeSection extends ConsumerWidget {
   }
 
   Widget _buildError(BuildContext context, Object error) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return Card(
       elevation: 2,
@@ -259,7 +259,7 @@ class DailyHoroscopeSection extends ConsumerWidget {
   }
 
   Widget _buildPlaceholder(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return Card(
       elevation: 2,

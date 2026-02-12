@@ -1,0 +1,174 @@
+╔═══════════════════════════════════════════════════════════════╗
+║   BEYOND HOROSCOPE - DESIGN & OTP REPORT SYSTEM EXPORT       ║
+║   Version 1.0 - Februar 2026                                  ║
+╚═══════════════════════════════════════════════════════════════╝
+
+📁 PAKET-INHALT
+─────────────────────────────────────────────────────────────────
+
+📚 DOKUMENTATION (3 Files)
+├─ README.md              - Vollständige Projekt-Übersicht
+├─ INTEGRATION_GUIDE.md   - Code-Beispiele & Integration
+└─ COLOR_PALETTE.md       - Komplette Farbreferenz
+
+🎨 THEME SYSTEM (3 Files)
+├─ beyond_theme.dart      - Cosmic Nude Design System
+│   ├─ BeyondColors       - Farbpalette (Gold, Nude, Warm White)
+│   ├─ BeyondTypography   - Playfair Display + Montserrat
+│   ├─ BeyondSpacing      - Spacing-Konstanten
+│   ├─ BeyondIcons        - Lucide Icons Mapping
+│   ├─ ZodiacGlyphs       - Tierkreiszeichen (♈♉♊...)
+│   └─ BeyondTheme        - ThemeData Builder
+│
+├─ app_theme.dart         - Alternative (Nunito-basiert)
+└─ branding_assets.dart   - Logo & Asset-Pfade
+
+📋 MODELS (1 File)
+└─ structured_report.dart - OTP Report Datenmodell
+    ├─ StructuredReport      - Master Report Format
+    ├─ ExecutiveSummary      - "Die Golden Three"
+    ├─ BeyondTriangle        - 3-System-Gewichtung
+    ├─ ElementBalance        - Elementare Verteilung
+    ├─ NumerologyGrid        - 6 Numerologie-Zahlen
+    ├─ BeyondAction          - Handlungsempfehlungen
+    ├─ DharmaChecklist       - Monday Morning Check-In
+    └─ CuspData              - Zeichengrenz-Infos
+
+🖨️ PDF GENERATORS (3 Files)
+├─ luxury_pdf_generator.dart
+│   ├─ Cover Page (mit Logo-Siegel)
+│   ├─ Executive Summary (The Golden Three)
+│   ├─ Identity Page (3 Systeme)
+│   ├─ Beyond Insights (Pull Quotes)
+│   ├─ Visualizations (Dreieck, Waage, Grid)
+│   ├─ Energy Forecast (Transit-Radar, Phasen)
+│   ├─ Body Sections (mit Key Insights & Beyond Actions)
+│   └─ Closing Page (Summary, Action Items)
+│
+├─ soul_purpose_pdf_generator.dart
+│   ├─ Spirit Indigo Design
+│   ├─ Lotus & Moon Node Symbole (☊☋)
+│   ├─ Soul Compass Visualization
+│   └─ Meditative, spacious Layout
+│
+└─ shadow_light_pdf_generator.dart
+    ├─ Dark Mode (Midnight Blue, Purple)
+    ├─ Pluto & Lilith Analysen
+    ├─ 4-Phase Shadow Radar
+    └─ Empowering, transformative Tone
+
+🔤 FONTS (6 Files)
+├─ NotoSans-Regular.ttf   - PDF Unicode-Support
+├─ NotoSans-Bold.ttf
+├─ NotoSans-Italic.ttf
+├─ Nunito-Regular.ttf     - Alternative UI Font
+├─ Nunito-Bold.ttf
+└─ Nunito-Italic.ttf
+
+─────────────────────────────────────────────────────────────────
+
+🎯 KERN-FEATURES
+
+✨ DESIGN SYSTEM
+   • Cosmic Nude Farbpalette (Gold #D4AF37, Nude #B8A394)
+   • Typografie: Playfair Display (Serif) + Montserrat (Sans)
+   • Icons: Lucide Icons mit goldenem Stil
+   • Spacing: 4px-Raster (xs=4, sm=8, md=12, lg=16, xl=24)
+   • Responsive: Material 3 kompatibel
+
+📊 OTP REPORT STRUCTURE
+   1. Cover Page - Headline, User Identity
+   2. Executive Summary - Größte Chance/Blocker/Fokus
+   3. Identity Page - Western/Chinese/Numerology
+   4. Beyond Insights - Pull Quotes
+   5. Visualizations - Beyond-Dreieck, Element-Waage, Numerologie-Grid
+   6. Energy Forecast - Transit-Radar, 12-Monate-Phasen
+   7. Body Sections - Hauptinhalt mit Key Insights & Beyond Actions
+   8. Closing Page - Summary, Action Items, Dharma Checklist
+
+🖨️ PDF-QUALITÄT
+   • A4 Portrait (595x842 points)
+   • Unicode-sicher (Noto Sans Font)
+   • Cosmic Nude Design durchgängig
+   • Professional Cover mit Logo-Siegel
+   • Visualisierungen: Dreieck, Waage, Grid, Transit-Radar
+   • Dynamic Rolling 12-Monate-Fenster
+
+─────────────────────────────────────────────────────────────────
+
+📦 DEPENDENCIES
+
+dependencies:
+  flutter:
+    sdk: flutter
+  pdf: ^3.10.0
+  google_fonts: ^6.0.0
+  lucide_icons: ^0.0.1
+
+─────────────────────────────────────────────────────────────────
+
+🚀 QUICK START
+
+1. Kopiere das komplette Paket in dein Projekt:
+   cp -r otp_design_export/* <dein-projekt>/lib/
+
+2. Füge Dependencies hinzu (siehe oben)
+
+3. Verwende das Theme:
+   import 'theme/beyond_theme.dart';
+   MaterialApp(theme: BeyondTheme.lightTheme);
+
+4. Erstelle einen Report:
+   import 'models/structured_report.dart';
+   final report = StructuredReport(...);
+
+5. Generiere PDF:
+   import 'services/luxury_pdf_generator.dart';
+   final pdf = await LuxuryPdfGenerator().generateLuxuryPdf(report);
+
+─────────────────────────────────────────────────────────────────
+
+📖 DOCUMENTATION
+
+• README.md              - Vollständige Übersicht
+• INTEGRATION_GUIDE.md   - Schritt-für-Schritt Integration
+• COLOR_PALETTE.md       - Komplette Farbreferenz
+
+─────────────────────────────────────────────────────────────────
+
+✅ PRODUCTION-READY
+
+✓ Unicode-Support für alle Tierkreiszeichen
+✓ Responsive Design (Mobile + Desktop)
+✓ WCAG AA Kontrast-Ratios
+✓ Material 3 kompatibel
+✓ PDF-Generation für Web + Native
+✓ Vollständig typisiert (Null-Safety)
+
+─────────────────────────────────────────────────────────────────
+
+📊 REPORT-TYPEN
+
+• Soul Purpose     - Seelenzahl, Nordknoten, Karma
+• Shadow & Light   - Pluto, Lilith, Schatten-Integration
+• Purpose Path     - MC, Nordknoten, Expression Number
+• Body Vitality    - 6. Haus, Saturn, Gesundheit
+• Yearly Forecast  - Persönliches Jahr, Transite
+
+─────────────────────────────────────────────────────────────────
+
+📧 SUPPORT
+
+Fragen? Siehe INTEGRATION_GUIDE.md für Code-Beispiele
+oder README.md für detaillierte Dokumentation.
+
+─────────────────────────────────────────────────────────────────
+
+Erstellt: Februar 2026
+Quelle: Beyond Horoscope v1.0
+Autor: Natalie G.
+Größe: 2.7 MB (16 Dateien)
+
+╔═══════════════════════════════════════════════════════════════╗
+║            Viel Erfolg mit deinem neuen Projekt! 🚀           ║
+╚═══════════════════════════════════════════════════════════════╝
