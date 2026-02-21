@@ -8,7 +8,8 @@ import '../../profile/providers/user_profile_provider.dart';
 /// Löscht den Synthese-Cache für den aktuellen User (nur für Entwicklung/Testing)
 ///
 /// Setzt profiles.deep_synthesis_text auf NULL → nächster Aufruf generiert neu.
-Future<void> resetDeepSynthesisCache(WidgetRef ref) async {
+/// [birthChart] muss übergeben werden da deepSynthesisProvider ein family-Provider ist.
+Future<void> resetDeepSynthesisCache(WidgetRef ref, BirthChart birthChart) async {
   final supabase = ref.read(supabaseClientProvider);
   final profile = ref.read(userProfileProvider).valueOrNull;
   final userId = profile?.id;
@@ -19,7 +20,8 @@ Future<void> resetDeepSynthesisCache(WidgetRef ref) async {
       .update({'deep_synthesis_text': null})
       .eq('id', userId);
 
-  ref.invalidate(deepSynthesisProvider);
+  // Family-Provider korrekt invalidieren — mit dem konkreten Parameter
+  ref.invalidate(deepSynthesisProvider(birthChart));
   log('🗑️ [Synthese] Cache gelöscht — wird beim nächsten Aufruf neu generiert');
 }
 
@@ -363,7 +365,7 @@ class _SynthesisContent extends ConsumerWidget {
               if (const bool.fromEnvironment('dart.vm.product') == false)
                 GestureDetector(
                   onLongPress: () async {
-                    await resetDeepSynthesisCache(ref);
+                    await resetDeepSynthesisCache(ref, birthChart);
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
