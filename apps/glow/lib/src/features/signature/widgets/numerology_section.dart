@@ -176,6 +176,7 @@ class NumerologySection extends ConsumerWidget {
             contentService: contentService,
             locale: locale,
             challenges: birthChart.challengeNumbers!,
+            lifePathNumber: birthChart.lifePathNumber ?? 5,
           ),
 
         // Karmic Lessons (fehlende Zahlen)
@@ -405,12 +406,42 @@ class NumerologySection extends ConsumerWidget {
     );
   }
 
-  /// Challenges Section (4 Phasen als expandable Card)
+  /// Berechnet die Altersgrenze der 4 Challenge-Phasen
+  ///
+  /// Phasenwechsel = 36 minus Lebenszahl (klassische Numerologie)
+  /// - Phase 1: 0 bis (36 - LP)
+  /// - Phase 2: (36 - LP) bis (36 - LP + 9)
+  /// - Phase 3: (36 - LP + 9) bis (36 - LP + 18)
+  /// - Phase 4: (36 - LP + 18) bis Lebensende
+  List<String> _getChallengePhaseLabels(int lifePathNumber) {
+    // Master Numbers haben eigene Phasengrenzen
+    final lp = [11, 22, 33].contains(lifePathNumber) ? (lifePathNumber == 11 ? 2 : lifePathNumber == 22 ? 4 : 6) : lifePathNumber;
+    final end1 = 36 - lp;
+    final end2 = end1 + 9;
+    final end3 = end2 + 9;
+    return [
+      '0–$end1 Jahre',
+      '$end1–$end2 Jahre',
+      '$end2–$end3 Jahre',
+      'Ab $end3 Jahren',
+    ];
+  }
+
+  /// Challenges Section (4 Phasen mit Altersangaben als expandable Card)
   Widget _buildChallengesSection({
     required dynamic contentService,
     required String locale,
     required List<int> challenges,
+    required int lifePathNumber,
   }) {
+    final phaseLabels = _getChallengePhaseLabels(lifePathNumber);
+    final phaseDescriptions = [
+      'Jugend & Aufbruch',
+      'Aufbau & Karriere',
+      'Mittleres Alter & Reife',
+      'Weisheit & Ernte',
+    ];
+
     return ExpandableCard(
       icon: '🎯',
       title: 'Challenges',
@@ -422,6 +453,8 @@ class NumerologySection extends ConsumerWidget {
           // 4 Phasen als Chips mit Content
           ...List.generate(challenges.length > 4 ? 4 : challenges.length, (index) {
             final challenge = challenges[index];
+            final ageRange = index < phaseLabels.length ? phaseLabels[index] : 'Phase ${index + 1}';
+            final phaseName = index < phaseDescriptions.length ? phaseDescriptions[index] : '';
             return Padding(
               padding: const EdgeInsets.only(bottom: 16),
               child: Column(
@@ -429,17 +462,24 @@ class NumerologySection extends ConsumerWidget {
                 children: [
                   Wrap(
                     spacing: 8,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       Chip(
-                        label: Text('Phase ${index + 1}'),
+                        label: Text(ageRange),
                         backgroundColor: Colors.grey[200],
-                        labelStyle: const TextStyle(fontSize: 12),
+                        labelStyle: const TextStyle(fontSize: 11),
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
                       ),
                       Chip(
                         label: Text('$challenge'),
                         backgroundColor: Colors.orange[100],
                         labelStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                       ),
+                      if (phaseName.isNotEmpty)
+                        Text(
+                          phaseName,
+                          style: TextStyle(fontSize: 11, color: Colors.grey[500], fontStyle: FontStyle.italic),
+                        ),
                     ],
                   ),
                   const SizedBox(height: 8),
