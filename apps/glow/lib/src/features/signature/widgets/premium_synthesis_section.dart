@@ -154,118 +154,16 @@ class DeepSynthesisSection extends ConsumerWidget {
 
         // Content: Loading / Error / Data
         synthesisAsync.when(
-          data: (text) => _buildSynthesisContent(text),
+          data: (text) => _SynthesisContent(
+            text: text,
+            birthChart: birthChart,
+          ),
           loading: () => _buildLoadingState(),
           error: (error, stack) => _buildErrorState(ref, error),
         ),
 
         const SizedBox(height: 40),
       ],
-    );
-  }
-
-  /// Zeigt den fertigen Synthese-Text
-  Widget _buildSynthesisContent(String text) {
-    // Text in Absätze aufteilen für bessere Lesbarkeit
-    final paragraphs = text
-        .split('\n')
-        .map((p) => p.trim())
-        .where((p) => p.isNotEmpty)
-        .toList();
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: const Color(0xFFE8E3D8),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Dekorative Linie oben
-          Container(
-            height: 3,
-            width: 40,
-            decoration: BoxDecoration(
-              color: const Color(0xFFD4AF37).withValues(alpha: 0.6),
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          // Absätze
-          for (int i = 0; i < paragraphs.length; i++) ...[
-            Text(
-              paragraphs[i],
-              style: const TextStyle(
-                fontSize: 16,
-                color: Color(0xFF2C2C2C),
-                height: 1.75,
-                letterSpacing: 0.1,
-              ),
-            ),
-            if (i < paragraphs.length - 1) const SizedBox(height: 20),
-          ],
-
-          const SizedBox(height: 20),
-
-          // Footer: NUURAY Signatur + Debug Reset
-          Row(
-            children: [
-              Container(
-                height: 1,
-                width: 24,
-                color: const Color(0xFFD4AF37).withValues(alpha: 0.5),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                'Deine NUURAY Signatur',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[500],
-                  fontStyle: FontStyle.italic,
-                  letterSpacing: 0.3,
-                ),
-              ),
-              const Spacer(),
-              // Debug-only: Cache-Reset Button (nur im Debug-Build sichtbar)
-              if (const bool.fromEnvironment('dart.vm.product') == false)
-                Consumer(
-                  builder: (context, ref, _) => GestureDetector(
-                    onLongPress: () async {
-                      await resetDeepSynthesisCache(ref);
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('🗑️ Synthese-Cache gelöscht — wird neu generiert'),
-                            duration: Duration(seconds: 2),
-                          ),
-                        );
-                      }
-                    },
-                    child: Icon(
-                      Icons.refresh,
-                      size: 14,
-                      color: Colors.grey[300],
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 
@@ -366,6 +264,122 @@ class DeepSynthesisSection extends ConsumerWidget {
               foregroundColor: Colors.red[600],
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Synthese-Text Widget — eigenständiges ConsumerWidget für korrekten ref-Zugriff
+///
+/// Ausgelagert damit der Debug-Reset-Button direkten Zugriff auf ref hat,
+/// ohne Consumer-Wrapper verschachteln zu müssen.
+class _SynthesisContent extends ConsumerWidget {
+  const _SynthesisContent({
+    required this.text,
+    required this.birthChart,
+  });
+
+  final String text;
+  final BirthChart birthChart;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final paragraphs = text
+        .split('\n')
+        .map((p) => p.trim())
+        .where((p) => p.isNotEmpty)
+        .toList();
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: const Color(0xFFE8E3D8),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Dekorative Linie oben
+          Container(
+            height: 3,
+            width: 40,
+            decoration: BoxDecoration(
+              color: const Color(0xFFD4AF37).withValues(alpha: 0.6),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Absätze
+          for (int i = 0; i < paragraphs.length; i++) ...[
+            Text(
+              paragraphs[i],
+              style: const TextStyle(
+                fontSize: 16,
+                color: Color(0xFF2C2C2C),
+                height: 1.75,
+                letterSpacing: 0.1,
+              ),
+            ),
+            if (i < paragraphs.length - 1) const SizedBox(height: 20),
+          ],
+
+          const SizedBox(height: 20),
+
+          // Footer: NUURAY Signatur + Debug Reset
+          Row(
+            children: [
+              Container(
+                height: 1,
+                width: 24,
+                color: const Color(0xFFD4AF37).withValues(alpha: 0.5),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Deine NUURAY Signatur',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[500],
+                  fontStyle: FontStyle.italic,
+                  letterSpacing: 0.3,
+                ),
+              ),
+              const Spacer(),
+              // Debug-only: Cache-Reset per Long-Press (nur im Debug-Build)
+              if (const bool.fromEnvironment('dart.vm.product') == false)
+                GestureDetector(
+                  onLongPress: () async {
+                    await resetDeepSynthesisCache(ref);
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('🗑️ Cache gelöscht — neu generieren'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    }
+                  },
+                  child: Icon(
+                    Icons.refresh,
+                    size: 16,
+                    color: Colors.grey[350],
+                  ),
+                ),
+            ],
           ),
         ],
       ),

@@ -552,6 +552,9 @@ Nichts anderes. Keine Erklärung, keine Einleitung, kein Kommentar.
     required String language,
     required String? gender,
   }) async {
+    // Geburtszeit vorhanden? Entscheidet über Vollständigkeit des Charts
+    final hasBirthTime = moonSign != null || ascendantSign != null;
+
     final prompt = _buildDeepSynthesisPrompt(
       sunSign: sunSign,
       moonSign: moonSign,
@@ -567,6 +570,7 @@ Nichts anderes. Keine Erklärung, keine Einleitung, kein Kommentar.
       karmicDebtLifePath: karmicDebtLifePath,
       karmicLessons: karmicLessons,
       language: language,
+      hasBirthTime: hasBirthTime,
     );
 
     final systemPrompt = _buildDeepSynthesisSystemPrompt(language, gender: gender);
@@ -762,6 +766,7 @@ No fixed years. "This phase", "currently", "in this life phase" instead of speci
     required int? karmicDebtLifePath,
     required List<int>? karmicLessons,
     required String language,
+    bool hasBirthTime = true,
   }) {
     // Bazi-Elemente aufbereiten
     final baziContext = _buildBaziContext(baziDayStem, baziElement, baziYearStem, baziMonthStem, language);
@@ -771,10 +776,27 @@ No fixed years. "This phase", "currently", "in this life phase" instead of speci
       challengeNumbers, karmicDebtLifePath, karmicLessons, language,
     );
 
+    // Hinweis für fehlende Geburtszeit
+    final birthTimeNoteDE = hasBirthTime
+        ? ''
+        : '\nHINWEIS DATENVOLLSTÄNDIGKEIT: Für diese Person liegt keine Geburtszeit vor. '
+          'Mondzeichen, Aszendent und Bazi-Stundensäule sind daher nicht berechenbar. '
+          'Arbeite ausschließlich mit den vorhandenen Daten. '
+          'Erwähne diese Lücke NICHT im Text — schreibe, was die vorhandenen Daten zeigen, '
+          'ohne auf fehlende Informationen hinzuweisen.\n';
+
+    final birthTimeNoteEN = hasBirthTime
+        ? ''
+        : '\nDATA COMPLETENESS NOTE: No birth time is available for this person. '
+          'Moon sign, ascendant, and Bazi hour pillar cannot be calculated. '
+          'Work exclusively with the available data. '
+          'Do NOT mention this gap in the text — write about what the existing data shows, '
+          'without referring to missing information.\n';
+
     if (language.toUpperCase() == 'DE') {
       return '''
 Schreibe die tiefe Synthese für diese Person.
-
+$birthTimeNoteDE
 IHRE SIGNATUR:
 
 Psyche (Westliche Astrologie):
@@ -796,7 +818,7 @@ Beginne nicht mit "Du bist..." — beginne mit einer erlebbaren Situation, einem
     } else {
       return '''
 Write the deep synthesis for this person.
-
+$birthTimeNoteEN
 THEIR SIGNATURE:
 
 Psyche (Western Astrology):

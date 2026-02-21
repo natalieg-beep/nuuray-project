@@ -87,7 +87,57 @@ class WesternAstrologySection extends ConsumerWidget {
             degree: birthChart.ascendantDegree,
             label: 'Aszendent',
           ),
+
+        // Hinweis wenn Geburtszeit fehlt (Mond UND Aszendent nicht berechenbar)
+        if (birthChart.moonSign == null && birthChart.ascendantSign == null)
+          _buildMissingBirthTimeHint(context),
       ],
+    );
+  }
+
+  /// Dezenter Hinweis: Geburtszeit fehlt → Mond + Aszendent nicht berechenbar
+  Widget _buildMissingBirthTimeHint(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFAF8F2),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: const Color(0xFFE8E3D8),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.schedule_outlined,
+            size: 18,
+            color: Colors.grey[500],
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: RichText(
+              text: TextSpan(
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Colors.grey[600],
+                  height: 1.4,
+                ),
+                children: const [
+                  TextSpan(
+                    text: 'Mond & Aszendent fehlen. ',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  TextSpan(
+                    text: 'Ergänze deine Geburtszeit im Profil für ein vollständiges Bild.',
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
