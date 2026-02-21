@@ -9,6 +9,7 @@ Alle Projekt-Dokumente, strukturiert nach Thema.
 ```
 docs/
 ├── README.md                                    ← Du bist hier
+├── NUURAY_BRAND_SOUL.md                        ← ⭐ PFLICHTLEKTÜRE (Markenstimme, Prompts, Deep Synthesis)
 ├── SETUP.md                                     ← ✨ Development Setup (NEU!)
 ├── QUICK_REFERENCE.md                           ← ✨ Schnellzugriff Commands (NEU!)
 ├── CHANGELOG_DOKUMENTATION.md                   ← Dokumentations-Änderungen
@@ -19,6 +20,7 @@ docs/
 │   ├── README.md                               ← Glow-Dokumentation Übersicht
 │   ├── GLOW_SPEC_V2.md                        ← ✨ AKTUELLE Glow-Spezifikation
 │   ├── GLOW_REPORTS_OTP.md                    ← ✨ Reports & OTPs (NEU! 2026-02-12)
+│   ├── SIGNATURE_CHECKIN_SPEC.md             ← ✨ Signatur-Check-In Konzept (NEU! 2026-02-21)
 │   ├── SPEC_CHANGELOG.md                      ← ✨ Konzeptionelle Änderungen
 │   ├── CHANGELOG.md                            ← Code-Entwicklungs-History
 │   └── implementation/                         ← Technische Implementierungs-Details
@@ -30,6 +32,8 @@ docs/
 │       └── migration-daily-horoscopes-status.md ← Migration Status Tracking
 ├── daily-logs/                                  ← Tägliche Session-Logs & Zusammenfassungen
 │   ├── README.md
+│   ├── 2026-02-21_deep-synthesis-meilenstein.md ← ✨ NEU! Deep Synthesis Meilenstein
+│   ├── 2026-02-12_*.md                         ← Session-Logs 12. Feb
 │   ├── 2026-02-08_session-zusammenfassung.md  ← Session-Ergebnisse
 │   ├── 2026-02-08_archetyp-phase2-api-services.md ← ✨ Archetyp Phase 2 (NEU!)
 │   ├── 2026-02-08_supabase-cli-setup.md        ← Supabase CLI Installation
@@ -45,13 +49,18 @@ docs/
 ## 📖 Hauptdokumente (nach Verwendung)
 
 ### 0. Für **Content & Brand Voice** 🌙
-📄 **`NUURAY_BRAND_SOUL.md`** ⭐ **PFLICHTLEKTÜRE**
+📄 **`NUURAY_BRAND_SOUL.md`** ⭐ **PFLICHTLEKTÜRE** — Letzte Aktualisierung: 2026-02-21
 - Markenstimme & Tonalität (Glow, Tide, Path)
 - **Synthese-Philosophie:** NIEMALS ein System isoliert, IMMER alle drei verweben
 - Verbotene Worte & Muster ("Die Sterne sagen...", "Schicksal", "Magie")
-- Der 5-Schritt-Bogen für NUURAY-Texte
+- Der 5-Schritt-Bogen für kurze Texte (Tageshoroskop, Mini-Synthese)
+- **NEU: Abschnitt 6b — Die 3-Spannungsfelder-Methode (Deep Synthesis)**
+  - Kausale Verbindungen zwischen den Systemen ("...und genau deshalb...")
+  - SCHATTENSEITEN-Regel: 40% Stärke / 40% Schatten / 20% Auflösung
+  - Gender-Ansprache: ANSPRACHE-Block MUSS ganz oben stehen
+  - Textstruktur, Qualitätscheck (10 Fragen), technische Details
 - Claude API Prompt-Regeln & System-Prompts
-- 7-Fragen-Qualitätscheck für Content
+- 7+3 Fragen-Qualitätscheck für Content
 - **⚠️ VOR jedem Claude API Call, Content-Text oder UI-Copy lesen!**
 
 ---
@@ -113,6 +122,8 @@ docs/
 | Ich will... | Dann lese... |
 |-------------|--------------|
 | **🌙 Content schreiben / Claude API Prompts** | `NUURAY_BRAND_SOUL.md` ⭐⭐⭐ PFLICHT! |
+| **🎯 Deep Synthesis Prompt verstehen** | `NUURAY_BRAND_SOUL.md` → Abschnitt 6b (NEU 2026-02-21) |
+| **📋 Deep Synthesis Meilenstein nachlesen** | `daily-logs/2026-02-21_deep-synthesis-meilenstein.md` ⭐ NEU! |
 | **🚀 App lokal starten** | `SETUP.md` oder `QUICK_REFERENCE.md` ⭐ |
 | **⚡ Schnelle Commands nachschlagen** | `QUICK_REFERENCE.md` ⭐ |
 | **🔧 Development Setup** | `SETUP.md` (Supabase CLI, Flutter, etc.) ⭐ |
@@ -120,6 +131,7 @@ docs/
 | **Archetyp-System verstehen** | `architecture/ARCHETYP_SYSTEM.md` ⭐ NEU! |
 | **Glow Feature entwickeln** | `glow/GLOW_SPEC_V2.md` |
 | **📊 Reports & OTPs verstehen** | `glow/GLOW_REPORTS_OTP.md` ⭐ NEU! (2026-02-12) |
+| **💡 Signatur-Check-In planen** | `glow/SIGNATURE_CHECKIN_SPEC.md` ⭐ NEU! (2026-02-21) |
 | **Verstehen, was sich geändert hat** | `glow/SPEC_CHANGELOG.md` |
 | **Deine Signatur debuggen** | `glow/implementation/COSMIC_PROFILE_IMPLEMENTATION.md` |
 | **Claude API integrieren** | `glow/implementation/CLAUDE_API_IMPLEMENTATION.md` |
@@ -127,7 +139,7 @@ docs/
 | **Horoskop-Kosten optimieren** | `glow/implementation/HOROSCOPE_STRATEGY.md` |
 | **Archetyp-System implementieren** | `glow/implementation/ARCHETYP_IMPLEMENTATION_PLAN.md` ⭐ NEU! |
 | **Sehen, was schon funktioniert** | `glow/CHANGELOG.md` |
-| **Session-Log lesen** | `daily-logs/2026-02-08_session-zusammenfassung.md` |
+| **Neuesten Session-Log lesen** | `daily-logs/2026-02-21_deep-synthesis-meilenstein.md` |
 | **Migration-Status prüfen** | `glow/implementation/migration-daily-horoscopes-status.md` |
 | **Dokumentations-Änderungen** | `docs/CHANGELOG_DOKUMENTATION.md` |
 
@@ -152,12 +164,14 @@ Siehe `glow/README.md` → Abschnitt "Inkonsistenzen zwischen Code & Docs"
 
 | Dokument | Status | Letzte Aktualisierung |
 |----------|--------|-----------------------|
+| `NUURAY_BRAND_SOUL.md` | ✅ Aktuell | **2026-02-21** |
 | `architecture/PROJECT_BRIEF.md` | ✅ Aktuell | 2026-02-07 |
 | `glow/GLOW_SPEC_V2.md` | ✅ Aktuell | 2026-02-07 |
+| `glow/GLOW_REPORTS_OTP.md` | ✅ Aktuell | 2026-02-12 |
 | `glow/SPEC_CHANGELOG.md` | ✅ Neu | 2026-02-07 |
 | `glow/CHANGELOG.md` | ✅ Aktuell | 2026-02-07 |
 | `glow/implementation/*.md` | ✅ Aktuell | 2026-02-07 |
-| `daily-logs/*.md` | ✅ Laufend | 2026-02-07 |
+| `daily-logs/*.md` | ✅ Laufend | **2026-02-21** |
 | `glow/GLOW_SPEC.md` | ⚠️ Veraltet | 2025-02-05 |
 
 ---
@@ -174,5 +188,5 @@ Siehe `glow/README.md` → Abschnitt "Inkonsistenzen zwischen Code & Docs"
 
 ---
 
-**Letzte Aktualisierung:** 2026-02-07
+**Letzte Aktualisierung:** 2026-02-21
 **Maintainer:** Solo-Entwicklung (Natalie)

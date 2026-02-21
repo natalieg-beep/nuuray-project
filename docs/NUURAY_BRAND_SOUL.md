@@ -291,8 +291,8 @@ Schicksal, Wunder, Magie, Segnung, "Universum möchte...",
 "Positive Schwingungen", "Kosmische Energie", "Die Sterne sagen..."
 
 ZEITLOSIGKEIT:
-Keine festen Jahreszahlen. "Diese Phase" statt "2026".
-"Dein persönliches Jahr" statt "das Jahr 2026".
+Keine festen Jahreszahlen außer beim Persönlichen Jahr.
+"Diese Phase" oder "im persönlichen Jahr 2026 (aktuelle Jahresenergie)" für das aktuelle Jahr.
 ```
 
 ### Ton-Modifikatoren pro App:
@@ -319,6 +319,146 @@ Psychologie-Sprache statt Esoterik-Sprache.
 Endet IMMER mit einer Reflexionsfrage.
 Länge Coaching-Impuls: 150-250 Wörter.
 ```
+
+---
+
+## 6b. Deep Synthesis — Die Tiefe Drei-System-Synthese (Herzstück)
+
+> **Implementiert:** 2026-02-21 | **Datei:** `apps/glow/lib/src/core/services/claude_api_service.dart`
+> **Methode:** `generateDeepSynthesis()` + `_buildDeepSynthesisSystemPrompt()` + `_buildDeepSynthesisPrompt()`
+
+Das ist die wichtigste Claude-API-Integration des Projekts. Kein Tageshoroskop, keine Mini-Synthese — sondern eine vollständige, ehrliche Lebensgeschichte aus allen drei Systemen. 900-1200 Wörter, einmalig generiert, gecacht.
+
+### Die 3-Spannungsfelder-Methode
+
+**WARUM nicht der 5-Schritt-Bogen für lange Synthesen?**
+
+Der 5-Schritt-Bogen (Hook → Spannung → Bazi-Tiefe → Auflösung → Impuls) funktioniert gut für kurze Tageshoroskope (150-200 Wörter). Für eine 900-1200 Wörter lange Lebensanalyse führt er dazu, dass die Systeme aufgelistet statt verwoben werden.
+
+**Die Lösung: 3 vollständig durchgearbeitete Spannungsfelder mit Kausallogik**
+
+Statt zu sagen "Deine Sonne ist X, Dein Bazi ist Y, Deine Lebenszahl ist Z" erzählen wir WARUM diese Kombination so wirkt wie sie wirkt. Jedes System erklärt das nächste.
+
+```
+SPANNUNGSFELD-STRUKTUR (pro Feld):
+1. Erlebbarer Einstieg: "Du kennst das, wenn..." / "Es gibt diese Situation..."
+2. Was die Psyche (Westlich) will oder fürchtet
+3. KAUSAL: Wie die Bazi-Energie das verstärkt / bremst / umlenkt
+4. KAUSAL: Was die Numerologie als tiefere Wahrheit benennt (WARUM die Spannung existiert)
+5. Auflösung: Die integrierte Erkenntnis
+
+KAUSALE VERBINDUNGEN (Pflicht-Formulierungen):
+- "...und genau deshalb..."
+- "...was erklärt, warum du..."
+- "...das ist kein Zufall, denn..."
+- "...weil dein [Element/Zahl] gleichzeitig..."
+```
+
+### Die SCHATTENSEITEN-Regel (NEU ab 2026-02-21)
+
+Das war die wichtigste Erkenntnis aus den ersten Testlesungen: **Ohne explizite Anweisung schreibt Claude immer positiv.** Die Texte klingen dann wie eine durchgehende Lobrede — schön, aber nicht ehrlich und nicht nützlich.
+
+```
+SCHATTENSEITEN-REGEL:
+Verhältnis: 40% Stärke — 40% ehrlicher Preis/Schatten — 20% Auflösung
+
+NICHT: "Das kann manchmal eine Herausforderung sein"  (= Euphemismus)
+SONDERN: "Du weißt selbst wie oft du...", "Dieser Zug kostet dich..."
+
+Der unbequeme Satz steht NICHT am Ende — er steht MITTEN im Spannungsfeld und wird dann aufgelöst.
+
+QUALITÄTSKRITERIUM:
+Niemand soll das lesen und denken "alles toll bei mir"
+— sie sollen denken "woher weiß das die App?"
+VERBOTEN: "Text der nach dem Lesen kein Unbehagen hinterlässt"
+— ein guter Text tut ein bisschen weh und fühlt sich trotzdem richtig an
+```
+
+### Gender-Ansprache im System-Prompt — KRITISCHE REIHENFOLGE
+
+**Das wichtigste Prompt-Engineering-Learning dieser Session:**
+
+Claude anchored an frühe Tokens im System-Prompt. Wenn die ANSPRACHE-Anweisung weit unten steht, ignoriert Claude sie unbewusst und fällt auf Trainings-Defaults zurück (meist weibliche Formen für Horoskop-Texte).
+
+```
+RICHTIG — ANSPRACHE GANZ OBEN:
+Du bist die Stimme von NUURAY Glow...
+
+ANSPRACHE (gilt für den gesamten Text — keine Ausnahmen):
+[Gender-Anweisung hier — ERSTE inhaltliche Anweisung nach der Rollenbeschreibung]
+
+DIE DREI LINSEN...
+[Rest des Prompts]
+
+FALSCH — ANSPRACHE AM ENDE:
+[Alles andere zuerst]
+...
+Ansprache: weibliche Formen verwenden.  ← Claude ignoriert das oft
+```
+
+**Konkrete Gender-Anweisungen:**
+```
+female: "Verwende weibliche Formen (z.B. 'du bist eine...'). Sprich die Person mit 'du' an."
+male:   "Verwende männliche Formen (z.B. 'du bist ein...'). Sprich die Person mit 'du' an."
+null/diverse: "Verwende geschlechtsneutrale Sprache — keine weiblichen oder männlichen Formen,
+              nur 'du'-Ansprache und neutrale Formulierungen
+              (z.B. 'du hast die Fähigkeit...', 'du trägst in dir...')."
+```
+
+### Text-Struktur der Deep Synthesis
+
+```
+STRUKTUR (900-1200 Wörter):
+
+1. Einstieg (1 Absatz)
+   Eine einzige überraschende Kernbeobachtung.
+   NICHT "Du bist..." — sondern ein Widerspruch oder eine unerwartete Wahrheit.
+
+2. Spannungsfeld 1: Psyche trifft Energie (2-3 Absätze)
+   Was will der Geist? Was kann die Hardware leisten?
+   Und was kostet diese Spannung konkret?
+
+3. Spannungsfeld 2: Energie trifft Seelenweg (2-3 Absätze)
+   Was kann das System leisten? Wozu ist es bestimmt?
+   Und wo läuft es trotzdem gegen eine Wand?
+
+4. Spannungsfeld 3: Der tiefste Widerspruch (2-3 Absätze)
+   Die Stelle wo alle drei Systeme auf dasselbe Muster zeigen
+   — das gleichzeitig Stärke und blinder Fleck ist.
+
+5. Synthese (1 Absatz)
+   Die eine Wahrheit die alle drei verbindet.
+   Keine neuen Infos — nur die ehrliche Auflösung.
+
+6. Impuls (1-2 Sätze)
+   Eine Frage die sitzt — nicht beruhigend, sondern weiterführend.
+```
+
+### Technische Details
+
+```
+Methode:      generateDeepSynthesis()
+Model:        claude-sonnet-4-20250514
+max_tokens:   4096 (Standard 2048 reicht NICHT für 900-1200 Wörter!)
+Caching:      profiles.deep_synthesis_text (Supabase)
+Cache-Reset:  resetDeepSynthesisCache(ref, birthChart)
+              → ref.invalidate(deepSynthesisProvider(birthChart))
+              [Wichtig: Parameter MUSS übergeben werden — FutureProvider.family!]
+Kosten:       ~$0.012-0.015 pro Call (einmalig, dann gecacht → $0)
+Geburtszeit:  hasBirthTime = moonSign != null || ascendantSign != null
+              → wenn false: Explizite Note an Claude ("erwähne die Lücke NICHT")
+```
+
+### Qualitätscheck für Deep Synthesis (8 Fragen)
+
+Zusätzlich zu den 7 Standard-Fragen (Abschnitt 8), für die Deep Synthesis:
+
+| # | Frage | Wenn nein → |
+|---|-------|-------------|
+| 1-7 | Standard-7-Fragen (Abschnitt 8) | Wie dort beschrieben |
+| 8 | Enthält der Text mindestens 3 kausale Verbindungen ("...und genau deshalb...", etc.)? | Verbindungen fehlen → Systeme aufgelistet, nicht verwoben |
+| 9 | Tut der Text ein bisschen weh? (Ehrlicher Preis, nicht nur Stärken) | 40/40/20-Ratio fehlt → Neu generieren |
+| 10 | Könnte jemand nach dem Lesen denken "woher weiß das die App?" | Zu generisch → mehr Konkretheit |
 
 ---
 

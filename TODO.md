@@ -1,9 +1,11 @@
 # NUURAY GLOW — TODO Liste
 
-> Letzte Aktualisierung: 2026-02-12 (Archetyp-Konzept klargestellt — 5-7 Wochen gespart! 🎉)
-> Stand: Auth ✅, Onboarding ✅, Geocoding ✅, Basic Home ✅, Deine Signatur ✅, **Archetyp-System (Claude-Synthese) ✅**, Claude API ✅, Erweiterte Numerologie ✅, **Tageshoroskop On-Demand ✅, i18n DE/EN 100% ✅, Profile Edit (Auto-Regenerierung) ✅, Rufnamen-Numerologie ✅, Web Platform Fix ✅, Content Library ✅, Gender Tracking ✅, Bazi Vier Säulen + Element Balance ✅, Code Quality Cleanup ✅, Reports UI Foundation ✅**
+> Letzte Aktualisierung: 2026-02-21 (Tiefe Drei-System-Synthese — Herzstück der App fertig! 🎉)
+> Stand: Auth ✅, Onboarding ✅, Geocoding ✅, Basic Home ✅, Deine Signatur ✅, **Archetyp-System (Claude-Synthese) ✅**, Claude API ✅, Erweiterte Numerologie ✅, **Tageshoroskop On-Demand ✅, i18n DE/EN 100% ✅, Profile Edit (Auto-Regenerierung) ✅, Rufnamen-Numerologie ✅, Web Platform Fix ✅, Content Library ✅, Gender Tracking ✅, Bazi Vier Säulen + Element Balance ✅, Code Quality Cleanup ✅, Reports UI Foundation ✅, **Tiefe Drei-System-Synthese ✅**
 >
 > **📚 Neue Dokumentation:**
+> - **`docs/daily-logs/2026-02-21_deep-synthesis-meilenstein.md`** — **NEU! 2026-02-21** 🎯 Tiefe Synthese Meilenstein
+> - **`docs/NUURAY_BRAND_SOUL.md`** — **ERWEITERT 2026-02-21** 🌙 3-Spannungsfelder-Methode, SCHATTENSEITEN-Regel, Gender-Prompting
 > - **`docs/CLAUDE_BRIEFING_CONTENT_STRATEGY.md`** — **NEU! 2026-02-12** 🎯 **Klare Aufstellung für Claude Chats** (Archetyp vs. Content Library)
 > - **`docs/daily-logs/2026-02-12_content-strategy-klarstellung.md`** — **NEU!** Verwirrung aufgelöst: Archetyp ≠ Content Library
 > - `docs/glow/MVP_VS_POST_LAUNCH_V2.md` — **NEU! 2026-02-12** 🚀 Launch-Ready Roadmap (4-5 Monate)
@@ -259,6 +261,63 @@
 
 **Status:** ✅ UI Foundation komplett — Funktionalität kommt nach MVP-Launch
 
+---
+
+## ✅ SESSION 2026-02-21 — Tiefe Drei-System-Synthese (Herzstück)
+
+### 🎉 Meilenstein: Deep Synthesis — Das Herzstück der App ist fertig!
+
+Die Tiefe Drei-System-Synthese ist die wichtigste Premium-Feature der App: Eine KI-generierte, 900-1200 Wörter lange Lebensgeschichte die Western Astrology, Bazi und Numerologie kausal verbindet.
+
+#### ✅ Was wurde implementiert:
+
+**Feature: DeepSynthesisSection**
+- ✅ `deepSynthesisProvider` (FutureProvider.family<String, BirthChart>) mit Cache-First-Logik
+- ✅ Cache in `profiles.deep_synthesis_text` (Supabase)
+- ✅ Supabase Migration: `supabase/migrations/20260221_add_deep_synthesis_text.sql`
+- ✅ `DeepSynthesisSection` ConsumerWidget mit Loading/Error/Data States
+- ✅ `_SynthesisContent` als eigenständiges ConsumerWidget (Fix: ref-Zugriff)
+- ✅ Debug-Reset: Long-Press auf Refresh-Icon löscht Cache (nur Debug-Build)
+- ✅ Signatur Screen: Herzstück-Section am Ende eingefügt
+- ✅ Alte Placeholder-Container entfernt
+- ✅ `generateDeepSynthesis()` Methode im ClaudeApiService
+- ✅ `_callClaudeWithMaxTokens()` (4096 Tokens = genug für 900-1200 Wörter)
+
+**Prompt-Architektur: 3-Spannungsfelder-Methode (NEU)**
+- ✅ Von 5-Schritt-Bogen zur 3-Spannungsfelder-Methode migriert
+- ✅ KAUSALE VERBINDUNGEN: "...und genau deshalb...", "...was erklärt, warum..."
+- ✅ Systeme erklären sich gegenseitig — nicht parallel, sondern kausal
+- ✅ SCHATTENSEITEN PFLICHT: 40% Stärke, 40% Schatten/Preis, 20% Auflösung
+- ✅ "Ein guter Text tut ein bisschen weh und fühlt sich trotzdem richtig an"
+- ✅ ANSPRACHE-Block jetzt ganz oben im System-Prompt (Gender-Drift verhindert)
+- ✅ Persönliches Jahr mit Jahreszahl: "Persönliches Jahr 2026 (aktuelle Jahresenergie)"
+- ✅ Englischer System-Prompt ebenfalls aktualisiert
+
+**Bugfixes:**
+- ✅ FutureProvider.family Cache-Reset Bug: `ref.invalidate(deepSynthesisProvider(birthChart))` — Parameter ist Pflicht!
+- ✅ Gender-Bug: Weibliche Ansprache für männliche User — ANSPRACHE-Block nach oben verschoben + alle hardcodierten "sie/Nutzerin" entfernt
+- ✅ `user_profile.dart`: `displayName: ?? 'Nutzerin'` → `?? ''` gefixt
+- ✅ Western Astrology Section: Hinweis wenn Mond/Aszendent fehlen (fehlende Geburtszeit)
+- ✅ Prompt-Fix: Explizite Anweisung wenn keine Geburtszeit → Claude erfindet keine Daten
+
+**Kosten (zur Referenz):**
+- Deep Synthesis: ~500 Input + ~900 Output Tokens ≈ $0.012-0.015 pro Call
+- Einmalig pro User, danach gecacht → effektiv $0 Folgekosten
+- Bei 1000 Users: ~$12-15 einmalige Generierungskosten
+
+**Dokumentation:**
+- ✅ `docs/NUURAY_BRAND_SOUL.md` erweitert (3-Spannungsfelder-Methode + SCHATTENSEITEN-Regel)
+- ✅ `docs/daily-logs/2026-02-21_deep-synthesis-meilenstein.md` erstellt
+- ✅ `docs/README.md` aktualisiert
+- ✅ `TODO.md` aktualisiert
+
+#### 📋 Ergebnis & Feedback:
+- Erste Probeleser-Reaktionen: "Das ist der Hammer" ✨
+- Einmalige Generierungskosten pro User: ~$0.01
+- Textlänge: 900-1200 Wörter (wie Beyond Horoscope Premium Reports)
+
+---
+
 ## ⏳ NÄCHSTE SCHRITTE (AKTUELL)
 
 ### 🐛 Onboarding: Gender Screen Bottom Overflow
@@ -277,6 +336,47 @@
   - `apps/glow/lib/src/core/services/claude_api_service.dart`
   - `nuuray_api/lib/src/prompts/` (System-Prompts)
 - **Priorität:** Mittel (vor Launch wichtig, aber kein Blocker)
+
+### 📋 Deep Synthesis: UX-Verbesserungen (2026-02-21 — nach Meilenstein)
+
+- [ ] **Synthese-Text kopierbar machen**
+  - `SelectableText` Widget statt `Text` für Synthese-Paragraphen
+  - User können Teile des Textes markieren und kopieren
+  - **File:** `apps/glow/lib/src/features/signature/widgets/premium_synthesis_section.dart`
+  - **Widget:** `_SynthesisContent` → Paragraphen in `SelectableText` umwandeln
+
+- [ ] **PDF Export für die Synthese**
+  - User soll komplette Synthese als PDF exportieren/teilen können
+  - **Optionen:**
+    - A) `printing` + `pdf` Flutter Package (empfohlen, gut dokumentiert)
+    - B) `share_plus` für reinen Text-Share (einfacher, kein PDF)
+  - **UX:** Teilen-Button oben rechts in `_SynthesisContent` (neben Debug-Reset)
+  - **Format:** NUURAY-styled PDF mit Logo, Archetyp-Titel, Synthese-Text
+  - **Hinweis:** Report-System (`GLOW_REPORTS_OTP.md`) plant bereits LuxuryPdfGenerator — Synthese-Export kann darauf aufbauen
+  - **Priorität:** Mittlere (nice-to-have vor Launch, kein MVP-Blocker)
+
+- [ ] **Synthese: Cache-Invalidierung bei Profil-Änderung**
+  - Wenn User Geburtsdaten ändert (Profile Edit), muss deep_synthesis_text ebenfalls geleert werden
+  - Aktuell: Profile Edit löscht `signature_text` und `birth_chart` — aber `deep_synthesis_text` bleibt!
+  - **Fix:** In `profile_edit_screen.dart` oder `user_profile_service.dart`: `deep_synthesis_text: null` beim Update mitsetzen
+  - **File:** `apps/glow/lib/src/features/profile_edit/screens/profile_edit_screen.dart`
+
+### 💡 Signatur-Check-In (neues Feature — nächste Session)
+> **Konzept:** `docs/glow/SIGNATURE_CHECKIN_SPEC.md` — vollständige Spezifikation
+
+Der Check-In verbindet die statische Synthese mit dem dynamischen Jetzt des Users: 3 Taps (Lebenssituation + Gefühl + Bedürfnis) → Claude destilliert aus dem bereits gecachten Synthese-Text eine direkte Antwort für genau diese Situation + 1 konkreten Impuls + sanfter Report-Hinweis.
+
+- [ ] **Schritt 1:** Supabase Migration `signature_checkin_results` Tabelle
+- [ ] **Schritt 2:** `CheckinSelection` Model (Enums für 3 Fragen)
+- [ ] **Schritt 3:** `SignatureCheckinSection` Widget (3×4 Chip-Auswahl + CTA)
+- [ ] **Schritt 4:** `generateCheckinResponse()` in ClaudeApiService
+- [ ] **Schritt 5:** `checkinProvider` (FutureProvider.family, Cache-First)
+- [ ] **Schritt 6:** `CheckinResultWidget` (Ergebnis + Impuls + Report-Hinweis)
+- [ ] **Schritt 7:** Integration in SignatureScreen + i18n
+- [ ] **Offen:** Premium-Gating Entscheidung (sofort oder nach Launch?)
+- **Kosten:** ~$0.003-0.004 pro Call, gecacht per 64 Kombinationen
+- **Zeitaufwand:** ~6-8 Stunden
+- **Siehe:** `docs/glow/SIGNATURE_CHECKIN_SPEC.md` für vollständiges Konzept
 
 ### 🐉 Bazi UI Verbesserungen (2026-02-21)
 - [ ] **Deutsche Element-Namen in Vier Säulen Tabelle**
@@ -1062,6 +1162,40 @@ Wenn Geocoding morgen nicht funktioniert, **Profil manuell updaten**:
 - ✅ Dokumentation aktualisiert (TODO.md, Session-Logs)
 
 ---
+
+### Session 2026-02-21 — Tiefe Drei-System-Synthese Meilenstein
+
+**Was wurde gemacht:**
+- ✅ **Tiefe Drei-System-Synthese implementiert** (Das Herzstück der App!)
+  - `deepSynthesisProvider` FutureProvider.family mit Cache-First-Logik
+  - `DeepSynthesisSection` + `_SynthesisContent` ConsumerWidgets
+  - Supabase Migration: `profiles.deep_synthesis_text` Spalte
+  - Debug-Reset: Long-Press auf Refresh-Icon (nur Debug-Build)
+- ✅ **Prompt-Architektur revolutioniert:** 5-Schritt-Bogen → 3-Spannungsfelder-Methode
+  - Systeme erklären sich kausal gegenseitig (nicht nebeneinander)
+  - SCHATTENSEITEN-Pflicht: 40% Stärke, 40% Schatten/Preis, 20% Auflösung
+  - ANSPRACHE-Block oben im System-Prompt (verhindert Gender-Drift)
+  - Persönliches Jahr mit Jahreszahl "2026" für Kontext
+- ✅ **Bugfixes:**
+  - FutureProvider.family Cache-Reset: Parameter ist Pflicht
+  - Gender-Bug: Weibliche Ansprache für männliche User
+  - `displayName: ?? 'Nutzerin'` → `?? ''`
+  - Western Astrology: Hinweis bei fehlender Geburtszeit
+  - Prompt: Explizite Anweisung bei fehlender Geburtszeit
+- ✅ **Dokumentation:**
+  - `NUURAY_BRAND_SOUL.md` erweitert (3-Spannungsfelder)
+  - Session-Log erstellt
+  - TODO.md + README.md aktualisiert
+
+**Feedback von Probelesern:** "Das ist der Hammer" ✨
+**Kosten:** ~$0.01 einmalig pro User (Premium-Feature, gecacht)
+**Textlänge:** 900-1200 Wörter
+
+**Technische Learnings:**
+- FutureProvider.family: `ref.invalidate(provider(param))` — ohne Parameter funktioniert nichts!
+- Gender-Drift: Claude anchored an frühe Tokens — ANSPRACHE muss ganz oben stehen
+- 40/40/20 Ratio erzwingt ehrliche Texte — ohne explizite Anweisung schreibt KI immer positiv
+- 4096 max_tokens nötig für 900-1200 Wörter (Standard 2048 reicht nicht)
 
 ### Session 2026-02-08 (Spätabend) — Rufnamen-Numerologie + Web Platform Fix
 
