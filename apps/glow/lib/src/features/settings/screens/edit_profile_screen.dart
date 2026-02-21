@@ -311,6 +311,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               userId: currentProfile.id,
               birthChart: newChartAsync,
               language: updatedProfile.language,
+              gender: updatedProfile.gender,
             );
             
             log('✅ [EditProfile] Archetyp-Signatur neu generiert!');

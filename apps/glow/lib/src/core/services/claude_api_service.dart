@@ -28,6 +28,7 @@ class ClaudeApiService {
   ///
   /// [zodiacSign] - Sternzeichen (en: "aries", "taurus", ...)
   /// [language] - Sprache ("de" oder "en")
+  /// [gender] - Geschlecht ("female", "male", "diverse", "prefer_not_to_say", null)
   /// [moonPhase] - Optionale Mondphase ("new_moon", "waxing_crescent", ...)
   /// [date] - Datum für das Horoskop (default: heute)
   ///
@@ -35,6 +36,7 @@ class ClaudeApiService {
   Future<ClaudeResponse> generateDailyHoroscope({
     required String zodiacSign,
     String language = 'de',
+    String? gender,
     String? moonPhase,
     DateTime? date,
   }) async {
@@ -50,7 +52,7 @@ class ClaudeApiService {
 
     // API Call
     return await callClaude(
-      systemPrompt: _getSystemPromptForHoroscope(language),
+      systemPrompt: _getSystemPromptForHoroscope(language, gender: gender),
       userPrompt: prompt,
     );
   }
@@ -63,6 +65,7 @@ class ClaudeApiService {
   /// [baziDayMaster] - Bazi Day Master (z.B. "丙火 Yang Fire")
   /// [lifePathNumber] - Numerologie Life Path Number
   /// [language] - Sprache
+  /// [gender] - Geschlecht ("female", "male", "diverse", "prefer_not_to_say", null)
   ///
   /// Returns: Personalisierte Interpretation (~500 Wörter)
   Future<ClaudeResponse> generateSignatureInterpretation({
@@ -72,6 +75,7 @@ class ClaudeApiService {
     String? baziDayMaster,
     int? lifePathNumber,
     String language = 'de',
+    String? gender,
   }) async {
     final prompt = _buildSignaturePrompt(
       sunSign: sunSign,
@@ -83,7 +87,7 @@ class ClaudeApiService {
     );
 
     return await callClaude(
-      systemPrompt: _getSystemPromptForProfile(language),
+      systemPrompt: _getSystemPromptForProfile(language, gender: gender),
       userPrompt: prompt,
     );
   }
@@ -254,28 +258,36 @@ Flowing text in paragraphs, no headings.
   }
 
   /// System-Prompt: Horoskope
-  String _getSystemPromptForHoroscope(String language) {
+  String _getSystemPromptForHoroscope(String language, {String? gender}) {
+    // Ansprache basierend auf Gender
+    final addressDE = _getGenderAddressDE(gender);
+    final addressEN = _getGenderAddressEN(gender);
+
     if (language == 'de') {
       return '''
 Du bist eine erfahrene Astrologin, die für die Nuuray Glow App Tageshoroskope schreibt.
 
 **Dein Charakter:**
-- Unterhaltsam & inspirierend (wie eine gute Freundin)
-- Staunend über die Magie des Kosmos
+- Unterhaltsam & inspirierend (wie eine gute Freundin oder ein guter Freund)
+- Staunend über die Zusammenhänge zwischen Kosmos und Alltag
 - Bodenständig & realistisch (keine leeren Versprechen)
 - Empowernd (Fokus auf Handlungsfähigkeit)
 
 **Deine Aufgabe:**
-Schreibe Horoskope, die den Tag der Leserin verschönern und ihr kleine Impulse geben.
+Schreibe Horoskope, die den Tag der Person verschönern und ihr kleine Impulse geben.
+
+**Ansprache:**
+$addressDE
 
 **Was du NICHT tust:**
 - Dramatische Vorhersagen
 - Generische Floskeln wie "Ein guter Tag für neue Beziehungen"
 - Lange, schwülstige Sätze
 - Übertriebene Spiritualität
+- Verbotene Wörter: "Schicksal", "Magie", "Wunder", "Universum möchte", "kosmische Energie"
 
 **Sprache:**
-Direkt, warm, authentisch. Du sprichst zur Leserin wie eine Freundin.
+Direkt, warm, authentisch. Du sprichst zur Person wie ein guter Freund oder eine gute Freundin.
 ''';
     } else {
       return '''
@@ -283,27 +295,35 @@ You are an experienced astrologer writing daily horoscopes for the Nuuray Glow a
 
 **Your Character:**
 - Entertaining & inspiring (like a good friend)
-- Wonder-filled about the magic of the cosmos
+- Wonder-filled about connections between cosmos and everyday life
 - Down-to-earth & realistic (no empty promises)
 - Empowering (focus on agency)
 
 **Your Task:**
 Write horoscopes that brighten the reader's day and give them small impulses.
 
+**Address:**
+$addressEN
+
 **What you DON'T do:**
 - Dramatic predictions
 - Generic phrases like "A good day for new relationships"
 - Long, flowery sentences
 - Over-the-top spirituality
+- Forbidden words: "fate", "magic", "miracle", "universe wants", "cosmic energy"
 
 **Language:**
-Direct, warm, authentic. You speak to the reader like a friend.
+Direct, warm, authentic. You speak to the person like a good friend.
 ''';
     }
   }
 
   /// System-Prompt: "Deine Signatur" / "Your Signature"
-  String _getSystemPromptForProfile(String language) {
+  String _getSystemPromptForProfile(String language, {String? gender}) {
+    // Ansprache basierend auf Gender
+    final addressDE = _getGenderAddressDE(gender);
+    final addressEN = _getGenderAddressEN(gender);
+
     if (language == 'de') {
       return '''
 Du bist eine Expertin für westliche Astrologie, chinesische Astrologie (Bazi) und Numerologie.
@@ -311,11 +331,15 @@ Du bist eine Expertin für westliche Astrologie, chinesische Astrologie (Bazi) u
 **Deine Aufgabe:**
 Erstelle personalisierte Interpretationen, die alle drei Systeme zu EINER stimmigen Aussage verbinden.
 
+**Ansprache:**
+$addressDE
+
 **Dein Ansatz:**
 - Zeige, wie die Systeme zusammenpassen (nicht nur nebeneinander)
 - Betone Stärken UND Herausforderungen (kein "Alles ist toll")
 - Gib konkrete Lebens-Impulse (nicht abstrakt)
 - Vermeide esoterischen Jargon
+- Verbotene Wörter: "Schicksal", "Magie", "Wunder", "Universum möchte", "kosmische Energie"
 
 **Ton:**
 Warm, einfühlsam, empowernd. Wie ein gutes Coaching-Gespräch.
@@ -327,11 +351,15 @@ You are an expert in Western astrology, Chinese astrology (Bazi), and numerology
 **Your Task:**
 Create personalized interpretations that connect all three systems into ONE coherent statement.
 
+**Address:**
+$addressEN
+
 **Your Approach:**
 - Show how the systems fit together (not just side-by-side)
 - Emphasize strengths AND challenges (no "Everything is great")
 - Give concrete life impulses (not abstract)
 - Avoid esoteric jargon
+- Forbidden words: "fate", "magic", "miracle", "universe wants", "cosmic energy"
 
 **Tone:**
 Warm, empathetic, empowering. Like a good coaching conversation.
@@ -408,6 +436,7 @@ Warm, empathetic, empowering. Like a good coaching conversation.
     required String dayMasterElement,
     required String dominantElement,
     required String language,
+    String? gender,
   }) async {
     // Import Prompt-Template dynamisch
     final prompt = _buildArchetypeSignaturePrompt(
@@ -422,12 +451,16 @@ Warm, empathetic, empowering. Like a good coaching conversation.
       language: language,
     );
 
+    // Ansprache im System-Prompt einbauen
+    final addressDE = _getGenderAddressDE(gender);
+
     // API Call
     final response = await callClaude(
       systemPrompt: 'Du bist die Stimme von NUURAY Glow. '
           'Deine Aufgabe: Erstelle Archetyp-Signaturen die westliche Astrologie, Bazi und Numerologie zu EINER stimmigen Geschichte verweben. '
           'Dein Charakter: Die kluge Freundin beim Kaffee. Staunend über Zusammenhänge, nie wissend. Überraschend, nie vorhersehbar. Warm, nie kitschig. '
-          'Dein Ansatz: Zeige Spannungen zwischen den Systemen, löse sie auf in eine integrierte Wahrheit. Verwende KEINE esoterischen Klischees.',
+          'Dein Ansatz: Zeige Spannungen zwischen den Systemen, löse sie auf in eine integrierte Wahrheit. Verwende KEINE esoterischen Klischees. '
+          '$addressDE',
       userPrompt: prompt,
     );
 
@@ -491,6 +524,49 @@ Zeile 3-5: Die Mini-Synthese als Fließtext (2-3 Sätze)
 
 Nichts anderes. Keine Erklärung, keine Einleitung, kein Kommentar.
 ''';
+  }
+
+  // ============================================================
+  // GENDER-ANSPRACHE HELPER
+  // ============================================================
+
+  /// Gibt Gender-Ansprache-Anweisung für deutsche Prompts zurück
+  ///
+  /// Werte: "female" → weiblich, "male" → männlich,
+  ///        "diverse" / "prefer_not_to_say" / null → geschlechtsneutral
+  String _getGenderAddressDE(String? gender) {
+    switch (gender) {
+      case 'female':
+        return 'Ansprache: Verwende weibliche Formen (z.B. "du bist eine...").'
+            ' Sprich die Person mit "du" an.';
+      case 'male':
+        return 'Ansprache: Verwende männliche Formen (z.B. "du bist ein...").'
+            ' Sprich die Person mit "du" an.';
+      case 'diverse':
+      case 'prefer_not_to_say':
+      default:
+        return 'Ansprache: Verwende geschlechtsneutrale Sprache — keine '
+            'weiblichen oder männlichen Formen, nur "du"-Ansprache und '
+            'neutrale Formulierungen (z.B. "du bist jemand, der/die..." → '
+            'stattdessen "du hast die Fähigkeit...", "du trägst in dir...").';
+    }
+  }
+
+  /// Gibt Gender-Ansprache-Anweisung für englische Prompts zurück
+  String _getGenderAddressEN(String? gender) {
+    switch (gender) {
+      case 'female':
+        return 'Address: Use she/her pronouns and feminine forms if relevant.'
+            ' Address the person with "you".';
+      case 'male':
+        return 'Address: Use he/him pronouns and masculine forms if relevant.'
+            ' Address the person with "you".';
+      case 'diverse':
+      case 'prefer_not_to_say':
+      default:
+        return 'Address: Use gender-neutral language — avoid gendered pronouns.'
+            ' Use "you" address and neutral formulations only.';
+    }
   }
 }
 

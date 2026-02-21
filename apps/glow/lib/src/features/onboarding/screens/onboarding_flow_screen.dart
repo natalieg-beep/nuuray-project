@@ -148,6 +148,7 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen> {
         userId: userId,
         birthChart: birthChart,
         language: profile.language,
+        gender: profile.gender,
       );
 
       log('✨ [Archetyp] Signatur erfolgreich generiert!');

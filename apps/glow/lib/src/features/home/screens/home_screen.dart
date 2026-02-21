@@ -109,6 +109,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         userId: userId,
         birthChart: birthChart,
         language: profile.language,
+        gender: profile.gender,
       );
 
       log('✅ [HomeScreen] Signatur erfolgreich generiert');

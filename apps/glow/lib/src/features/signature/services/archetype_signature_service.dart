@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:nuuray_core/nuuray_core.dart';
 import '../../../core/services/claude_api_service.dart';
-import '../../../core/services/prompts/archetype_signature_prompt.dart';
 
 /// Service für Archetyp-Signatur-Generierung und Caching
 ///
@@ -36,6 +35,7 @@ class ArchetypeSignatureService {
     required String userId,
     required BirthChart birthChart,
     required String language,
+    String? gender,
   }) async {
     try {
       log('📝 Generiere Archetyp-Signatur für User: $userId');
@@ -78,6 +78,7 @@ class ArchetypeSignatureService {
       final archetypeName = _getLocalizedArchetypeName(
         archetype.nameKey,
         language,
+        gender: gender,
       );
       final baziAdjective = _getLocalizedBaziAdjective(
         archetype.adjectiveKey,
@@ -133,6 +134,7 @@ class ArchetypeSignatureService {
         dayMasterElement: dayMasterElement,
         dominantElement: dominantElement,
         language: language,
+        gender: gender,
       );
 
       log('✨ Archetyp-Signatur generiert: "$signatureText"');
@@ -156,13 +158,17 @@ class ArchetypeSignatureService {
   // HILFSMETHODEN FÜR LOKALISIERUNG
   // ============================================================
 
-  /// Hole lokalisierten Archetyp-Namen
-  String _getLocalizedArchetypeName(String nameKey, String language) {
-    // TODO: Integration mit AppLocalizations
-    // Für jetzt: Hardcoded Maps (wird später durch i18n ersetzt)
-
+  /// Hole lokalisierten Archetyp-Namen — nach Gender angepasst
+  ///
+  /// [gender] bestimmt die Form:
+  /// - "female" → weibliche Form: "Die Pionierin"
+  /// - "male"   → männliche Form: "Der Pionier"
+  /// - null / andere → neutrale Form: "Der/die Pionier·in" → nur Kernname
+  String _getLocalizedArchetypeName(String nameKey, String language,
+      {String? gender}) {
     if (language.toUpperCase() == 'DE') {
-      const namesDE = {
+      // Weibliche Formen (default für "female")
+      const namesFemDE = {
         'pioneer': 'Die Pionierin',
         'diplomat': 'Die Diplomatin',
         'creative': 'Die Kreative',
@@ -176,8 +182,47 @@ class ArchetypeSignatureService {
         'master_builder': 'Die Baumeisterin',
         'healer': 'Die Heilerin',
       };
-      return namesDE[nameKey] ?? nameKey;
+      // Männliche Formen
+      const namesMascDE = {
+        'pioneer': 'Der Pionier',
+        'diplomat': 'Der Diplomat',
+        'creative': 'Der Kreative',
+        'architect': 'Der Architekt',
+        'adventurer': 'Der Abenteurer',
+        'mentor': 'Der Mentor',
+        'seeker': 'Der Suchende',
+        'strategist': 'Der Stratege',
+        'humanitarian': 'Der Humanist',
+        'visionary': 'Der Visionär',
+        'master_builder': 'Der Baumeister',
+        'healer': 'Der Heiler',
+      };
+      // Neutrale Formen (ohne Artikel, ohne Endung)
+      const namesNeutDE = {
+        'pioneer': 'Pionier·in',
+        'diplomat': 'Diplomat·in',
+        'creative': 'Kreative·r',
+        'architect': 'Architekt·in',
+        'adventurer': 'Abenteurer·in',
+        'mentor': 'Mentor·in',
+        'seeker': 'Suchende·r',
+        'strategist': 'Strateg·in',
+        'humanitarian': 'Humanist·in',
+        'visionary': 'Visionär·in',
+        'master_builder': 'Baumeister·in',
+        'healer': 'Heiler·in',
+      };
+
+      switch (gender) {
+        case 'female':
+          return namesFemDE[nameKey] ?? nameKey;
+        case 'male':
+          return namesMascDE[nameKey] ?? nameKey;
+        default: // diverse, prefer_not_to_say, null
+          return namesNeutDE[nameKey] ?? nameKey;
+      }
     } else {
+      // EN: gender-neutral (no articles in English)
       const namesEN = {
         'pioneer': 'The Pioneer',
         'diplomat': 'The Diplomat',
