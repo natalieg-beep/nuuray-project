@@ -30,7 +30,7 @@ class _OnboardingGenderScreenState extends State<OnboardingGenderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,7 +41,7 @@ class _OnboardingGenderScreenState extends State<OnboardingGenderScreen> {
           const Text(
             'Wie möchtest du angesprochen werden?',
             style: TextStyle(
-              fontSize: 28,
+              fontSize: 26,
               fontWeight: FontWeight.bold,
               color: AppColors.textPrimary,
             ),
@@ -50,68 +50,40 @@ class _OnboardingGenderScreenState extends State<OnboardingGenderScreen> {
           Text(
             'Dies hilft uns, deine Horoskope und Insights passend für dich zu formulieren.',
             style: TextStyle(
-              fontSize: 16,
+              fontSize: 15,
               color: Colors.grey[600],
               height: 1.5,
             ),
           ),
-          const SizedBox(height: 48),
+          const SizedBox(height: 32),
 
-          // Gender Options
-          _buildGenderOption(
-            value: 'female',
-            icon: '👩',
-            label: 'Weiblich',
-          ),
-          const SizedBox(height: 16),
+          // Gender Options — kompakter Abstand
+          _buildGenderOption(value: 'female', icon: '👩', label: 'Weiblich'),
+          const SizedBox(height: 12),
+          _buildGenderOption(value: 'male', icon: '👨', label: 'Männlich'),
+          const SizedBox(height: 12),
+          _buildGenderOption(value: 'diverse', icon: '✨', label: 'Divers'),
+          const SizedBox(height: 12),
+          _buildGenderOption(value: 'prefer_not_to_say', icon: '🤐', label: 'Keine Angabe'),
 
-          _buildGenderOption(
-            value: 'male',
-            icon: '👨',
-            label: 'Männlich',
-          ),
-          const SizedBox(height: 16),
-
-          _buildGenderOption(
-            value: 'diverse',
-            icon: '✨',
-            label: 'Divers',
-          ),
-          const SizedBox(height: 16),
-
-          _buildGenderOption(
-            value: 'prefer_not_to_say',
-            icon: '🤐',
-            label: 'Keine Angabe',
-          ),
-
-          const Spacer(),
+          const SizedBox(height: 32),
 
           // Info-Box
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
               color: AppColors.primary.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: AppColors.primary.withOpacity(0.3),
-              ),
+              border: Border.all(color: AppColors.primary.withOpacity(0.3)),
             ),
             child: Row(
               children: [
-                Icon(
-                  Icons.info_outline,
-                  color: AppColors.primary,
-                  size: 20,
-                ),
+                Icon(Icons.info_outline, color: AppColors.primary, size: 18),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     'Optional: Du kannst dies jederzeit in den Einstellungen ändern.',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey[700],
-                    ),
+                    style: TextStyle(fontSize: 13, color: Colors.grey[700]),
                   ),
                 ),
               ],
