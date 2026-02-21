@@ -261,6 +261,44 @@
 
 ## ⏳ NÄCHSTE SCHRITTE (AKTUELL)
 
+### 🐛 Onboarding: Gender Screen Bottom Overflow
+- [ ] **Bug:** `BOTTOM OVERFLOWED BY 174 PIXELS` auf kleinen Screens
+- **Ursache:** 4 Optionen (Weiblich/Männlich/Divers/Keine Angabe) passen nicht in sichtbaren Bereich
+- **Fix:** `SingleChildScrollView` wrappen oder Layout anpassen (kleinere Tiles, kompakteres Spacing)
+- **File:** `apps/glow/lib/src/features/onboarding/screens/onboarding_gender_screen.dart`
+
+### 🚻 Gender-Personalisierung in Content-Generierung
+- [ ] **Problem:** Alle generierten Texte (Horoskope, Archetyp-Signatur) sind aktuell weiblich formuliert
+- **Ursache:** Claude API Prompts berücksichtigen `gender` Feld aus User-Profil nicht
+- **Fix:** `{gender}` Variable in alle Claude API Prompts einfügen
+  - `generate_horoscope` Prompt: "Schreibe für eine {weibliche/männliche/diverse} Person..."
+  - `generate_archetype` Prompt: Gender-sensitive Formulierungen
+- **Files:**
+  - `apps/glow/lib/src/core/services/claude_api_service.dart`
+  - `nuuray_api/lib/src/prompts/` (System-Prompts)
+- **Priorität:** Mittel (vor Launch wichtig, aber kein Blocker)
+
+### 🐉 Bazi UI Verbesserungen (2026-02-21)
+- [ ] **Deutsche Element-Namen in Vier Säulen Tabelle**
+  - Aktuell: Nur chinesische Namen (Bing, Jia, etc.)
+  - Gewünscht: + deutsches Element (z.B. "Bing · Yang-Feuer", "Jia · Yang-Holz")
+  - **File:** `apps/glow/lib/src/features/signature/widgets/bazi_section.dart`
+- [ ] **Neue Reihenfolge im Bazi Screen:**
+  1. Vier Säulen Tabelle (Überblick)
+  2. Element-Balance
+  3. Day Master (mit Beschreibung)
+  4. Bazi-Synthese (neu! Claude API)
+  5. Jahr-Säule (expandable)
+  6. Monat-Säule (expandable)
+  7. Stunden-Säule (expandable)
+- [ ] **Bazi-Synthese via Claude API**
+  - Kurzer Text (80-120 Wörter) der alle 4 Säulen zusammenfasst
+  - Zeigt wie scheinbare Widersprüche zwischen den Säulen zusammenspielen
+  - Cached in `birth_charts` Tabelle (wie Archetyp-Signatur)
+  - Brand Soul konform (5-Schritt-Bogen, konkret, Schattenseiten)
+
+
+
 ### 🔴 **KRITISCH: Berechnungs-Validierung aller 3 Systeme** ⚠️
 **Priorität: SEHR HOCH** 🚨
 

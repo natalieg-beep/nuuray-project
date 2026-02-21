@@ -54,7 +54,13 @@ class BaziSection extends ConsumerWidget {
           const SizedBox(height: 16),
         ],
 
-        // 3. Day Master Card (expandable mit Content Library)
+        // 3. Bazi-Synthese (unter Tabelle, VOR Day Master)
+        if (birthChart.baziDayStem != null) ...[
+          _buildBaziSynthesis(),
+          const SizedBox(height: 16),
+        ],
+
+        // 4. Day Master Card (expandable mit Content Library)
         if (dayMasterKey != null)
           FutureBuilder<String?>(
             future: contentService.getDescription(
@@ -66,7 +72,7 @@ class BaziSection extends ConsumerWidget {
               final description = snapshot.data;
               return ExpandableCard(
                 icon: '🐉',
-                title: 'Day Master',
+                title: 'Day Master · Dein Kern',
                 subtitle: _formatDayMaster(dayMasterKey!),
                 content: _buildDayMasterContent(description),
               );
@@ -75,7 +81,7 @@ class BaziSection extends ConsumerWidget {
         else
           ExpandableCard(
             icon: '🐉',
-            title: 'Day Master',
+            title: 'Day Master · Dein Kern',
             subtitle: 'Geburtszeit erforderlich',
             content: Text(
               'Für die Bazi-Berechnung wird deine genaue Geburtszeit benötigt. '
@@ -85,12 +91,6 @@ class BaziSection extends ConsumerWidget {
           ),
 
         const SizedBox(height: 16),
-
-        // 4. Bazi-Synthese (alle Säulen zusammen)
-        if (birthChart.baziDayStem != null) ...[
-          _buildBaziSynthesis(),
-          const SizedBox(height: 16),
-        ],
 
         // 5. Jahr-Säule (expandable mit Content Library)
         if (birthChart.baziYearStem != null && birthChart.baziYearBranch != null) ...[
@@ -102,7 +102,7 @@ class BaziSection extends ConsumerWidget {
             branch: birthChart.baziYearBranch!,
             icon: '📅',
             title: 'Jahr-Säule',
-            subtitle: 'Familiäre Wurzeln & öffentliches Image · 0–15 Jahre',
+            subtitle: 'Herkunft · Ruf · gesellschaftliche Rolle',
           ),
           const SizedBox(height: 12),
         ],
@@ -117,7 +117,7 @@ class BaziSection extends ConsumerWidget {
             branch: birthChart.baziMonthBranch!,
             icon: '🌙',
             title: 'Monat-Säule',
-            subtitle: 'Karriere & Eltern-Beziehung · 15–30 Jahre',
+            subtitle: 'Karriere · Berufung · Antrieb',
           ),
           const SizedBox(height: 12),
         ],
@@ -132,7 +132,7 @@ class BaziSection extends ConsumerWidget {
             branch: birthChart.baziHourBranch!,
             icon: '⏰',
             title: 'Stunden-Säule',
-            subtitle: 'Kinder & Vermächtnis · 60+ Jahre',
+            subtitle: 'Innere Wünsche · Kinder · Vermächtnis',
           ),
           const SizedBox(height: 16),
         ],

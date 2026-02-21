@@ -4,14 +4,14 @@ import 'package:nuuray_ui/nuuray_ui.dart';
 
 /// Drei Dashboard Mini-Widgets (Western / Bazi / Numerologie)
 ///
-/// Layout nach DASHBOARD_WIDGETS_SPEC.md:
+/// Layout:
 /// ```
 /// ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐
-/// │  ♐ SCHÜTZE       │  │  CHINESISCH      │  │  NUMEROLOGIE     │
-/// │  Mond: Waage     │  │  Gui · Yin-Metall│  │  Lebenszahl: 8   │
-/// │  Aszendent: Löwe │  │  Element: Wasser  │  │  Namenszahl: 8   │
-/// │  Element: Feuer  │  │  Tier: Schwein    │  │  Erfolg ·        │
-/// │                  │  │                  │  │  Manifestation   │
+/// │  ♐ WESTERN       │  │  🐉 BAZI         │  │  ⑧ NUMEROLOGIE   │
+/// │  SCHÜTZE         │  │  Bing · Yang-    │  │  8 · 8           │
+/// │  Mond: Waage     │  │  Feuer           │  │  Lebens- und     │
+/// │  Aszendent: Löwe │  │  Vier Säulen     │  │  Namenszahl      │
+/// │  Element: Feuer  │  │  Bing-Affe · ... │  │  Erfolg ·        │
 /// └──────────────────┘  └──────────────────┘  └──────────────────┘
 /// ```
 class MiniSystemWidgets extends StatelessWidget {
@@ -230,30 +230,42 @@ class _BaziCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dayStem = birthChart.baziDayStem ?? 'Jia';
-    final dominantElement = birthChart.baziElement ?? 'Wood';
-    final yearBranch = birthChart.baziYearBranch ?? 'Rat';
+    final yearBranch = birthChart.baziYearBranch;
+    final monthBranch = birthChart.baziMonthBranch;
+    final dayBranch = birthChart.baziDayBranch;
 
-    // Day Master formatiert: "Gui · Yin-Wasser"
+    // Day Master formatiert: "Bing · Yang-Feuer"
     final dayMasterFormatted = DashboardHelpers.formatDayMaster(dayStem);
 
-    // Dominantes Element lokalisiert
-    final elementName = _getLocalizedBaziElement(dominantElement, isGerman);
+    // Jahrestier lokalisiert (für Icon)
+    final iconBranch = yearBranch ?? 'Dragon';
+    final icon = DashboardHelpers.getYearAnimalEmoji(iconBranch);
 
-    // Jahrestier lokalisiert
-    final yearAnimal =
-        DashboardHelpers.getYearAnimal(yearBranch, isGerman: isGerman);
-
-    // Icon: Jahrestier-Emoji
-    final icon = DashboardHelpers.getYearAnimalEmoji(yearBranch);
+    // Säulen kompakt: Stem-Branch je Säule
+    final yearLabel = _formatPillarShort(
+      birthChart.baziYearStem,
+      yearBranch,
+      isGerman,
+    );
+    final monthLabel = _formatPillarShort(
+      birthChart.baziMonthStem,
+      monthBranch,
+      isGerman,
+    );
+    final dayLabel = _formatPillarShort(
+      dayStem,
+      dayBranch,
+      isGerman,
+    );
 
     return _MiniCard(
       icon: icon,
-      title: isGerman ? 'CHINESISCH' : 'CHINESE',
+      title: isGerman ? 'BAZI' : 'BAZI',
       onTap: onTap,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Day Master
+          // Day Master (Kern-Info, prominenter)
           Text(
             dayMasterFormatted,
             style: const TextStyle(
@@ -261,47 +273,46 @@ class _BaziCard extends StatelessWidget {
               fontWeight: FontWeight.bold,
               color: Color(0xFF2C2416),
             ),
+            overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 6),
 
-          // Dominantes Element
-          Text(
-            '${isGerman ? 'Element' : 'Element'}: $elementName',
-            style: const TextStyle(
-              fontSize: 11,
-              color: Color(0xFF8B7355),
+          // Vier Säulen kompakt (Jahr · Monat · Tag)
+          if (yearLabel != null || monthLabel != null) ...[
+            Text(
+              isGerman ? 'Vier Säulen' : 'Four Pillars',
+              style: const TextStyle(
+                fontSize: 10,
+                color: Color(0xFF8B7355),
+                letterSpacing: 0.3,
+              ),
             ),
-          ),
-          const SizedBox(height: 2),
-
-          // Jahrestier
-          Text(
-            '${isGerman ? 'Tier' : 'Animal'}: $yearAnimal',
-            style: const TextStyle(
-              fontSize: 11,
-              color: Color(0xFF8B7355),
+            const SizedBox(height: 2),
+            Text(
+              [
+                if (yearLabel != null) yearLabel,
+                if (monthLabel != null) monthLabel,
+                if (dayLabel != null) dayLabel,
+              ].join(' · '),
+              style: const TextStyle(
+                fontSize: 10,
+                color: Color(0xFF2C2416),
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
-          ),
+          ],
         ],
       ),
     );
   }
 
-  String _getLocalizedBaziElement(String element, bool isGerman) {
-    switch (element.toLowerCase()) {
-      case 'wood':
-        return isGerman ? 'Holz' : 'Wood';
-      case 'fire':
-        return isGerman ? 'Feuer' : 'Fire';
-      case 'earth':
-        return isGerman ? 'Erde' : 'Earth';
-      case 'metal':
-        return isGerman ? 'Metall' : 'Metal';
-      case 'water':
-        return isGerman ? 'Wasser' : 'Water';
-      default:
-        return element;
-    }
+  /// Gibt eine kurze Pillar-Bezeichnung zurück: "Bing-Affe"
+  String? _formatPillarShort(
+      String? stem, String? branch, bool isGerman) {
+    if (stem == null) return null;
+    if (branch == null) return stem;
+    final animal = DashboardHelpers.getYearAnimal(branch, isGerman: isGerman);
+    return '$stem-$animal';
   }
 }
 
