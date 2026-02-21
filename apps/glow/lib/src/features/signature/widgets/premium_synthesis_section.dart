@@ -5,10 +5,28 @@ import 'package:nuuray_core/nuuray_core.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../profile/providers/user_profile_provider.dart';
 
+/// Löscht den Synthese-Cache für den aktuellen User (nur für Entwicklung/Testing)
+///
+/// Setzt profiles.deep_synthesis_text auf NULL → nächster Aufruf generiert neu.
+Future<void> resetDeepSynthesisCache(WidgetRef ref) async {
+  final supabase = ref.read(supabaseClientProvider);
+  final profile = ref.read(userProfileProvider).valueOrNull;
+  final userId = profile?.id;
+  if (userId == null) return;
+
+  await supabase
+      .from('profiles')
+      .update({'deep_synthesis_text': null})
+      .eq('id', userId);
+
+  ref.invalidate(deepSynthesisProvider);
+  log('🗑️ [Synthese] Cache gelöscht — wird beim nächsten Aufruf neu generiert');
+}
+
 /// Provider für die tiefe Drei-System-Synthese
 ///
 /// Generiert die Synthese via Claude API und cached sie in Supabase.
-/// Einmalig pro User — kann nicht zurückgesetzt werden ohne Cache-Clear.
+/// Cache-Reset: resetDeepSynthesisCache(ref) aufrufen.
 final deepSynthesisProvider = FutureProvider.family<String, BirthChart>((ref, birthChart) async {
   final supabase = ref.read(supabaseClientProvider);
   final profile = ref.watch(userProfileProvider).valueOrNull;
@@ -203,7 +221,7 @@ class DeepSynthesisSection extends ConsumerWidget {
 
           const SizedBox(height: 20),
 
-          // Footer: NUURAY Signatur
+          // Footer: NUURAY Signatur + Debug Reset
           Row(
             children: [
               Container(
@@ -221,6 +239,29 @@ class DeepSynthesisSection extends ConsumerWidget {
                   letterSpacing: 0.3,
                 ),
               ),
+              const Spacer(),
+              // Debug-only: Cache-Reset Button (nur im Debug-Build sichtbar)
+              if (const bool.fromEnvironment('dart.vm.product') == false)
+                Consumer(
+                  builder: (context, ref, _) => GestureDetector(
+                    onLongPress: () async {
+                      await resetDeepSynthesisCache(ref);
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('🗑️ Synthese-Cache gelöscht — wird neu generiert'),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      }
+                    },
+                    child: Icon(
+                      Icons.refresh,
+                      size: 14,
+                      color: Colors.grey[300],
+                    ),
+                  ),
+                ),
             ],
           ),
         ],
