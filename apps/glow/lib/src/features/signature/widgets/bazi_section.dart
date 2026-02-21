@@ -44,6 +44,51 @@ class BaziSection extends ConsumerWidget {
         // 1. Vier Säulen Tabelle (OBERHALB von Day Master!)
         if (birthChart.baziYearStem != null) ...[
           _buildFourPillarsTable(),
+          const SizedBox(height: 24),
+        ],
+
+        // 2. Jahr-Säule (expandable mit Content Library)
+        if (birthChart.baziYearStem != null && birthChart.baziYearBranch != null) ...[
+          _buildPillarCard(
+            contentService: contentService,
+            locale: locale,
+            category: 'bazi_year_pillar',
+            stem: birthChart.baziYearStem!,
+            branch: birthChart.baziYearBranch!,
+            icon: '📅',
+            title: 'Jahr-Säule',
+            subtitle: 'Familiäre Wurzeln & öffentliches Image',
+          ),
+          const SizedBox(height: 12),
+        ],
+
+        // 3. Monat-Säule (expandable mit Content Library)
+        if (birthChart.baziMonthStem != null && birthChart.baziMonthBranch != null) ...[
+          _buildPillarCard(
+            contentService: contentService,
+            locale: locale,
+            category: 'bazi_month_pillar',
+            stem: birthChart.baziMonthStem!,
+            branch: birthChart.baziMonthBranch!,
+            icon: '🌙',
+            title: 'Monat-Säule',
+            subtitle: 'Karriere & Eltern-Beziehung',
+          ),
+          const SizedBox(height: 12),
+        ],
+
+        // 4. Stunden-Säule (expandable mit Content Library)
+        if (birthChart.baziHourStem != null && birthChart.baziHourBranch != null) ...[
+          _buildPillarCard(
+            contentService: contentService,
+            locale: locale,
+            category: 'bazi_hour_pillar',
+            stem: birthChart.baziHourStem!,
+            branch: birthChart.baziHourBranch!,
+            icon: '⏰',
+            title: 'Stunden-Säule',
+            subtitle: 'Kinder & Vermächtnis',
+          ),
           const SizedBox(height: 16),
         ],
 
@@ -81,6 +126,83 @@ class BaziSection extends ConsumerWidget {
               'Für die Bazi-Berechnung wird deine genaue Geburtszeit benötigt. '
               'Bitte ergänze sie in deinem Profil.',
               style: TextStyle(fontSize: 15, color: Colors.grey[600]),
+            ),
+          ),
+      ],
+    );
+  }
+
+  /// Baut eine Säulen-Card (Jahr/Monat/Stunde) mit Content Library
+  Widget _buildPillarCard({
+    required dynamic contentService,
+    required String locale,
+    required String category,
+    required String stem,
+    required String branch,
+    required String icon,
+    required String title,
+    required String subtitle,
+  }) {
+    // Build key: "yang_water_dog"
+    final stemElement = _stemToElementKey(stem);
+    final branchKey = branch.toLowerCase();
+    final key = '${stemElement}_$branchKey';
+
+    // Format display: "Gui Schwein"
+    final displayText = '$stem ${_translateBranch(branchKey)}';
+
+    return FutureBuilder<String?>(
+      future: contentService.getDescription(
+        category: category,
+        key: key,
+        locale: locale,
+      ),
+      builder: (context, snapshot) {
+        final description = snapshot.data;
+
+        return ExpandableCard(
+          icon: icon,
+          title: title,
+          subtitle: displayText,
+          content: _buildPillarContent(description, subtitle),
+        );
+      },
+    );
+  }
+
+  /// Content für Säulen-Cards (Kontext + Beschreibung)
+  Widget _buildPillarContent(String? description, String context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Kontext (Subtitle als Hint)
+        Text(
+          context,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: Colors.grey[700],
+          ),
+        ),
+        const Divider(height: 24),
+
+        // Beschreibung
+        if (description != null)
+          Text(
+            description,
+            style: TextStyle(
+              fontSize: 15,
+              color: Colors.grey[800],
+              height: 1.6,
+            ),
+          )
+        else
+          Text(
+            'Lädt Beschreibung...',
+            style: TextStyle(
+              fontSize: 15,
+              color: Colors.grey[500],
+              fontStyle: FontStyle.italic,
             ),
           ),
       ],
