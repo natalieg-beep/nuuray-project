@@ -17,7 +17,7 @@ import 'package:nuuray_ui/nuuray_ui.dart';
 /// 2. Western Astrology (Sonne, Mond, Aszendent)
 /// 3. Bazi (Day Master + Element Balance)
 /// 4. Numerologie (Life Path + Kern-Zahlen)
-/// 5. Premium Synthese (CTA oder vollständiger Text)
+/// 5. Tiefe Drei-System-Synthese (Herzstück — 700-1000 Wörter)
 class SignatureScreen extends ConsumerWidget {
   const SignatureScreen({super.key});
 
@@ -121,50 +121,10 @@ class SignatureScreen extends ConsumerWidget {
                 birthChart: birthChart,
               ),
 
-              const SizedBox(height: 40),
-
-              // Outro: "Und so fügt sich alles zusammen:"
-              Text(
-                l10n.signatureOverviewOutro,
-                style: TextStyle(
-                  fontSize: 15,
-                  color: Colors.grey[700],
-                  fontWeight: FontWeight.w500,
-                  height: 1.5,
-                ),
+              // 5. Tiefe Drei-System-Synthese (Herzstück)
+              DeepSynthesisSection(
+                birthChart: birthChart,
               ),
-              const SizedBox(height: 16),
-
-              // Kosmische Synthese (Info Footer)
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.info_outline,
-                      size: 20,
-                      color: Colors.grey[600],
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        'Alle drei Systeme arbeiten zusammen und ergänzen sich gegenseitig.',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey[700],
-                          height: 1.4,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 40),
             ],
           ),
         );

@@ -526,6 +526,400 @@ Nichts anderes. Keine Erklärung, keine Einleitung, kein Kommentar.
 ''';
   }
 
+  /// Generiert die tiefe Drei-System-Synthese für "Deine Signatur"
+  ///
+  /// Das ist das Herzstück der App — eine tiefe, personalisierte
+  /// Analyse, die alle drei Systeme zu einer stimmigen Lebensgeschichte
+  /// verwebt. Folgt dem NUURAY Brand Soul Dokument exakt.
+  ///
+  /// Kosten: ~500 Input + ~700 Output Tokens = ~$0.012 pro Call (einmalig)
+  ///
+  /// Returns: Fließtext, 700-1000 Wörter, kein Markdown
+  Future<String> generateDeepSynthesis({
+    required String sunSign,
+    required String? moonSign,
+    required String? ascendantSign,
+    required String? baziDayStem,
+    required String? baziElement,
+    required String? baziYearStem,
+    required String? baziMonthStem,
+    required int? lifePathNumber,
+    required int? birthdayNumber,
+    required int? personalYear,
+    required List<int>? challengeNumbers,
+    required int? karmicDebtLifePath,
+    required List<int>? karmicLessons,
+    required String language,
+    required String? gender,
+  }) async {
+    final prompt = _buildDeepSynthesisPrompt(
+      sunSign: sunSign,
+      moonSign: moonSign,
+      ascendantSign: ascendantSign,
+      baziDayStem: baziDayStem,
+      baziElement: baziElement,
+      baziYearStem: baziYearStem,
+      baziMonthStem: baziMonthStem,
+      lifePathNumber: lifePathNumber,
+      birthdayNumber: birthdayNumber,
+      personalYear: personalYear,
+      challengeNumbers: challengeNumbers,
+      karmicDebtLifePath: karmicDebtLifePath,
+      karmicLessons: karmicLessons,
+      language: language,
+    );
+
+    final systemPrompt = _buildDeepSynthesisSystemPrompt(language, gender: gender);
+
+    final response = await _callClaudeWithMaxTokens(
+      systemPrompt: systemPrompt,
+      userPrompt: prompt,
+      maxTokens: 4096, // Genug für 700-1000 Wörter
+    );
+
+    return response.text.trim();
+  }
+
+  /// API Call mit konfigurierbaren max_tokens
+  Future<ClaudeResponse> _callClaudeWithMaxTokens({
+    required String systemPrompt,
+    required String userPrompt,
+    required int maxTokens,
+  }) async {
+    final url = Uri.parse('$baseUrl/messages');
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+    };
+
+    final body = jsonEncode({
+      'model': model,
+      'max_tokens': maxTokens,
+      'system': systemPrompt,
+      'messages': [
+        {
+          'role': 'user',
+          'content': userPrompt,
+        }
+      ],
+    });
+
+    final httpResponse = await http.post(url, headers: headers, body: body);
+
+    if (httpResponse.statusCode == 200) {
+      final data = jsonDecode(httpResponse.body);
+      return ClaudeResponse.fromJson(data);
+    } else {
+      String errorDetail = httpResponse.body;
+      try {
+        final errorData = jsonDecode(httpResponse.body);
+        errorDetail = errorData['error']?['message'] ?? httpResponse.body;
+      } catch (_) {}
+      throw ClaudeApiException(
+        'Claude API Error: ${httpResponse.statusCode}',
+        errorDetail,
+      );
+    }
+  }
+
+  /// System-Prompt für Deep Synthesis — folgt Brand Soul Dokument exakt
+  String _buildDeepSynthesisSystemPrompt(String language, {String? gender}) {
+    final addressDE = _getGenderAddressDE(gender);
+    final addressEN = _getGenderAddressEN(gender);
+
+    if (language.toUpperCase() == 'DE') {
+      return '''
+Du bist die Stimme von NUURAY Glow — die kluge Freundin beim Kaffee.
+
+DEINE PHILOSOPHIE:
+Die drei Systeme sind nicht drei separate Horoskope — sie sind drei Linsen auf dieselbe Person.
+- Westliche Astrologie = Software (wie der Geist programmiert ist)
+- Bazi / Vier Säulen = Hardware (was das System leisten kann, wo Energie fließt oder fehlt)
+- Numerologie = Purpose (wofür diese Person gebaut wurde)
+
+DEINE AUFGABE:
+Schreibe eine tiefe, personalisierte Synthese, die alle drei Systeme zu EINER stimmigen Geschichte verwebt. Kein Aufzählen. Kein "Dein Bazi sagt...". Sondern Verweben zu einer Wahrheit, die die Person überrascht — weil sie stimmt.
+
+DER NUURAY-BOGEN (folge ihm strikt):
+1. HOOK — Beginne mit einer überraschenden, konkreten Beobachtung. Nie generisch, nie "Du bist...". Immer mit einem Widerspruch oder einer unerwarteten Wahrheit.
+2. PSYCHE UND SPANNUNG — Was will der Geist? (Sonne, Mond, Aszendent) Und wo reibt er sich? Zeige den inneren Widerspruch zwischen den westlichen Planeten.
+3. ENERGIE-WAHRHEIT — Das ist der USP: Was sagt die Bazi-Architektur? Wo ist Energie im Überfluss, wo fehlt sie? Welchen Einfluss hat das auf das, was die Psyche will?
+4. SEELENWEG — Was sagen die Lebenszahl und die Numerologie-Muster? Wie erklärt das die Spannung zwischen Psyche und Energie?
+5. DIE INTEGRIERTE WAHRHEIT — Die Auflösung. Wie fügen sich die drei Systeme zu einer einzigen, tiefen Erkenntnis zusammen?
+6. DER IMPULS — Nicht abstrakt. Eine konkrete, erdige Frage oder Handlung, die aus dieser Synthese entsteht.
+
+QUALITÄTSREGELN:
+- Mindestens ZWEI echte Widersprüche zwischen den Systemen zeigen und auflösen
+- Kein System isoliert — alles verwoben
+- Kein Markdown, keine Emojis, keine Überschriften, keine Listen
+- Fließtext mit Absätzen, editorieller Rhythmus
+- Länge: 700-1000 Wörter
+- VERBOTENE WORTE: Schicksal, Magie, Wunder, "Universum möchte", kosmische Energie, positive Schwingungen, Manifestation, Segnung
+
+ANSPRACHE:
+$addressDE
+
+ZEITLOSIGKEIT:
+Keine festen Jahreszahlen. "Diese Phase" statt konkreter Jahre.
+''';
+    } else {
+      return '''
+You are the voice of NUURAY Glow — the clever friend over coffee.
+
+YOUR PHILOSOPHY:
+The three systems are not three separate horoscopes — they are three lenses on the same person.
+- Western Astrology = Software (how the mind is programmed)
+- Bazi / Four Pillars = Hardware (what the system can achieve, where energy flows or is missing)
+- Numerology = Purpose (what this person was built for)
+
+YOUR TASK:
+Write a deep, personalized synthesis that weaves all three systems into ONE coherent story. No listing. No "Your Bazi says...". Weave them into a truth that surprises the person — because it's accurate.
+
+THE NUURAY ARC (follow it strictly):
+1. HOOK — Start with a surprising, concrete observation. Never generic, never "You are...". Always with a contradiction or unexpected truth.
+2. PSYCHE AND TENSION — What does the mind want? (Sun, Moon, Ascendant) And where does it clash? Show the inner contradiction between the western planets.
+3. ENERGY TRUTH — This is the USP: What does the Bazi architecture say? Where is energy abundant, where is it missing? How does that affect what the psyche wants?
+4. SOUL PATH — What do the Life Path and numerology patterns say? How does that explain the tension between psyche and energy?
+5. THE INTEGRATED TRUTH — The resolution. How do the three systems come together into one single, deep insight?
+6. THE IMPULSE — Not abstract. A concrete, grounded question or action that emerges from this synthesis.
+
+QUALITY RULES:
+- Show and resolve at least TWO real contradictions between the systems
+- No system in isolation — everything woven together
+- No Markdown, no emojis, no headings, no bullet points
+- Flowing text with paragraphs, editorial rhythm
+- Length: 700-1000 words
+- FORBIDDEN WORDS: fate, magic, miracle, "universe wants", cosmic energy, positive vibrations, manifestation, blessing
+
+ADDRESS:
+$addressEN
+
+TIMELESSNESS:
+No fixed years. "This phase" instead of specific years.
+''';
+    }
+  }
+
+  /// User-Prompt für Deep Synthesis — alle Daten dieser Person
+  String _buildDeepSynthesisPrompt({
+    required String sunSign,
+    required String? moonSign,
+    required String? ascendantSign,
+    required String? baziDayStem,
+    required String? baziElement,
+    required String? baziYearStem,
+    required String? baziMonthStem,
+    required int? lifePathNumber,
+    required int? birthdayNumber,
+    required int? personalYear,
+    required List<int>? challengeNumbers,
+    required int? karmicDebtLifePath,
+    required List<int>? karmicLessons,
+    required String language,
+  }) {
+    // Bazi-Elemente aufbereiten
+    final baziContext = _buildBaziContext(baziDayStem, baziElement, baziYearStem, baziMonthStem, language);
+    // Numerologie-Kontext aufbereiten
+    final numerologyContext = _buildNumerologyContext(
+      lifePathNumber, birthdayNumber, personalYear,
+      challengeNumbers, karmicDebtLifePath, karmicLessons, language,
+    );
+
+    if (language.toUpperCase() == 'DE') {
+      return '''
+Diese Person trägt folgende Signatur:
+
+WESTLICHE ASTROLOGIE:
+- Sonne: ${_getZodiacNameDe(sunSign)}
+${moonSign != null ? '- Mond: ${_getZodiacNameDe(moonSign)}' : ''}
+${ascendantSign != null ? '- Aszendent: ${_getZodiacNameDe(ascendantSign)}' : ''}
+
+BAZI — LEBENS-ARCHITEKTUR:
+$baziContext
+
+NUMEROLOGIE — SEELENRHYTHMUS:
+$numerologyContext
+
+DEINE AUFGABE:
+Schreibe jetzt die tiefe Synthese für diese Person. Folge dem NUURAY-Bogen:
+1. Starte mit einem Widerspruch oder einer überraschenden Beobachtung
+2. Zeige mindestens zwei Spannungen zwischen den Systemen
+3. Löse sie auf zu einer integrierten Wahrheit
+4. Ende mit einem konkreten Impuls oder einer Frage
+
+700-1000 Wörter. Kein Markdown. Kein Auflisten. Verweben.
+''';
+    } else {
+      return '''
+This person carries the following signature:
+
+WESTERN ASTROLOGY:
+- Sun: ${_getZodiacNameEn(sunSign)}
+${moonSign != null ? '- Moon: ${_getZodiacNameEn(moonSign)}' : ''}
+${ascendantSign != null ? '- Ascendant: ${_getZodiacNameEn(ascendantSign)}' : ''}
+
+BAZI — LIFE ARCHITECTURE:
+$baziContext
+
+NUMEROLOGY — SOUL RHYTHM:
+$numerologyContext
+
+YOUR TASK:
+Write the deep synthesis for this person now. Follow the NUURAY arc:
+1. Start with a contradiction or surprising observation
+2. Show at least two tensions between the systems
+3. Resolve them into an integrated truth
+4. End with a concrete impulse or question
+
+700-1000 words. No Markdown. No lists. Weave.
+''';
+    }
+  }
+
+  /// Baut den Bazi-Kontext-Block für den Prompt
+  String _buildBaziContext(
+    String? dayStem,
+    String? dominantElement,
+    String? yearStem,
+    String? monthStem,
+    String language,
+  ) {
+    final isDe = language.toUpperCase() == 'DE';
+    final lines = <String>[];
+
+    if (dayStem != null) {
+      final dayMasterLabel = isDe ? '- Day Master (wer du bist)' : '- Day Master (who you are)';
+      lines.add('$dayMasterLabel: ${_getBaziElementName(dayStem, language)}');
+    }
+    if (dominantElement != null) {
+      final domLabel = isDe ? '- Dominantes Element (Hauptenergie)' : '- Dominant Element (main energy)';
+      lines.add('$domLabel: ${_getBaziElementName(dominantElement, language)}');
+    }
+    if (yearStem != null) {
+      final yearLabel = isDe ? '- Jahr-Säule (Ressourcen, Erbe)' : '- Year Pillar (resources, heritage)';
+      lines.add('$yearLabel: ${_getBaziElementName(yearStem, language)}');
+    }
+    if (monthStem != null) {
+      final monthLabel = isDe ? '- Monat-Säule (Karriere, Ausdruck)' : '- Month Pillar (career, expression)';
+      lines.add('$monthLabel: ${_getBaziElementName(monthStem, language)}');
+    }
+
+    if (lines.isEmpty) {
+      return isDe ? '(Keine Bazi-Daten verfügbar)' : '(No Bazi data available)';
+    }
+
+    return lines.join('\n');
+  }
+
+  /// Baut den Numerologie-Kontext-Block für den Prompt
+  String _buildNumerologyContext(
+    int? lifePathNumber,
+    int? birthdayNumber,
+    int? personalYear,
+    List<int>? challengeNumbers,
+    int? karmicDebtLifePath,
+    List<int>? karmicLessons,
+    String language,
+  ) {
+    final isDe = language.toUpperCase() == 'DE';
+    final lines = <String>[];
+
+    if (lifePathNumber != null) {
+      final label = isDe ? '- Lebenszahl (dein Seelenweg)' : '- Life Path (your soul journey)';
+      lines.add('$label: $lifePathNumber');
+    }
+    if (birthdayNumber != null) {
+      final label = isDe ? '- Geburtstagszahl (deine natürliche Gabe)' : '- Birthday Number (your natural gift)';
+      lines.add('$label: $birthdayNumber');
+    }
+    if (personalYear != null) {
+      final label = isDe ? '- Persönliches Jahr (aktuelle Lebensphase)' : '- Personal Year (current life phase)';
+      lines.add('$label: $personalYear');
+    }
+    if (challengeNumbers != null && challengeNumbers.isNotEmpty) {
+      final label = isDe ? '- Herausforderungszahlen (Wachstumsthemen)' : '- Challenge Numbers (growth themes)';
+      lines.add('$label: ${challengeNumbers.take(4).join(', ')}');
+    }
+    if (karmicDebtLifePath != null && karmicDebtLifePath > 0) {
+      final label = isDe ? '- Karmische Schuld (alte Lernaufgabe)' : '- Karmic Debt (old learning task)';
+      lines.add('$label: $karmicDebtLifePath');
+    }
+    if (karmicLessons != null && karmicLessons.isNotEmpty) {
+      final label = isDe ? '- Karmische Lektionen (fehlende Energie)' : '- Karmic Lessons (missing energy)';
+      lines.add('$label: ${karmicLessons.take(5).join(', ')}');
+    }
+
+    if (lines.isEmpty) {
+      return isDe ? '(Keine Numerologie-Daten verfügbar)' : '(No numerology data available)';
+    }
+
+    return lines.join('\n');
+  }
+
+  /// Englischer Sternzeichen-Name
+  String _getZodiacNameEn(String zodiacSign) {
+    const names = {
+      'aries': 'Aries',
+      'taurus': 'Taurus',
+      'gemini': 'Gemini',
+      'cancer': 'Cancer',
+      'leo': 'Leo',
+      'virgo': 'Virgo',
+      'libra': 'Libra',
+      'scorpio': 'Scorpio',
+      'sagittarius': 'Sagittarius',
+      'capricorn': 'Capricorn',
+      'aquarius': 'Aquarius',
+      'pisces': 'Pisces',
+    };
+    return names[zodiacSign] ?? zodiacSign;
+  }
+
+  /// Bazi-Element-Name (bereits in ArchetypeSignatureService vorhanden, hier dupliziert für Unabhängigkeit)
+  String _getBaziElementName(String stem, String language) {
+    if (language.toUpperCase() == 'DE') {
+      const elementsDE = {
+        'Jia': 'Yang-Holz',
+        'Yi': 'Yin-Holz',
+        'Bing': 'Yang-Feuer',
+        'Ding': 'Yin-Feuer',
+        'Wu': 'Yang-Erde',
+        'Ji': 'Yin-Erde',
+        'Geng': 'Yang-Metall',
+        'Xin': 'Yin-Metall',
+        'Ren': 'Yang-Wasser',
+        'Gui': 'Yin-Wasser',
+        'Holz': 'Holz',
+        'Feuer': 'Feuer',
+        'Erde': 'Erde',
+        'Metall': 'Metall',
+        'Wasser': 'Wasser',
+      };
+      return elementsDE[stem] ?? stem;
+    } else {
+      const elementsEN = {
+        'Jia': 'Yang Wood',
+        'Yi': 'Yin Wood',
+        'Bing': 'Yang Fire',
+        'Ding': 'Yin Fire',
+        'Wu': 'Yang Earth',
+        'Ji': 'Yin Earth',
+        'Geng': 'Yang Metal',
+        'Xin': 'Yin Metal',
+        'Ren': 'Yang Water',
+        'Gui': 'Yin Water',
+        'Holz': 'Wood',
+        'Feuer': 'Fire',
+        'Erde': 'Earth',
+        'Metall': 'Metal',
+        'Wasser': 'Water',
+      };
+      return elementsEN[stem] ?? stem;
+    }
+  }
+
   // ============================================================
   // GENDER-ANSPRACHE HELPER
   // ============================================================
