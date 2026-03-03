@@ -1098,4 +1098,58 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get horoscopePlaceholderDescription =>
       'Please complete your birth data to see your personal horoscope.';
+
+  @override
+  String get essenceSectionTitle => 'The Essence';
+
+  @override
+  String get essenceSectionSubtitle => 'The 3 key insights from your signature';
+
+  @override
+  String get essenceLoading => 'Your insights are being distilled...';
+
+  @override
+  String get essenceLoadingSubtitle => 'Being extracted from your synthesis.';
+
+  @override
+  String get essenceErrorTitle => 'Insights could not be loaded';
+
+  @override
+  String get essenceErrorRetry => 'Try again';
+
+  @override
+  String get essenceSynthesisMissing =>
+      'Please scroll up first and wait for your synthesis to be generated.';
+
+  @override
+  String get essenceFooterLabel => 'From your NUURAY Signature';
+
+  @override
+  String get questionsSectionTitle => 'Questions for You';
+
+  @override
+  String get questionsSectionSubtitle =>
+      'Your signature has these questions for you. Not to answer — to feel.';
+
+  @override
+  String get questionsLoading => 'Your questions are being formulated...';
+
+  @override
+  String get reportExportButton => 'Export PDF';
+
+  @override
+  String get reportExportLoading => 'Creating your report...';
+
+  @override
+  String get reportExportChaptersLoading => 'Writing your chapters...';
+
+  @override
+  String get reportExportSuccess => 'PDF saved to Downloads folder';
+
+  @override
+  String get reportExportError => 'Report could not be created';
+
+  @override
+  String get reportExportSynthesisMissing =>
+      'Please wait for your synthesis to be generated first.';
 }

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../signature/providers/signature_provider.dart';
@@ -7,6 +8,9 @@ import '../widgets/western_astrology_section.dart';
 import '../widgets/bazi_section.dart';
 import '../widgets/numerology_section.dart';
 import '../widgets/premium_synthesis_section.dart';
+import '../widgets/key_insights_section.dart';
+import '../providers/signature_report_provider.dart';
+import '../services/signature_pdf_generator.dart';
 import 'package:nuuray_core/nuuray_core.dart';
 import 'package:nuuray_ui/nuuray_ui.dart';
 
@@ -125,6 +129,18 @@ class SignatureScreen extends ConsumerWidget {
               DeepSynthesisSection(
                 birthChart: birthChart,
               ),
+
+              // 6. Das Wesentliche + Fragen an dich
+              KeyInsightsSection(
+                birthChart: birthChart,
+              ),
+
+              // 7. PDF Export Button
+              const SizedBox(height: 16),
+              _ExportButton(
+                birthChart: birthChart,
+              ),
+              const SizedBox(height: 40),
             ],
           ),
         );
@@ -189,5 +205,155 @@ class SignatureScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+}
+
+/// Export-Button Widget — Generiert und teilt den Signatur-Report PDF
+class _ExportButton extends ConsumerStatefulWidget {
+  const _ExportButton({required this.birthChart});
+
+  final BirthChart birthChart;
+
+  @override
+  ConsumerState<_ExportButton> createState() => _ExportButtonState();
+}
+
+class _ExportButtonState extends ConsumerState<_ExportButton> {
+  bool _isExporting = false;
+  String? _statusMessage;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: Column(
+        children: [
+          // Divider
+          Container(
+            height: 1,
+            color: const Color(0xFFE8E3D8).withValues(alpha: 0.6),
+          ),
+          const SizedBox(height: 24),
+
+          // Export Button
+          SizedBox(
+            width: double.infinity,
+            height: 52,
+            child: ElevatedButton.icon(
+              onPressed: _isExporting ? null : () => _exportReport(l10n),
+              icon: _isExporting
+                  ? SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.grey[400],
+                      ),
+                    )
+                  : const Icon(Icons.picture_as_pdf_outlined, size: 20),
+              label: Text(
+                _isExporting
+                    ? (_statusMessage ?? l10n.reportExportLoading)
+                    : l10n.reportExportButton,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _isExporting
+                    ? Colors.grey[200]
+                    : const Color(0xFF2C2C2C),
+                foregroundColor: _isExporting
+                    ? Colors.grey[600]
+                    : Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                elevation: 0,
+              ),
+            ),
+          ),
+
+          // Status Text
+          if (_statusMessage != null && _isExporting)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                _statusMessage!,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[500],
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _exportReport(AppLocalizations l10n) async {
+    setState(() {
+      _isExporting = true;
+      _statusMessage = l10n.reportExportChaptersLoading;
+    });
+
+    try {
+      // 1. Report-Daten laden/generieren (inkl. ggf. fehlende Chapters)
+      log('📄 [Export] Starte Report-Generierung...');
+      final reportData = await ref.read(
+        signatureReportProvider(widget.birthChart).future,
+      );
+
+      if (!mounted) return;
+      setState(() {
+        _statusMessage = l10n.reportExportLoading;
+      });
+
+      // 2. PDF generieren und in Downloads speichern
+      log('📄 [Export] Generiere PDF...');
+      final pdfGenerator = SignaturePdfGenerator();
+      final filePath = await pdfGenerator.shareReport(reportData);
+
+      if (!mounted) return;
+      setState(() {
+        _isExporting = false;
+        _statusMessage = null;
+      });
+
+      log('✅ [Export] PDF gespeichert: $filePath');
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${l10n.reportExportSuccess} ✓'),
+            duration: const Duration(seconds: 3),
+            backgroundColor: const Color(0xFF2C2C2C),
+          ),
+        );
+      }
+    } catch (e) {
+      log('❌ [Export] Fehler: $e');
+
+      if (!mounted) return;
+      setState(() {
+        _isExporting = false;
+        _statusMessage = null;
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${l10n.reportExportError}: $e'),
+            duration: const Duration(seconds: 4),
+            backgroundColor: Colors.red[700],
+          ),
+        );
+      }
+    }
   }
 }

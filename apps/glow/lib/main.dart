@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -14,28 +15,20 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
-    // .env Datei laden
-    print('📦 Loading .env...');
     await dotenv.load(fileName: '.env');
-    print('✅ .env loaded');
 
-    // Supabase initialisieren
-    print('🔌 Initializing Supabase...');
     await Supabase.initialize(
       url: AppConfig.supabaseUrl,
       anonKey: AppConfig.supabaseAnonKey,
     );
-    print('✅ Supabase initialized');
 
-    print('🚀 Starting app...');
     runApp(
       const ProviderScope(
         child: NuurayGlowApp(),
       ),
     );
   } catch (e, stackTrace) {
-    print('❌ FATAL ERROR in main(): $e');
-    print('Stack trace: $stackTrace');
+    log('❌ FATAL ERROR in main(): $e\n$stackTrace');
     // Zeige Error-Screen statt zu crashen
     runApp(
       MaterialApp(

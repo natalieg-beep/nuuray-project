@@ -254,4 +254,42 @@ class ZodiacCalculator {
   static double getDegreeInSign(double longitude) {
     return longitude % 30;
   }
+
+  /// Berechnet die genaue Grad-Position der SONNE innerhalb ihres Zeichens (0-30°)
+  ///
+  /// Nutzt die ekliptische Länge der Sonne — präziser als Tag-basierte Approximation.
+  static double calculateSunDegreeInSign(DateTime birthDate) {
+    final julianDay = _calculateJulianDay(birthDate);
+    final sunLongitude = _calculateSunLongitude(julianDay);
+    return getDegreeInSign(sunLongitude);
+  }
+
+  /// Berechnet die genaue Grad-Position des MONDES innerhalb seines Zeichens (0-30°)
+  ///
+  /// Erfordert genaue UTC-Zeit (nicht lokale Zeit).
+  /// Nutzt die ekliptische Länge des Mondes (ELP2000-82, ±0.5°).
+  static double calculateMoonDegreeInSign(DateTime birthDateTimeUTC) {
+    final julianDay = _calculateJulianDay(birthDateTimeUTC);
+    final moonLongitude = _calculateMoonLongitude(julianDay);
+    return getDegreeInSign(moonLongitude);
+  }
+
+  /// Berechnet die genaue Grad-Position des ASZENDENTEN innerhalb seines Zeichens (0-30°)
+  ///
+  /// Erfordert genaue UTC-Zeit, Breitengrad und Längengrad.
+  /// Gibt null zurück, wenn Aszendent nicht berechnet werden kann.
+  static double? calculateAscendantDegreeInSign({
+    required DateTime birthDateTimeUTC,
+    required double latitude,
+    required double longitude,
+  }) {
+    final julianDay = _calculateJulianDay(birthDateTimeUTC);
+    final ascendantLongitude = _calculateAscendant(
+      julianDay: julianDay,
+      latitude: latitude,
+      longitude: longitude,
+    );
+    if (ascendantLongitude == null) return null;
+    return getDegreeInSign(ascendantLongitude);
+  }
 }

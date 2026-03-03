@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/profile/providers/user_profile_provider.dart';
@@ -49,12 +50,12 @@ class LanguageNotifier extends StateNotifier<Locale> {
       final success = await profileService.updateLanguage(locale.languageCode);
 
       if (!success) {
-        print('Fehler beim Speichern der Sprache');
+        log('❌ Fehler beim Speichern der Sprache');
         // Rollback bei Fehler
         _loadLanguageFromProfile();
       }
     } catch (e) {
-      print('Fehler beim Speichern der Sprache: $e');
+      log('❌ Fehler beim Speichern der Sprache: $e');
       // Rollback bei Fehler
       _loadLanguageFromProfile();
     }

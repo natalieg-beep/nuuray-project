@@ -2197,6 +2197,108 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Bitte vervollständige deine Geburtsdaten, um dein persönliches Horoskop zu sehen.'**
   String get horoscopePlaceholderDescription;
+
+  /// No description provided for @essenceSectionTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Das Wesentliche'**
+  String get essenceSectionTitle;
+
+  /// No description provided for @essenceSectionSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Die 3 Kernerkenntnisse aus deiner Signatur'**
+  String get essenceSectionSubtitle;
+
+  /// No description provided for @essenceLoading.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Erkenntnisse werden destilliert...'**
+  String get essenceLoading;
+
+  /// No description provided for @essenceLoadingSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Wird aus deiner Synthese extrahiert.'**
+  String get essenceLoadingSubtitle;
+
+  /// No description provided for @essenceErrorTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Erkenntnisse konnten nicht geladen werden'**
+  String get essenceErrorTitle;
+
+  /// No description provided for @essenceErrorRetry.
+  ///
+  /// In de, this message translates to:
+  /// **'Erneut versuchen'**
+  String get essenceErrorRetry;
+
+  /// No description provided for @essenceSynthesisMissing.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte scrolle erst nach oben und warte, bis deine Synthese generiert wurde.'**
+  String get essenceSynthesisMissing;
+
+  /// No description provided for @essenceFooterLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Aus deiner NUURAY Signatur'**
+  String get essenceFooterLabel;
+
+  /// No description provided for @questionsSectionTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Fragen an dich'**
+  String get questionsSectionTitle;
+
+  /// No description provided for @questionsSectionSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Fragen hat deine Signatur für dich. Nicht um sie zu beantworten — um sie zu spüren.'**
+  String get questionsSectionSubtitle;
+
+  /// No description provided for @questionsLoading.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Fragen werden formuliert...'**
+  String get questionsLoading;
+
+  /// No description provided for @reportExportButton.
+  ///
+  /// In de, this message translates to:
+  /// **'PDF exportieren'**
+  String get reportExportButton;
+
+  /// No description provided for @reportExportLoading.
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Report wird erstellt...'**
+  String get reportExportLoading;
+
+  /// No description provided for @reportExportChaptersLoading.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Kapitel werden geschrieben...'**
+  String get reportExportChaptersLoading;
+
+  /// No description provided for @reportExportSuccess.
+  ///
+  /// In de, this message translates to:
+  /// **'PDF im Downloads-Ordner gespeichert'**
+  String get reportExportSuccess;
+
+  /// No description provided for @reportExportError.
+  ///
+  /// In de, this message translates to:
+  /// **'Report konnte nicht erstellt werden'**
+  String get reportExportError;
+
+  /// No description provided for @reportExportSynthesisMissing.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte warte, bis deine Synthese generiert wurde.'**
+  String get reportExportSynthesisMissing;
 }
 
 class _AppLocalizationsDelegate

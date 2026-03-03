@@ -37,10 +37,6 @@ class ArchetypeHeader extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
 
-    // DEBUG: Was kommt im Widget an?
-    print('🎨 [ArchetypeHeader] hasSignature: ${archetype.hasSignature}');
-    print('🎨 [ArchetypeHeader] signatureText: "${archetype.signatureText}"');
-
     // Parse Titel und Synthese aus signature_text
     // Neuer Prompt generiert: Zeile 1 = Titel, Zeile 2 = leer, Zeile 3+ = Synthese
     String displayTitle;
@@ -51,7 +47,6 @@ class ArchetypeHeader extends StatelessWidget {
 
       // Zeile 1 = Titel (z.B. "Die großzügige Perfektionistin")
       displayTitle = lines.first.trim();
-      print('🎨 [ArchetypeHeader] displayTitle: "$displayTitle"');
 
       // Zeile 3+ = Synthese (Zeile 2 ist leer)
       // Filtere leere Zeilen und join mit Leerzeichen

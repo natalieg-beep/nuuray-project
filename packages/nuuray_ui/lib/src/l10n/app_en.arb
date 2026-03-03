@@ -439,5 +439,25 @@
   "horoscopeErrorTitle": "Could not load horoscope",
   "horoscopeErrorRetry": "Please try again later.",
   "horoscopePlaceholderTitle": "Birth data missing",
-  "horoscopePlaceholderDescription": "Please complete your birth data to see your personal horoscope."
+  "horoscopePlaceholderDescription": "Please complete your birth data to see your personal horoscope.",
+
+  "essenceSectionTitle": "The Essence",
+  "essenceSectionSubtitle": "The 3 key insights from your signature",
+  "essenceLoading": "Your insights are being distilled...",
+  "essenceLoadingSubtitle": "Being extracted from your synthesis.",
+  "essenceErrorTitle": "Insights could not be loaded",
+  "essenceErrorRetry": "Try again",
+  "essenceSynthesisMissing": "Please scroll up first and wait for your synthesis to be generated.",
+  "essenceFooterLabel": "From your NUURAY Signature",
+
+  "questionsSectionTitle": "Questions for You",
+  "questionsSectionSubtitle": "Your signature has these questions for you. Not to answer — to feel.",
+  "questionsLoading": "Your questions are being formulated...",
+
+  "reportExportButton": "Export PDF",
+  "reportExportLoading": "Creating your report...",
+  "reportExportChaptersLoading": "Writing your chapters...",
+  "reportExportSuccess": "PDF saved to Downloads folder",
+  "reportExportError": "Report could not be created",
+  "reportExportSynthesisMissing": "Please wait for your synthesis to be generated first."
 }

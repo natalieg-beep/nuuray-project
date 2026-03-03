@@ -449,5 +449,25 @@
   "horoscopeErrorTitle": "Horoskop konnte nicht geladen werden",
   "horoscopeErrorRetry": "Bitte versuche es später erneut.",
   "horoscopePlaceholderTitle": "Geburtsdaten fehlen",
-  "horoscopePlaceholderDescription": "Bitte vervollständige deine Geburtsdaten, um dein persönliches Horoskop zu sehen."
+  "horoscopePlaceholderDescription": "Bitte vervollständige deine Geburtsdaten, um dein persönliches Horoskop zu sehen.",
+
+  "essenceSectionTitle": "Das Wesentliche",
+  "essenceSectionSubtitle": "Die 3 Kernerkenntnisse aus deiner Signatur",
+  "essenceLoading": "Deine Erkenntnisse werden destilliert...",
+  "essenceLoadingSubtitle": "Wird aus deiner Synthese extrahiert.",
+  "essenceErrorTitle": "Erkenntnisse konnten nicht geladen werden",
+  "essenceErrorRetry": "Erneut versuchen",
+  "essenceSynthesisMissing": "Bitte scrolle erst nach oben und warte, bis deine Synthese generiert wurde.",
+  "essenceFooterLabel": "Aus deiner NUURAY Signatur",
+
+  "questionsSectionTitle": "Fragen an dich",
+  "questionsSectionSubtitle": "Diese Fragen hat deine Signatur für dich. Nicht um sie zu beantworten — um sie zu spüren.",
+  "questionsLoading": "Deine Fragen werden formuliert...",
+
+  "reportExportButton": "PDF exportieren",
+  "reportExportLoading": "Dein Report wird erstellt...",
+  "reportExportChaptersLoading": "Deine Kapitel werden geschrieben...",
+  "reportExportSuccess": "PDF im Downloads-Ordner gespeichert",
+  "reportExportError": "Report konnte nicht erstellt werden",
+  "reportExportSynthesisMissing": "Bitte warte, bis deine Synthese generiert wurde."
 }

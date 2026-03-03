@@ -11,11 +11,9 @@ class UserProfileService {
     try {
       final userId = _supabase.auth.currentUser?.id;
       if (userId == null) {
-        print('❌ getUserProfile: Kein User eingeloggt');
+        log('❌ getUserProfile: Kein User eingeloggt');
         return null;
       }
-
-      print('📊 getUserProfile: Lade Profil für User $userId');
 
       final response = await _supabase
           .from('profiles')
@@ -24,21 +22,16 @@ class UserProfileService {
           .maybeSingle();
 
       if (response == null) {
-        print('❌ getUserProfile: Kein Profil gefunden für User $userId');
+        log('❌ getUserProfile: Kein Profil gefunden');
         return null;
       }
 
-      print('✅ getUserProfile: Profil-Daten empfangen: ${response.keys.join(", ")}');
-      print('🔍 DEBUG signature_text aus DB: "${response['signature_text']}"');
-
       final profile = UserProfile.fromJson(response);
-      print('✅ getUserProfile: Profil erfolgreich geparst für ${profile.displayName}');
-      print('🔍 DEBUG signature_text im Model: "${profile.signatureText}"');
+      log('✅ Profil geladen: ${profile.displayName}');
 
       return profile;
     } catch (e, stackTrace) {
-      print('❌ getUserProfile Fehler: $e');
-      print('Stack: $stackTrace');
+      log('❌ getUserProfile Fehler: $e\n$stackTrace');
       return null;
     }
   }

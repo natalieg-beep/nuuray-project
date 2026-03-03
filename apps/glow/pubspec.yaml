@@ -46,6 +46,11 @@ dependencies:
   # Google Places API
   google_places_flutter: ^2.0.9
 
+  # PDF Generation & Sharing
+  pdf: ^3.11.1
+  share_plus: ^10.1.4
+  path_provider: ^2.1.2
+
   # Utilities (version locked by flutter_localizations)
   intl: any
   http: ^1.6.0
@@ -73,6 +78,7 @@ flutter:
   # Assets
   assets:
     - .env
+    - assets/fonts/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

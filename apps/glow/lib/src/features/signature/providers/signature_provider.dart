@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nuuray_core/nuuray_core.dart';
 import '../../../core/providers/app_providers.dart';
@@ -96,9 +97,8 @@ final signatureProvider = FutureProvider<BirthChart?>((ref) async {
               onConflict: 'user_id', // Konflikt auf user_id → Update statt Insert
             );
 
-        print('✅ Birth Chart gespeichert in Datenbank (UPSERT)');
       } catch (e) {
-        print('⚠️ Fehler beim Speichern des Charts: $e');
+        log('⚠️ Fehler beim Speichern des Birth Charts: $e');
         // Chart trotzdem zurückgeben (nur Cache fehlt)
       }
 

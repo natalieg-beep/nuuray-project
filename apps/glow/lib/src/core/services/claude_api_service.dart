@@ -604,6 +604,755 @@ Nichts anderes. Keine Erklärung, keine Einleitung, kein Kommentar.
     return response.text.trim();
   }
 
+  // ============================================================
+  // SIGNATUR-CHECK-IN
+  // ============================================================
+
+  /// Generiert eine kurze, direkte Antwort auf den Check-In
+  ///
+  /// Input: Der gecachte Synthese-Text + die 3 User-Antworten
+  /// Output: 2-3 Sätze + 1 konkreter Impuls (~120-150 Tokens)
+  /// Kosten: ~$0.003-0.004 pro Call
+  Future<Map<String, String>> generateCheckinResponse({
+    required String synthesisText,
+    required String categoryLabel,
+    required String emotionLabel,
+    required String needLabel,
+    required String language,
+    required String? gender,
+  }) async {
+    final systemPrompt = _buildCheckinSystemPrompt(language, gender: gender);
+    final userPrompt = _buildCheckinUserPrompt(
+      synthesisText: synthesisText,
+      categoryLabel: categoryLabel,
+      emotionLabel: emotionLabel,
+      needLabel: needLabel,
+      language: language,
+    );
+
+    final response = await _callClaudeWithMaxTokens(
+      systemPrompt: systemPrompt,
+      userPrompt: userPrompt,
+      maxTokens: 512,
+    );
+
+    final text = response.text.trim();
+
+    // Parse: Trenne result_text und impulse_text am Marker "Impuls:"
+    final impulseMarker = language == 'de' ? 'Impuls:' : 'Impulse:';
+    final parts = text.split(impulseMarker);
+
+    final resultText = parts[0].trim();
+    final impulseText = parts.length > 1 ? parts[1].trim() : '';
+
+    return {
+      'result_text': resultText,
+      'impulse_text': impulseText,
+    };
+  }
+
+  /// System-Prompt für Check-In — kurz und direkt
+  String _buildCheckinSystemPrompt(String language, {String? gender}) {
+    final addressDE = _getGenderAddressDE(gender);
+    final addressEN = _getGenderAddressEN(gender);
+
+    if (language.toUpperCase() == 'DE') {
+      return '''
+Du bist die Stimme von NUURAY Glow.
+
+ANSPRACHE (gilt für den gesamten Text — keine Ausnahmen):
+$addressDE
+
+Du hast diese Person bereits durch ihre tiefe Signatur begleitet.
+Jetzt fragt sie sich: Was bedeutet meine Signatur GENAU JETZT für mich?
+
+REGELN:
+- Antworte direkt. 2-3 Sätze die sitzen.
+- Kein "Als [Zeichen]..." — nur die Wahrheit die diese Kombination hat.
+- Beziehe dich auf KONKRETE Elemente aus der Synthese (Zahlen, Elemente, Zeichen).
+- Danach: Ein konkreter Impuls für heute (1 Satz).
+- Der Impuls ist KONKRET — kein "vielleicht", kein "versuche", kein "denke darüber nach".
+- Schreibe Fließtext, KEIN Markdown, keine Listen, keine Überschriften.
+- Markiere den Impuls mit "Impuls:" auf einer neuen Zeile.
+
+VERBOTEN: "Die Sterne sagen...", "Das Universum möchte...", "Schicksal", "Magie", "Positive Schwingungen"
+''';
+    } else {
+      return '''
+You are the voice of NUURAY Glow.
+
+ADDRESS (applies to the entire text — no exceptions):
+$addressEN
+
+You have already accompanied this person through their deep signature synthesis.
+Now they're asking: What does my signature mean RIGHT NOW?
+
+RULES:
+- Answer directly. 2-3 sentences that hit home.
+- No "As a [sign]..." — only the truth this combination holds.
+- Reference SPECIFIC elements from the synthesis (numbers, elements, signs).
+- Then: One concrete impulse for today (1 sentence).
+- The impulse is CONCRETE — no "maybe", no "try to", no "think about".
+- Write flowing text, NO Markdown, no lists, no headings.
+- Mark the impulse with "Impulse:" on a new line.
+
+FORBIDDEN: "The stars say...", "The universe wants...", "destiny", "magic", "positive vibrations"
+''';
+    }
+  }
+
+  /// User-Prompt für Check-In — Synthese-Text + 3 Antworten
+  String _buildCheckinUserPrompt({
+    required String synthesisText,
+    required String categoryLabel,
+    required String emotionLabel,
+    required String needLabel,
+    required String language,
+  }) {
+    if (language.toUpperCase() == 'DE') {
+      return '''
+Hier ist die tiefe Synthese dieser Person:
+---
+$synthesisText
+---
+
+Diese Person hat angegeben:
+- Was sie gerade beschäftigt: $categoryLabel
+- Wie es sich anfühlt: $emotionLabel
+- Was sie braucht: $needLabel
+
+Destilliere aus der Synthese 2-3 Sätze die genau das adressieren.
+Dann 1 konkreter Impuls für heute.
+
+Format:
+[2-3 Sätze Fließtext]
+
+Impuls: [1 Satz]
+''';
+    } else {
+      return '''
+Here is this person's deep synthesis:
+---
+$synthesisText
+---
+
+This person indicated:
+- What occupies them right now: $categoryLabel
+- How it feels: $emotionLabel
+- What they need: $needLabel
+
+Distill 2-3 sentences from the synthesis that directly address this.
+Then 1 concrete impulse for today.
+
+Format:
+[2-3 sentences flowing text]
+
+Impulse: [1 sentence]
+''';
+    }
+  }
+
+  // ============================================================
+  // KEY INSIGHTS + REFLEXIONSFRAGEN
+  // ============================================================
+
+  /// Extrahiert 3 Schlüsselerkenntnisse + 7 Reflexionsfragen aus der Deep Synthesis
+  ///
+  /// Input: Der gecachte Synthese-Text (~800 Tokens) + kurzer Prompt (~200 Tokens)
+  /// Output: 3 Insights (je Label + Text) + 7 Fragen (~600 Tokens)
+  /// Kosten: ~$0.005 pro User (einmalig, gecacht in profiles)
+  Future<Map<String, dynamic>> generateKeyInsightsAndQuestions({
+    required String synthesisText,
+    required String language,
+    required String? gender,
+  }) async {
+    final systemPrompt = _buildKeyInsightsSystemPrompt(language, gender: gender);
+    final userPrompt = _buildKeyInsightsUserPrompt(
+      synthesisText: synthesisText,
+      language: language,
+    );
+
+    final response = await _callClaudeWithMaxTokens(
+      systemPrompt: systemPrompt,
+      userPrompt: userPrompt,
+      maxTokens: 2048,
+    );
+
+    final text = response.text.trim();
+
+    // Parse: Strukturiertes Format mit Markern
+    final insights = <Map<String, String>>[];
+    final questions = <String>[];
+
+    // Insights extrahieren (INSIGHT_1_LABEL: ... INSIGHT_1_TEXT: ...)
+    for (int i = 1; i <= 3; i++) {
+      final labelMatch = RegExp('INSIGHT_${i}_LABEL:\\s*(.+)', multiLine: true).firstMatch(text);
+      final textMatch = RegExp('INSIGHT_${i}_TEXT:\\s*(.+)', multiLine: true).firstMatch(text);
+
+      if (labelMatch != null && textMatch != null) {
+        insights.add({
+          'label': labelMatch.group(1)!.trim(),
+          'text': textMatch.group(1)!.trim(),
+        });
+      }
+    }
+
+    // Fragen extrahieren (QUESTION_1: ... QUESTION_2: ...)
+    for (int i = 1; i <= 7; i++) {
+      final match = RegExp('QUESTION_$i:\\s*(.+)', multiLine: true).firstMatch(text);
+      if (match != null) {
+        questions.add(match.group(1)!.trim());
+      }
+    }
+
+    return {
+      'key_insights': insights,
+      'reflection_questions': questions,
+    };
+  }
+
+  /// System-Prompt für Key Insights + Reflexionsfragen Extraktion
+  String _buildKeyInsightsSystemPrompt(String language, {String? gender}) {
+    final addressDE = _getGenderAddressDE(gender);
+    final addressEN = _getGenderAddressEN(gender);
+
+    if (language.toUpperCase() == 'DE') {
+      return '''
+Du bist die Stimme von NUURAY Glow.
+
+ANSPRACHE (gilt für den gesamten Text — keine Ausnahmen):
+$addressDE
+
+Du hast bereits eine tiefe Synthese für diese Person geschrieben. Jetzt extrahierst du daraus:
+
+1. DREI SCHLÜSSELERKENNTNISSE — die härtesten, ehrlichsten Kernaussagen
+   - Jede Erkenntnis besteht aus einem LABEL (2-4 Wörter, z.B. "Das Muster", "Der blinde Fleck", "Die Auflösung") und einem TEXT (2-3 Sätze)
+   - Die drei Erkenntnisse decken verschiedene Aspekte ab: ein wiederkehrendes Muster, ein blinder Fleck, und eine auflösende Wahrheit
+   - Kein Weichspülen — das sind die Sätze die weh tun und sich trotzdem richtig anfühlen
+   - Beziehe dich auf KONKRETE Elemente aus der Synthese (Elemente, Zahlen, Metaphern)
+
+2. SIEBEN REFLEXIONSFRAGEN — Fragen die aus den Spannungsfeldern der Synthese entstehen
+   - Jede Frage greift ein konkretes Thema aus der Synthese auf
+   - Die Fragen geben KEINE Antwort — sie laden zum Nachdenken ein
+   - Formulierung: Direkt, persönlich, manchmal unbequem
+   - Jede Frage steht für sich — kein Kontext nötig
+   - Variiere die Fragetypen: "In welchem Bereich...", "Was wäre wenn...", "Wo hast du...", "Was kostet es dich..."
+
+VERBOTEN: "Die Sterne sagen...", "Das Universum möchte...", "Schicksal", "Magie", "Positive Schwingungen"
+Kein Markdown, keine Emojis, keine Listen-Formatierung.
+
+FORMAT (strikt einhalten):
+INSIGHT_1_LABEL: [2-4 Wörter]
+INSIGHT_1_TEXT: [2-3 Sätze]
+INSIGHT_2_LABEL: [2-4 Wörter]
+INSIGHT_2_TEXT: [2-3 Sätze]
+INSIGHT_3_LABEL: [2-4 Wörter]
+INSIGHT_3_TEXT: [2-3 Sätze]
+QUESTION_1: [Frage]
+QUESTION_2: [Frage]
+QUESTION_3: [Frage]
+QUESTION_4: [Frage]
+QUESTION_5: [Frage]
+QUESTION_6: [Frage]
+QUESTION_7: [Frage]
+
+Nichts anderes. Keine Einleitung, keine Erklärung, kein Kommentar.
+''';
+    } else {
+      return '''
+You are the voice of NUURAY Glow.
+
+ADDRESS (applies to the entire text — no exceptions):
+$addressEN
+
+You have already written a deep synthesis for this person. Now you extract from it:
+
+1. THREE KEY INSIGHTS — the hardest, most honest core statements
+   - Each insight consists of a LABEL (2-4 words, e.g. "The Pattern", "The Blind Spot", "The Resolution") and a TEXT (2-3 sentences)
+   - The three insights cover different aspects: a recurring pattern, a blind spot, and a resolving truth
+   - No sugarcoating — these are the sentences that sting and still feel right
+   - Reference SPECIFIC elements from the synthesis (elements, numbers, metaphors)
+
+2. SEVEN REFLECTION QUESTIONS — questions that arise from the synthesis's tension fields
+   - Each question picks up a concrete theme from the synthesis
+   - The questions give NO answers — they invite reflection
+   - Phrasing: Direct, personal, sometimes uncomfortable
+   - Each question stands alone — no context needed
+   - Vary question types: "In which area...", "What if...", "Where did you...", "What does it cost you..."
+
+FORBIDDEN: "The stars say...", "The universe wants...", "destiny", "magic", "positive vibrations"
+No Markdown, no emojis, no list formatting.
+
+FORMAT (strictly follow):
+INSIGHT_1_LABEL: [2-4 words]
+INSIGHT_1_TEXT: [2-3 sentences]
+INSIGHT_2_LABEL: [2-4 words]
+INSIGHT_2_TEXT: [2-3 sentences]
+INSIGHT_3_LABEL: [2-4 words]
+INSIGHT_3_TEXT: [2-3 sentences]
+QUESTION_1: [question]
+QUESTION_2: [question]
+QUESTION_3: [question]
+QUESTION_4: [question]
+QUESTION_5: [question]
+QUESTION_6: [question]
+QUESTION_7: [question]
+
+Nothing else. No introduction, no explanation, no commentary.
+''';
+    }
+  }
+
+  /// User-Prompt für Key Insights + Reflexionsfragen Extraktion
+  String _buildKeyInsightsUserPrompt({
+    required String synthesisText,
+    required String language,
+  }) {
+    if (language.toUpperCase() == 'DE') {
+      return '''
+Hier ist die tiefe Synthese dieser Person:
+---
+$synthesisText
+---
+
+Extrahiere daraus:
+1. Die 3 härtesten Schlüsselerkenntnisse (Label + Text)
+2. 7 Reflexionsfragen die aus den Spannungsfeldern entstehen
+
+Halte dich strikt an das vorgegebene Format.
+''';
+    } else {
+      return '''
+Here is this person's deep synthesis:
+---
+$synthesisText
+---
+
+Extract from it:
+1. The 3 hardest key insights (Label + Text)
+2. 7 reflection questions arising from the tension fields
+
+Strictly follow the specified format.
+''';
+    }
+  }
+
+  // ============================================================
+  // REPORT-KAPITEL (PDF Export)
+  // ============================================================
+
+  /// Generiert das Western Astrology Kapitel für den Signatur-Report
+  ///
+  /// Personalisierter Text über Sonne, Mond, Aszendent und deren Zusammenspiel.
+  /// ~500 Wörter, NUURAY Brand Voice, einmalig gecacht.
+  /// Kosten: ~$0.008 pro User
+  Future<String> generateChapterWestern({
+    required String sunSign,
+    required String? moonSign,
+    required String? ascendantSign,
+    required double? sunDegree,
+    required double? moonDegree,
+    required double? ascendantDegree,
+    required String language,
+    required String? gender,
+  }) async {
+    final systemPrompt = _buildChapterSystemPrompt(language, gender: gender);
+    final userPrompt = _buildChapterWesternUserPrompt(
+      sunSign: sunSign,
+      moonSign: moonSign,
+      ascendantSign: ascendantSign,
+      sunDegree: sunDegree,
+      moonDegree: moonDegree,
+      ascendantDegree: ascendantDegree,
+      language: language,
+    );
+
+    final response = await _callClaudeWithMaxTokens(
+      systemPrompt: systemPrompt,
+      userPrompt: userPrompt,
+      maxTokens: 2048,
+    );
+
+    return response.text.trim();
+  }
+
+  /// Generiert das Bazi Kapitel für den Signatur-Report
+  ///
+  /// Personalisierter Text über Day Master, Vier Säulen, Element-Balance.
+  /// ~500 Wörter, NUURAY Brand Voice, einmalig gecacht.
+  /// Kosten: ~$0.008 pro User
+  Future<String> generateChapterBazi({
+    required String? baziDayStem,
+    required String? baziDayBranch,
+    required String? baziElement,
+    required String? baziYearStem,
+    required String? baziYearBranch,
+    required String? baziMonthStem,
+    required String? baziMonthBranch,
+    required String? baziHourStem,
+    required String? baziHourBranch,
+    required String language,
+    required String? gender,
+  }) async {
+    final systemPrompt = _buildChapterSystemPrompt(language, gender: gender);
+    final userPrompt = _buildChapterBaziUserPrompt(
+      baziDayStem: baziDayStem,
+      baziDayBranch: baziDayBranch,
+      baziElement: baziElement,
+      baziYearStem: baziYearStem,
+      baziYearBranch: baziYearBranch,
+      baziMonthStem: baziMonthStem,
+      baziMonthBranch: baziMonthBranch,
+      baziHourStem: baziHourStem,
+      baziHourBranch: baziHourBranch,
+      language: language,
+    );
+
+    final response = await _callClaudeWithMaxTokens(
+      systemPrompt: systemPrompt,
+      userPrompt: userPrompt,
+      maxTokens: 2048,
+    );
+
+    return response.text.trim();
+  }
+
+  /// Generiert das Numerologie Kapitel für den Signatur-Report
+  ///
+  /// Personalisierter Text über Life Path, Karmic Debt, Challenge Numbers.
+  /// ~600 Wörter (mehr Datenpunkte), NUURAY Brand Voice, einmalig gecacht.
+  /// Kosten: ~$0.010 pro User
+  Future<String> generateChapterNumerology({
+    required int? lifePathNumber,
+    required int? birthdayNumber,
+    required int? attitudeNumber,
+    required int? personalYear,
+    required int? maturityNumber,
+    required int? birthExpressionNumber,
+    required int? birthSoulUrgeNumber,
+    required int? currentExpressionNumber,
+    required int? currentSoulUrgeNumber,
+    required int? karmicDebtLifePath,
+    required List<int>? karmicLessons,
+    required List<int>? challengeNumbers,
+    required String language,
+    required String? gender,
+  }) async {
+    final systemPrompt = _buildChapterSystemPrompt(language, gender: gender);
+    final userPrompt = _buildChapterNumerologyUserPrompt(
+      lifePathNumber: lifePathNumber,
+      birthdayNumber: birthdayNumber,
+      attitudeNumber: attitudeNumber,
+      personalYear: personalYear,
+      maturityNumber: maturityNumber,
+      birthExpressionNumber: birthExpressionNumber,
+      birthSoulUrgeNumber: birthSoulUrgeNumber,
+      currentExpressionNumber: currentExpressionNumber,
+      currentSoulUrgeNumber: currentSoulUrgeNumber,
+      karmicDebtLifePath: karmicDebtLifePath,
+      karmicLessons: karmicLessons,
+      challengeNumbers: challengeNumbers,
+      language: language,
+    );
+
+    final response = await _callClaudeWithMaxTokens(
+      systemPrompt: systemPrompt,
+      userPrompt: userPrompt,
+      maxTokens: 2048,
+    );
+
+    return response.text.trim();
+  }
+
+  /// Shared System-Prompt für alle Report-Kapitel
+  ///
+  /// NUURAY Brand Voice — jedes Kapitel fokussiert auf EIN System,
+  /// aber immer im Bewusstsein der anderen beiden.
+  String _buildChapterSystemPrompt(String language, {String? gender}) {
+    final addressDE = _getGenderAddressDE(gender);
+    final addressEN = _getGenderAddressEN(gender);
+
+    if (language.toUpperCase() == 'DE') {
+      return '''
+Du bist die Stimme von NUURAY Glow — klug, warm, überraschend, manchmal frech. Du weißt nicht alles besser. Du staunst mit der Person, du erklärst ihr nicht die Welt.
+
+ANSPRACHE:
+$addressDE
+
+DEIN TON:
+- Die kluge Freundin beim Kaffee. Nicht die Professorin.
+- Zeige, was die Daten BEDEUTEN — nicht was sie SIND.
+- Jeder Absatz muss eine Erkenntnis enthalten, nicht nur Information.
+- Beginne mit etwas Konkretem, Erlebbarem — nicht mit einer Definition.
+- Spannungen und Widersprüche sind Features, keine Bugs.
+
+VERBOTENE WORTE:
+Schicksal, Magie, Wunder, "Universum möchte", kosmische Energie, Schwingung, Manifestation, kraftvoller Tanz, harmonische Verbindung, spirituelle Fülle, "die Sterne sagen"
+
+FORMAT:
+- Fließtext, 5-7 Absätze, 400-600 Wörter
+- KEIN Markdown (keine **, keine ##, keine Listen)
+- Absätze durch doppelte Zeilenumbrüche getrennt
+- Beginne NICHT mit "Du bist..."
+''';
+    } else {
+      return '''
+You are the voice of NUURAY Glow — smart, warm, surprising, sometimes cheeky. You don't know everything. You marvel alongside the person, you don't lecture them.
+
+ADDRESS:
+$addressEN
+
+YOUR TONE:
+- The clever friend over coffee. Not the professor.
+- Show what the data MEANS — not what it IS.
+- Every paragraph must contain an insight, not just information.
+- Start with something concrete, experiential — not a definition.
+- Tensions and contradictions are features, not bugs.
+
+FORBIDDEN WORDS:
+Destiny, magic, miracle, "universe wants", cosmic energy, vibration, manifestation, powerful dance, harmonious connection, spiritual abundance, "the stars say"
+
+FORMAT:
+- Flowing text, 5-7 paragraphs, 400-600 words
+- NO Markdown (no **, no ##, no lists)
+- Paragraphs separated by double line breaks
+- Do NOT start with "You are..."
+''';
+    }
+  }
+
+  /// User-Prompt für Western Astrology Kapitel
+  String _buildChapterWesternUserPrompt({
+    required String sunSign,
+    required String? moonSign,
+    required String? ascendantSign,
+    required double? sunDegree,
+    required double? moonDegree,
+    required double? ascendantDegree,
+    required String language,
+  }) {
+    final isDe = language.toUpperCase() == 'DE';
+    final sunName = isDe ? _getZodiacNameDe(sunSign) : _getZodiacNameEn(sunSign);
+    final moonName = moonSign != null ? (isDe ? _getZodiacNameDe(moonSign) : _getZodiacNameEn(moonSign)) : null;
+    final ascName = ascendantSign != null ? (isDe ? _getZodiacNameDe(ascendantSign) : _getZodiacNameEn(ascendantSign)) : null;
+
+    if (isDe) {
+      final moonLine = moonName != null
+          ? '- Mond: $moonName${moonDegree != null ? ' (${moonDegree.toStringAsFixed(1)}°)' : ''}'
+          : '- Mond: Nicht berechnet (keine Geburtszeit)';
+      final ascLine = ascName != null
+          ? '- Aszendent: $ascName${ascendantDegree != null ? ' (${ascendantDegree.toStringAsFixed(1)}°)' : ''}'
+          : '- Aszendent: Nicht berechnet (keine Geburtszeit)';
+
+      return '''
+KAPITEL: DEINE PSYCHE — Westliche Astrologie
+
+DATEN:
+- Sonne: $sunName${sunDegree != null ? ' (${sunDegree.toStringAsFixed(1)}°)' : ''}
+$moonLine
+$ascLine
+
+DEINE AUFGABE:
+Schreibe ein Kapitel das erklärt, wie diese drei (oder zwei, falls Mond/Aszendent fehlen) zusammenspielen. Nicht: "Die Sonne steht für X." Sondern: Was bedeutet diese Kombination im Alltag? Wo entsteht Spannung zwischen Sonne und Mond? Wie zeigt sich der Aszendent nach außen — und widerspricht er vielleicht dem inneren Erleben?
+
+Nutze die Grad-Positionen für Nuancen, wenn vorhanden (z.B. "Deine Sonne steht früh im Zeichen — das Thema formt sich noch, es hat eine Suchqualität").
+
+400-600 Wörter. Fließtext. Kein Markdown.
+''';
+    } else {
+      final moonLine = moonName != null
+          ? '- Moon: $moonName${moonDegree != null ? ' (${moonDegree.toStringAsFixed(1)}°)' : ''}'
+          : '- Moon: Not calculated (no birth time)';
+      final ascLine = ascName != null
+          ? '- Ascendant: $ascName${ascendantDegree != null ? ' (${ascendantDegree.toStringAsFixed(1)}°)' : ''}'
+          : '- Ascendant: Not calculated (no birth time)';
+
+      return '''
+CHAPTER: YOUR PSYCHE — Western Astrology
+
+DATA:
+- Sun: $sunName${sunDegree != null ? ' (${sunDegree.toStringAsFixed(1)}°)' : ''}
+$moonLine
+$ascLine
+
+YOUR TASK:
+Write a chapter explaining how these three (or two, if Moon/Ascendant are missing) work together. Not: "The Sun stands for X." Instead: What does this combination mean in daily life? Where does tension arise between Sun and Moon? How does the Ascendant show itself outwardly — and does it perhaps contradict the inner experience?
+
+Use degree positions for nuances when available (e.g., "Your Sun sits early in the sign — the theme is still forming, it has a seeking quality").
+
+400-600 words. Flowing text. No Markdown.
+''';
+    }
+  }
+
+  /// User-Prompt für Bazi Kapitel
+  String _buildChapterBaziUserPrompt({
+    required String? baziDayStem,
+    required String? baziDayBranch,
+    required String? baziElement,
+    required String? baziYearStem,
+    required String? baziYearBranch,
+    required String? baziMonthStem,
+    required String? baziMonthBranch,
+    required String? baziHourStem,
+    required String? baziHourBranch,
+    required String language,
+  }) {
+    final isDe = language.toUpperCase() == 'DE';
+
+    // Säulen-Kontext aufbauen
+    final dayMaster = baziDayStem != null ? _getBaziElementName(baziDayStem, language) : (isDe ? 'Unbekannt' : 'Unknown');
+    final dayBranch = baziDayBranch ?? (isDe ? 'Unbekannt' : 'Unknown');
+    final dominantEl = baziElement != null ? _getBaziElementName(baziElement, language) : null;
+
+    final yearLine = baziYearStem != null
+        ? '${_getBaziElementName(baziYearStem, language)} / ${baziYearBranch ?? "?"}'
+        : (isDe ? 'Nicht verfügbar' : 'Not available');
+    final monthLine = baziMonthStem != null
+        ? '${_getBaziElementName(baziMonthStem, language)} / ${baziMonthBranch ?? "?"}'
+        : (isDe ? 'Nicht verfügbar' : 'Not available');
+    final hourLine = baziHourStem != null
+        ? '${_getBaziElementName(baziHourStem, language)} / ${baziHourBranch ?? "?"}'
+        : (isDe ? 'Nicht verfügbar (keine Geburtszeit)' : 'Not available (no birth time)');
+
+    if (isDe) {
+      return '''
+KAPITEL: DEINE ENERGIE — Bazi (Die Vier Säulen)
+
+DATEN:
+- Day Master: $dayMaster / $dayBranch
+${dominantEl != null ? '- Dominantes Element: $dominantEl' : ''}
+- Jahr-Säule: $yearLine
+- Monat-Säule: $monthLine
+- Stunden-Säule: $hourLine
+
+DEINE AUFGABE:
+Schreibe ein Kapitel über die Bazi-Persönlichkeit dieser Person. Der Day Master ist der Kern — wer diese Person in ihrem Element IST. Erkläre es nicht akademisch, sondern erlebbar.
+
+Zeige: Wie tankt diese Person Energie auf? Was zehrt sie aus? Wie geht sie an Entscheidungen ran? Wo liegt das natürliche Talent (Monats-Säule = Karriere) — und wo das familiäre Erbe (Jahres-Säule)?
+
+Erkläre die Element-Dynamik: Wenn jemand z.B. Yang-Holz Day Master ist mit viel Metall im Chart — dann wird das Holz "beschnitten". Was bedeutet das im Alltag?
+
+400-600 Wörter. Fließtext. Kein Markdown.
+''';
+    } else {
+      return '''
+CHAPTER: YOUR ENERGY — Bazi (The Four Pillars)
+
+DATA:
+- Day Master: $dayMaster / $dayBranch
+${dominantEl != null ? '- Dominant Element: $dominantEl' : ''}
+- Year Pillar: $yearLine
+- Month Pillar: $monthLine
+- Hour Pillar: $hourLine
+
+YOUR TASK:
+Write a chapter about this person's Bazi personality. The Day Master is the core — who this person IS in their element. Don't explain it academically, make it experiential.
+
+Show: How does this person recharge? What drains them? How do they approach decisions? Where does their natural talent lie (Month Pillar = career) — and where is the family heritage (Year Pillar)?
+
+Explain the element dynamics: If someone is e.g. Yang Wood Day Master with lots of Metal in their chart — the Wood gets "pruned." What does that mean in everyday life?
+
+400-600 words. Flowing text. No Markdown.
+''';
+    }
+  }
+
+  /// User-Prompt für Numerologie Kapitel
+  String _buildChapterNumerologyUserPrompt({
+    required int? lifePathNumber,
+    required int? birthdayNumber,
+    required int? attitudeNumber,
+    required int? personalYear,
+    required int? maturityNumber,
+    required int? birthExpressionNumber,
+    required int? birthSoulUrgeNumber,
+    required int? currentExpressionNumber,
+    required int? currentSoulUrgeNumber,
+    required int? karmicDebtLifePath,
+    required List<int>? karmicLessons,
+    required List<int>? challengeNumbers,
+    required String language,
+  }) {
+    final isDe = language.toUpperCase() == 'DE';
+
+    // Kern-Zahlen
+    final coreLines = <String>[];
+    if (lifePathNumber != null) coreLines.add('${isDe ? "Lebenszahl" : "Life Path"}: $lifePathNumber');
+    if (birthdayNumber != null) coreLines.add('${isDe ? "Geburtstags-Zahl" : "Birthday Number"}: $birthdayNumber');
+    if (attitudeNumber != null) coreLines.add('${isDe ? "Attitüde-Zahl" : "Attitude Number"}: $attitudeNumber');
+    final currentYear = DateTime.now().year;
+    if (personalYear != null) coreLines.add('${isDe ? "Persönliches Jahr $currentYear" : "Personal Year $currentYear"}: $personalYear');
+    if (maturityNumber != null) coreLines.add('${isDe ? "Reife-Zahl" : "Maturity Number"}: $maturityNumber');
+
+    // Name Energies
+    final nameLines = <String>[];
+    if (birthExpressionNumber != null) nameLines.add('${isDe ? "Geburtsname Expression" : "Birth Name Expression"}: $birthExpressionNumber');
+    if (birthSoulUrgeNumber != null) nameLines.add('${isDe ? "Geburtsname Seele" : "Birth Name Soul Urge"}: $birthSoulUrgeNumber');
+    if (currentExpressionNumber != null) nameLines.add('${isDe ? "Aktueller Name Expression" : "Current Name Expression"}: $currentExpressionNumber');
+    if (currentSoulUrgeNumber != null) nameLines.add('${isDe ? "Aktueller Name Seele" : "Current Name Soul Urge"}: $currentSoulUrgeNumber');
+
+    // Erweitert
+    final advancedLines = <String>[];
+    if (karmicDebtLifePath != null) advancedLines.add('${isDe ? "Karmische Schuld" : "Karmic Debt"}: $karmicDebtLifePath');
+    if (karmicLessons != null && karmicLessons.isNotEmpty) {
+      advancedLines.add('${isDe ? "Karmische Lektionen" : "Karmic Lessons"}: ${karmicLessons.join(", ")}');
+    }
+    if (challengeNumbers != null && challengeNumbers.isNotEmpty) {
+      advancedLines.add('${isDe ? "Herausforderungs-Zahlen" : "Challenge Numbers"}: ${challengeNumbers.join(", ")}');
+    }
+
+    if (isDe) {
+      return '''
+KAPITEL: DEIN SEELENWEG — Numerologie
+
+KERN-ZAHLEN:
+${coreLines.isNotEmpty ? coreLines.map((l) => '- $l').join('\n') : '- (Keine Kern-Zahlen verfügbar)'}
+
+NAME-ENERGIEN:
+${nameLines.isNotEmpty ? nameLines.map((l) => '- $l').join('\n') : '- (Keine Name-Energien verfügbar)'}
+
+ERWEITERT:
+${advancedLines.isNotEmpty ? advancedLines.map((l) => '- $l').join('\n') : '- (Keine erweiterten Daten)'}
+
+DEINE AUFGABE:
+Schreibe ein Kapitel über den numerologischen Seelenweg dieser Person. Die Lebenszahl ist der rote Faden — aber erst im Zusammenspiel mit den anderen Zahlen wird es interessant.
+
+Zeige: Was will die Seele lernen (Life Path)? Was bringt die Person natürlich mit (Expression)? Was sehnt sie sich im Stillen (Soul Urge)? Wo sitzt die karmische Schuld — und wie zeigt sie sich im Alltag?
+
+Wenn sich Geburtsnamen-Energie und aktuelle-Namen-Energie unterscheiden: Erkläre was die Namensänderung energetisch verschoben hat.
+
+Die Challenge Numbers zeigen Wachstumsfelder — nicht Defizite. Die Karmischen Lektionen zeigen was in diesem Leben nachgeholt werden will.
+
+500-700 Wörter. Fließtext. Kein Markdown.
+''';
+    } else {
+      return '''
+CHAPTER: YOUR SOUL PATH — Numerology
+
+CORE NUMBERS:
+${coreLines.isNotEmpty ? coreLines.map((l) => '- $l').join('\n') : '- (No core numbers available)'}
+
+NAME ENERGIES:
+${nameLines.isNotEmpty ? nameLines.map((l) => '- $l').join('\n') : '- (No name energies available)'}
+
+ADVANCED:
+${advancedLines.isNotEmpty ? advancedLines.map((l) => '- $l').join('\n') : '- (No advanced data)'}
+
+YOUR TASK:
+Write a chapter about this person's numerological soul path. The Life Path is the thread — but it only gets interesting when combined with the other numbers.
+
+Show: What does the soul want to learn (Life Path)? What does the person naturally bring (Expression)? What do they quietly long for (Soul Urge)? Where does karmic debt sit — and how does it show up in daily life?
+
+If birth name energy and current name energy differ: Explain what the name change shifted energetically.
+
+The Challenge Numbers show growth fields — not deficits. The Karmic Lessons show what wants to be caught up on in this life.
+
+500-700 words. Flowing text. No Markdown.
+''';
+    }
+  }
+
   /// API Call mit konfigurierbaren max_tokens
   Future<ClaudeResponse> _callClaudeWithMaxTokens({
     required String systemPrompt,
@@ -718,8 +1467,9 @@ VERBOTENE WORTE: Schicksal, Magie, Wunder, "Universum möchte", kosmische Energi
 VERBOTENE MUSTER: "Die Sterne sagen...", "Dein Bazi sagt...", "Die Numerologie zeigt...", alles klingt nur positiv, keine Reibung
 VERBOTEN: Text der nach dem Lesen kein Unbehagen hinterlässt — ein guter Text tut ein bisschen weh und fühlt sich trotzdem richtig an
 
-ZEITLOSIGKEIT:
-Keine festen Jahreszahlen. "Aktuell", "in dieser Phase", "im persönlichen Jahr" statt konkreter Jahreszahlen.
+ZEITBEZUG:
+Beim Persönlichen Jahr IMMER die Jahreszahl nennen: "in deinem persönlichen Jahr 6 (2026)" — der User muss wissen, auf welches Jahr sich das bezieht.
+Ansonsten keine festen Jahreszahlen. "Aktuell", "in dieser Phase" statt konkreter Jahreszahlen.
 ''';
     } else {
       return '''
@@ -782,8 +1532,9 @@ FORBIDDEN WORDS: fate, magic, miracle, "universe wants", cosmic energy, positive
 FORBIDDEN PATTERNS: "The stars say...", "Your Bazi says...", "Numerology shows...", everything sounds only positive, no friction
 FORBIDDEN: Text that leaves no discomfort after reading — a good text stings a little and still feels right
 
-TIMELESSNESS:
-No fixed years. "Currently", "in this phase", "in the personal year" instead of specific years.
+TIME REFERENCES:
+For Personal Year ALWAYS include the year: "in your personal year 6 (2026)" — the user needs to know which year this refers to.
+Otherwise no fixed years. "Currently", "in this phase" instead of specific years.
 ''';
     }
   }

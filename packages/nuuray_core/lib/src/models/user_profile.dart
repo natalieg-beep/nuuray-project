@@ -67,6 +67,14 @@ class UserProfile extends Equatable {
   /// User-Timezone (für aktuelle Zeit-Berechnungen)
   final String timezone;
 
+  // === SUBSCRIPTION ===
+  /// Abo-Stufe: 'free', 'premium', 'lifetime'
+  /// Gelesen aus profiles.subscription_tier (DB Migration: 20260206)
+  final String subscriptionTier;
+
+  /// Ist der User Premium? (premium oder lifetime)
+  bool get isPremium => subscriptionTier != 'free';
+
   // === ARCHETYP-SYSTEM ===
   /// Archetyp-Signatur-Satz (Claude API generiert, gecacht)
   ///
@@ -80,6 +88,30 @@ class UserProfile extends Equatable {
   /// - Noch nicht generiert (z.B. API-Fehler beim Onboarding)
   /// - User hat Onboarding vor Archetyp-System abgeschlossen
   final String? signatureText;
+
+  // === REPORT CHAPTERS (Claude-generiert, gecacht) ===
+  /// Western Astrology Kapitel (~500 Wörter, personalisiert)
+  /// Einmalig beim ersten PDF-Export generiert, danach gecacht.
+  final String? chapterWestern;
+
+  /// Bazi Kapitel (~500 Wörter, personalisiert)
+  final String? chapterBazi;
+
+  /// Numerologie Kapitel (~600 Wörter, personalisiert)
+  final String? chapterNumerology;
+
+  // === KEY INSIGHTS + REFLECTION QUESTIONS ===
+  /// 3 Schlüsselerkenntnisse aus der Deep Synthesis (Claude API extrahiert, gecacht)
+  ///
+  /// Format: [{"label": "Das Muster", "text": "Du startest hundert..."}, ...]
+  /// Wird einmalig nach der Synthese-Generierung extrahiert.
+  final List<Map<String, String>>? keyInsights;
+
+  /// 7 Reflexionsfragen aus der Deep Synthesis (Claude API extrahiert, gecacht)
+  ///
+  /// Format: ["Frage 1", "Frage 2", ...]
+  /// Wird zusammen mit keyInsights in einem Claude-Call generiert.
+  final List<String>? reflectionQuestions;
 
   // === METADATA ===
   final DateTime createdAt;
@@ -106,7 +138,13 @@ class UserProfile extends Equatable {
     this.birthLng, // deprecated
     this.language = 'de',
     this.timezone = 'Europe/Berlin',
+    this.subscriptionTier = 'free',
     this.signatureText,
+    this.chapterWestern,
+    this.chapterBazi,
+    this.chapterNumerology,
+    this.keyInsights,
+    this.reflectionQuestions,
     required this.createdAt,
     this.updatedAt,
     this.onboardingCompleted = false,
@@ -144,7 +182,13 @@ class UserProfile extends Equatable {
       birthLng: (json['birth_lng'] as num?)?.toDouble(),
       language: json['language'] as String? ?? 'de',
       timezone: json['timezone'] as String? ?? json['birth_timezone'] as String? ?? 'Europe/Berlin',
+      subscriptionTier: json['subscription_tier'] as String? ?? 'free',
       signatureText: json['signature_text'] as String?,
+      chapterWestern: json['chapter_western'] as String?,
+      chapterBazi: json['chapter_bazi'] as String?,
+      chapterNumerology: json['chapter_numerology'] as String?,
+      keyInsights: _parseKeyInsights(json['key_insights']),
+      reflectionQuestions: _parseReflectionQuestions(json['reflection_questions']),
       createdAt: _parseDateTimeSafe(json['created_at']) ?? DateTime.now(),
       updatedAt: _parseDateTimeSafe(json['updated_at']),
       onboardingCompleted: json['onboarding_completed'] as bool? ?? false,
@@ -182,6 +226,46 @@ class UserProfile extends Equatable {
     }
   }
 
+  /// Parst key_insights JSONB aus der DB
+  ///
+  /// Erwartet: [{"label": "...", "text": "..."}, ...]
+  /// Gibt null zurück wenn kein gültiges Format
+  static List<Map<String, String>>? _parseKeyInsights(dynamic value) {
+    if (value == null) return null;
+    try {
+      if (value is List) {
+        return value.map<Map<String, String>>((item) {
+          if (item is Map) {
+            return {
+              'label': (item['label'] ?? '') as String,
+              'text': (item['text'] ?? '') as String,
+            };
+          }
+          return {'label': '', 'text': ''};
+        }).toList();
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Parst reflection_questions JSONB aus der DB
+  ///
+  /// Erwartet: ["Frage 1", "Frage 2", ...]
+  /// Gibt null zurück wenn kein gültiges Format
+  static List<String>? _parseReflectionQuestions(dynamic value) {
+    if (value == null) return null;
+    try {
+      if (value is List) {
+        return value.map<String>((item) => item.toString()).toList();
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
   Map<String, dynamic> toJson() => {
     'id': id,
     'display_name': displayName,
@@ -200,7 +284,13 @@ class UserProfile extends Equatable {
     'birth_timezone': birthTimezone,
     'language': language,
     'timezone': timezone,
+    'subscription_tier': subscriptionTier,
     'signature_text': signatureText,
+    'chapter_western': chapterWestern,
+    'chapter_bazi': chapterBazi,
+    'chapter_numerology': chapterNumerology,
+    'key_insights': keyInsights,
+    'reflection_questions': reflectionQuestions,
     'created_at': createdAt.toIso8601String(),
     'updated_at': updatedAt?.toIso8601String(),
     'onboarding_completed': onboardingCompleted,
@@ -221,7 +311,13 @@ class UserProfile extends Equatable {
     birthLongitude,
     birthTimezone,
     language,
+    subscriptionTier,
     signatureText,
+    chapterWestern,
+    chapterBazi,
+    chapterNumerology,
+    keyInsights,
+    reflectionQuestions,
     onboardingCompleted,
   ];
 
@@ -242,7 +338,13 @@ class UserProfile extends Equatable {
     String? birthTimezone,
     String? language,
     String? timezone,
+    String? subscriptionTier,
     String? signatureText,
+    String? chapterWestern,
+    String? chapterBazi,
+    String? chapterNumerology,
+    List<Map<String, String>>? keyInsights,
+    List<String>? reflectionQuestions,
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? onboardingCompleted,
@@ -263,7 +365,13 @@ class UserProfile extends Equatable {
       birthTimezone: birthTimezone ?? this.birthTimezone,
       language: language ?? this.language,
       timezone: timezone ?? this.timezone,
+      subscriptionTier: subscriptionTier ?? this.subscriptionTier,
       signatureText: signatureText ?? this.signatureText,
+      chapterWestern: chapterWestern ?? this.chapterWestern,
+      chapterBazi: chapterBazi ?? this.chapterBazi,
+      chapterNumerology: chapterNumerology ?? this.chapterNumerology,
+      keyInsights: keyInsights ?? this.keyInsights,
+      reflectionQuestions: reflectionQuestions ?? this.reflectionQuestions,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       onboardingCompleted: onboardingCompleted ?? this.onboardingCompleted,

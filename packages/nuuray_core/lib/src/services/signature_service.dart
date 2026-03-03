@@ -58,8 +58,8 @@ class SignatureService {
 
     // Sonnenzeichen (immer berechenbar)
     final sunSign = ZodiacCalculator.calculateSunSign(birthDate);
-    // Grad-Position innerhalb des Zeichens berechnen wir aus der Position
-    final sunDegree = _calculateDegreeInSign(birthDate, isForSun: true);
+    // Grad-Position aus ekliptischer Sonnenlänge (präzise Berechnung)
+    final sunDegree = ZodiacCalculator.calculateSunDegreeInSign(birthDate);
 
     log('☀️ Sonnenzeichen: ${sunSign.key} (${sunDegree.toStringAsFixed(2)}°)');
 
@@ -96,7 +96,8 @@ class SignatureService {
 
       final moonSign = ZodiacCalculator.calculateMoonSign(birthDateTimeUTC);
       moonSignKey = moonSign.key;
-      moonDegree = _calculateDegreeInSign(birthDateTimeUTC, isForSun: false);
+      // Grad-Position aus ekliptischer Mondlänge (präzise Berechnung, ±0.5°)
+      moonDegree = ZodiacCalculator.calculateMoonDegreeInSign(birthDateTimeUTC);
 
       log('🌙 Mondzeichen: $moonSignKey (${moonDegree.toStringAsFixed(2)}°)');
     } else {
@@ -151,11 +152,14 @@ class SignatureService {
 
       if (ascendantSign != null) {
         ascendantSignKey = ascendantSign.key;
-        // Für Aszendent können wir die Grad-Position approximieren
-        // Basierend auf der Zeit und dem Zeichen
-        ascendantDegree = _approximateAscendantDegree(birthDateTimeUTC, ascendantSign.key);
+        // Grad-Position aus ekliptischer Aszendenten-Länge (präzise Berechnung)
+        ascendantDegree = ZodiacCalculator.calculateAscendantDegreeInSign(
+          birthDateTimeUTC: birthDateTimeUTC,
+          latitude: birthLatitude,
+          longitude: birthLongitude,
+        );
 
-        log('⬆️ Aszendent: $ascendantSignKey (${ascendantDegree.toStringAsFixed(2)}°)');
+        log('⬆️ Aszendent: $ascendantSignKey (${ascendantDegree?.toStringAsFixed(2) ?? "?"}°)');
       }
     } else {
       log('⬆️ Aszendent: Nicht berechnet (fehlende Daten)');
@@ -320,80 +324,4 @@ class SignatureService {
     );
   }
 
-  // ============================================================
-  // HELPER METHODS
-  // ============================================================
-
-  /// Berechnet die Grad-Position innerhalb des Zeichens (0-30°)
-  ///
-  /// Vereinfachte Berechnung basierend auf der Tagesposition im Zeichen.
-  /// Für MVP ausreichend, kann später mit präziser Längenberechnung verfeinert werden.
-  static double _calculateDegreeInSign(DateTime dateTime, {required bool isForSun}) {
-    // Vereinfachte Berechnung: Position im Zeichen basierend auf Tag im Monat
-    // Jedes Zeichen hat ~30 Tage, wir approximieren die Grad-Position
-
-    if (isForSun) {
-      // Für Sonne: Basierend auf Tag im Sternzeichen
-      final month = dateTime.month;
-      final day = dateTime.day;
-
-      // Approximation: Tag im aktuellen Zeichen
-      // Sternzeichen wechseln zwischen 19.-23. des Monats
-      double dayInSign;
-
-      if (month == 1) {
-        dayInSign = day < 20 ? day + 10 : day - 20; // Steinbock/Wassermann
-      } else if (month == 2) {
-        dayInSign = day < 19 ? day + 11 : day - 19; // Wassermann/Fische
-      } else if (month == 3) {
-        dayInSign = day < 21 ? day + 9 : day - 21; // Fische/Widder
-      } else if (month == 4) {
-        dayInSign = day < 20 ? day + 10 : day - 20; // Widder/Stier
-      } else if (month == 5) {
-        dayInSign = day < 21 ? day + 9 : day - 21; // Stier/Zwillinge
-      } else if (month == 6) {
-        dayInSign = day < 21 ? day + 9 : day - 21; // Zwillinge/Krebs
-      } else if (month == 7) {
-        dayInSign = day < 23 ? day + 8 : day - 23; // Krebs/Löwe
-      } else if (month == 8) {
-        dayInSign = day < 23 ? day + 8 : day - 23; // Löwe/Jungfrau
-      } else if (month == 9) {
-        dayInSign = day < 23 ? day + 7 : day - 23; // Jungfrau/Waage
-      } else if (month == 10) {
-        dayInSign = day < 23 ? day + 7 : day - 23; // Waage/Skorpion
-      } else if (month == 11) {
-        dayInSign = day < 22 ? day + 8 : day - 22; // Skorpion/Schütze
-      } else {
-        dayInSign = day < 22 ? day + 8 : day - 22; // Schütze/Steinbock
-      }
-
-      return dayInSign.toDouble();
-    } else {
-      // Für Mond: Approximation basierend auf Stunde (Mond wechselt ~alle 2.5 Tage = 60 Stunden das Zeichen)
-      // Vereinfacht: 12° pro Tag
-      final hour = dateTime.hour;
-      final minute = dateTime.minute;
-
-      final hourFraction = hour + (minute / 60.0);
-      final degreePerHour = 0.5; // ~12° pro Tag = 0.5° pro Stunde
-
-      return (hourFraction * degreePerHour) % 30;
-    }
-  }
-
-  /// Approximiert die Aszendent-Position in Grad (0-30°)
-  ///
-  /// Vereinfachte Berechnung basierend auf Geburtszeit.
-  /// Aszendent wechselt alle ~2 Stunden das Zeichen (12 Zeichen in 24 Stunden).
-  static double _approximateAscendantDegree(DateTime birthTime, String ascendantKey) {
-    // Aszendent-Position basierend auf Minute innerhalb der 2-Stunden-Periode
-    final hour = birthTime.hour;
-    final minute = birthTime.minute;
-
-    // Position innerhalb der 2-Stunden-Periode (0-120 Minuten)
-    final minuteInPeriod = (hour % 2) * 60 + minute;
-
-    // 30° pro 2 Stunden = 0.25° pro Minute
-    return (minuteInPeriod * 0.25) % 30;
-  }
 }

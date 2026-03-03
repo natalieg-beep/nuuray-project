@@ -293,17 +293,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           return const SizedBox.shrink();
         }
 
-        // DEBUG: Was hat profile.signatureText?
-        print('🏠 [HomeScreen] profile.signatureText: "${profile.signatureText}"');
-
         // Erstelle Archetyp aus BirthChart + Profil
         final archetype = Archetype.fromBirthChart(
           lifePathNumber: birthChart.lifePathNumber ?? 1,
           dayMasterStem: birthChart.baziDayStem ?? 'Jia',
-          signatureText: profile.signatureText, // Aus Profile laden!
+          signatureText: profile.signatureText,
         );
-
-        print('🏠 [HomeScreen] archetype.hasSignature: ${archetype.hasSignature}');
 
         return Column(
           children: [

@@ -1,6 +1,6 @@
 # NUURAY GLOW — TODO Liste
 
-> Letzte Aktualisierung: 2026-02-21 (Tiefe Drei-System-Synthese — Herzstück der App fertig! 🎉)
+> Letzte Aktualisierung: 2026-03-03 (Mondgrad-Bugfix, Terminal-Cleanup, Bazi-Validierung)
 > Stand: Auth ✅, Onboarding ✅, Geocoding ✅, Basic Home ✅, Deine Signatur ✅, **Archetyp-System (Claude-Synthese) ✅**, Claude API ✅, Erweiterte Numerologie ✅, **Tageshoroskop On-Demand ✅, i18n DE/EN 100% ✅, Profile Edit (Auto-Regenerierung) ✅, Rufnamen-Numerologie ✅, Web Platform Fix ✅, Content Library ✅, Gender Tracking ✅, Bazi Vier Säulen + Element Balance ✅, Code Quality Cleanup ✅, Reports UI Foundation ✅, **Tiefe Drei-System-Synthese ✅**
 >
 > **📚 Neue Dokumentation:**
@@ -318,6 +318,147 @@ Die Tiefe Drei-System-Synthese ist die wichtigste Premium-Feature der App: Eine 
 
 ---
 
+## ✅ SESSION 2026-02-23 — Signatur-Report PDF Export
+
+### 🎉 Meilenstein: PDF Report "Deine Kosmische Signatur"
+
+Vollständiger PDF-Report (~12-15 Seiten) mit allen Signatur-Daten als Export.
+
+#### ✅ Was wurde implementiert:
+
+**PDF Report (KOMPLETT):**
+- ✅ Dependencies: `pdf: ^3.11.1`, `share_plus: ^10.1.4`, `path_provider: ^2.1.2`
+- ✅ NotoSans Fonts (Regular, Bold, Italic) für Unicode-Support
+- ✅ Supabase Migration: 3 Spalten für Claude-generierte Kapitel (chapter_western/bazi/numerology)
+- ✅ 3 Claude API Methoden: `generateChapterWestern/Bazi/Numerology()` (je ~2048 Tokens)
+- ✅ `SignatureReportData` Model + `signatureReportProvider` (Cache-First, parallel generation)
+- ✅ `SignaturePdfGenerator` (~700 Zeilen): A4, NUURAY Gold-Palette, 14 Seiten
+- ✅ Export-Button auf Signatur-Screen → speichert in Downloads-Ordner
+- ✅ macOS Entitlements: `files.downloads.read-write` (Debug + Release)
+- ✅ Robuster Save: Downloads → Documents → Temp+Share Fallback
+- ✅ i18n: 6 neue Keys (DE + EN)
+
+**PDF Seitenstruktur (NEUE REIHENFOLGE — 2026-02-23):**
+1. Cover Page
+2. **NEU: Einleitungsseite** — "Drei Perspektiven, ein Bild" (erklärt die 3 Systeme + warum Widersprüche beabsichtigt sind)
+3. **NEU: Parameter-Übersicht** — Steckbrief-Cards (alle Parameter aller 3 Systeme auf einen Blick)
+4. Westliche Astrologie (Claude-Kapitel)
+5. Bazi — Chinesische Astrologie (Claude-Kapitel)
+6. Numerologie (Claude-Kapitel)
+7. Synthese (bestehendes deep_synthesis_text)
+8. Das Wesentliche (3 Erkenntnisse)
+9. Fragen an dich (7 Reflexionsfragen)
+10. Closing Page
+
+**Prompt-Fixes:**
+- ✅ Persönliches Jahr: Jahreszahl 2026 wird jetzt explizit erwähnt (Prompt-Regel geändert von "keine Jahreszahlen" zu "beim Persönlichen Jahr IMMER Jahreszahl nennen")
+- ✅ Bazi: Übersetzung Pinyin → Deutsch (z.B. "Ren Xu — Yang-Wasser Hund")
+
+**Kosten:** ~$0.025 einmalig pro User (3 Kapitel), danach $0.00 (gecacht)
+
+#### ⏳ TODOs aus dieser Session:
+- [ ] **Persönliches Jahr: 2. Jahreshälfte** — Wenn User im Dezember den Report erstellt, bezieht sich "Persönliches Jahr 2026" auf ein fast abgelaufenes Jahr. Ggf. ab Oktober/November auf nächstes Jahr hinweisen oder beide Jahre erwähnen.
+- [ ] **Einleitungstext personalisieren** — Aktuell generisch. Später ggf. via Claude API mit konkreten Widersprüchen des Users personalisieren.
+- [ ] **Cache-Invalidierung bei Profil-Änderung** — deep_synthesis_text + key_insights + reflection_questions + chapter_western/bazi/numerology müssen alle geleert werden
+- [ ] **Web PDF Download** — `_downloadWeb()` ist noch Placeholder
+- [ ] **Alte Identity Page entfernen** — `_buildIdentityPage()` ist jetzt unused (ersetzt durch Parameter-Übersicht)
+
+#### ✅ Bugfixes aus Folge-Session (2026-02-23 Nachmittag):
+- ✅ **PathNotFoundException Fix** — `tempDir.create(recursive: true)` vor Datei-Schreiben
+- ✅ **Downloads-Ordner statt Share-Sheet** — `_saveToDownloads()` mit Fallback-Kette: Downloads → Documents → Temp+Share
+- ✅ **macOS Entitlements** — `com.apple.security.files.downloads.read-write` in DebugProfile + Release
+- ✅ **Bazi ohne Pinyin** — `_formatBaziPillar()` zeigt nur Übersetzung: "Yang-Wasser Hund" (nicht mehr "Ren Dog — Yang-Wasser Hund")
+- ✅ **Dominantes Element übersetzt** — Englische DB-Keys ("Water", "Wood" etc.) in DE-Map ergänzt → "Wasser", "Holz"
+- ✅ **Tierzeichen auf Deutsch** — "Dog"→"Hund", "Pig"→"Schwein" etc. (englische Branch-Keys in _baziBranchDE-Map)
+- ✅ **SnackBar-Text** — "Report bereit zum Teilen" → "PDF im Downloads-Ordner gespeichert"
+- ✅ **Persönliches Jahr + Jahreszahl** — Prompt-Regel geändert: IMMER "im persönlichen Jahr 6 (2026)" — gilt für Deep Synthesis + alle 3 Kapitel-Prompts
+
+---
+
+## ✅ SESSION 2026-03-03 — Mondgrad-Bugfix + Terminal-Cleanup + Bazi-Validierung
+
+### 🐛 Bugfix: Mondgrad-Berechnung (KRITISCH)
+
+**Problem:** Natalies Mond zeigte 10° Waage statt korrekt 23° Waage.
+
+**Root Cause:**
+`signature_service.dart` verwendete eine falsche Zeit-Approximation für Mondgrad:
+```dart
+// ALT (buggy): Nur hour × 0.5 → max 12°, ignorierte Datum komplett
+return (hourFraction * 0.5) % 30;
+```
+Die Methode `_calculateDegreeInSign(isForSun: false)` berechnete die Position nur aus `hour` und `minute` der Geburtszeit und konnte so maximal ~12° erreichen — und ignorierte das Datum komplett.
+
+**Fix (3 Schritte):**
+
+**Schritt 1:** `zodiac_calculator.dart` — 3 neue öffentliche Methoden hinzugefügt:
+- `calculateSunDegreeInSign(DateTime birthDate)` — Grad via ekliptischer Sonnenlänge
+- `calculateMoonDegreeInSign(DateTime birthDateTimeUTC)` — Grad via ELP2000-82 Mondlänge
+- `calculateAscendantDegreeInSign({utc, lat, lon})` — Grad via Aszendenten-Formel
+
+**Schritt 2:** `signature_service.dart` — alle 3 Grad-Aufrufe auf echte Astronomie umgestellt:
+```dart
+// NEU (korrekt):
+final sunDegree = ZodiacCalculator.calculateSunDegreeInSign(birthDate);
+moonDegree = ZodiacCalculator.calculateMoonDegreeInSign(birthDateTimeUTC);
+ascendantDegree = ZodiacCalculator.calculateAscendantDegreeInSign(...);
+```
+Alte `_calculateDegreeInSign()` und `_approximateAscendantDegree()` Methoden entfernt.
+
+**Schritt 3:** `supabase/migrations/20260302_invalidate_degree_cache.sql` erstellt:
+- Löscht alle `birth_charts` (werden neu berechnet)
+- Leert `chapter_western/bazi/numerology` (hatten "X Grad" Aussagen mit falschen Werten)
+
+**Ergebnis nach Migration + Neustart:**
+- Natalie Mond: **22.8° Waage** (astro.com: 23°) — ±0.2° Genauigkeit ✅
+
+---
+
+### 🧹 Terminal-Cleanup — Alle print() → log()
+
+**Problem:** Terminal war extrem lautreich (signature_text wurde 4× komplett ausgedruckt).
+
+**Geänderte Dateien:**
+
+| Datei | Was entfernt | Was konvertiert |
+|-------|-------------|-----------------|
+| `user_profile_service.dart` | `🔍 DEBUG signature_text` (×2) + Spalten-Liste | `print()` → `log()` |
+| `home_screen.dart` | `profile.signatureText` dump + `archetype.hasSignature` | — |
+| `archetype_header.dart` | `hasSignature`, `signatureText`, `displayTitle` dumps | — |
+| `daily_horoscope_service.dart` | Cache-Hit/Miss + ClaudeService-Meldungen | `print()` → `developer.log()` |
+| `signature_provider.dart` | "gespeichert in DB" Success-Log | `print()` → `log()`, Import hinzugefügt |
+| `language_provider.dart` | — | `print()` → `log()`, Import hinzugefügt |
+| `main.dart` | Startup-Meldungen (📦/.env/🔌/🚀) | `print()` → `log()`, Import hinzugefügt |
+
+**Ergebnis:** Kein einziges `print()` mehr in `apps/glow/lib/` — nur noch `log()` aus `dart:developer`.
+
+---
+
+### ✅ Berechnungs-Validierung: Western Astrology + Bazi
+
+**Western Astrology** (Referenz: astro.com):
+| | App | astro.com | ✓ |
+|--|--|--|--|
+| Natalies Sonne | Schütze 8° | Schütze 8.1° | ✅ |
+| Natalies **Mond** | **Waage 22.8°** | **Waage 23°** | ✅ (fixiert!) |
+| Natalies Aszendent | Löwe 23° | Löwe 24.5° | ✅ (~1.5° off) |
+| Rakims Sonne | Krebs | Krebs | ✅ |
+| Rakims Mond | Skorpion | Skorpion | ✅ |
+| Rakims Aszendent | Krebs | Krebs | ✅ |
+
+**Bazi** (Referenz: chinesemetasoft.com):
+| | Natalie | Rakim | ✓ |
+|--|--|--|--|
+| Jahr | Gui Hai | Bing Xu | ✅✅ |
+| Monat | Gui Hai | Jia Wu | ✅✅ |
+| Tag (Day Master) | Ren Xu | Bing Shen | ✅✅ |
+| Stunde | Xin Hai | Geng Yin | ✅✅ |
+| Dominantes Element | Wasser | Feuer | ✅✅ |
+
+**16/16 Bazi-Felder korrekt!** ✅
+
+---
+
 ## ⏳ NÄCHSTE SCHRITTE (AKTUELL)
 
 ### 🐛 Onboarding: Gender Screen Bottom Overflow
@@ -345,15 +486,9 @@ Die Tiefe Drei-System-Synthese ist die wichtigste Premium-Feature der App: Eine 
   - **File:** `apps/glow/lib/src/features/signature/widgets/premium_synthesis_section.dart`
   - **Widget:** `_SynthesisContent` → Paragraphen in `SelectableText` umwandeln
 
-- [ ] **PDF Export für die Synthese**
-  - User soll komplette Synthese als PDF exportieren/teilen können
-  - **Optionen:**
-    - A) `printing` + `pdf` Flutter Package (empfohlen, gut dokumentiert)
-    - B) `share_plus` für reinen Text-Share (einfacher, kein PDF)
-  - **UX:** Teilen-Button oben rechts in `_SynthesisContent` (neben Debug-Reset)
-  - **Format:** NUURAY-styled PDF mit Logo, Archetyp-Titel, Synthese-Text
-  - **Hinweis:** Report-System (`GLOW_REPORTS_OTP.md`) plant bereits LuxuryPdfGenerator — Synthese-Export kann darauf aufbauen
-  - **Priorität:** Mittlere (nice-to-have vor Launch, kein MVP-Blocker)
+- [x] **PDF Export für die Synthese** ✅ **ERLEDIGT 2026-02-23!**
+  - Vollständiger Signatur-Report als PDF (nicht nur Synthese!)
+  - Siehe: Session 2026-02-23 oben
 
 - [ ] **Synthese: Cache-Invalidierung bei Profil-Änderung**
   - Wenn User Geburtsdaten ändert (Profile Edit), muss deep_synthesis_text ebenfalls geleert werden
@@ -361,22 +496,26 @@ Die Tiefe Drei-System-Synthese ist die wichtigste Premium-Feature der App: Eine 
   - **Fix:** In `profile_edit_screen.dart` oder `user_profile_service.dart`: `deep_synthesis_text: null` beim Update mitsetzen
   - **File:** `apps/glow/lib/src/features/profile_edit/screens/profile_edit_screen.dart`
 
-### 💡 Signatur-Check-In (neues Feature — nächste Session)
+### ✅ Signatur-Check-In (implementiert — 2026-02-22)
 > **Konzept:** `docs/glow/SIGNATURE_CHECKIN_SPEC.md` — vollständige Spezifikation
 
 Der Check-In verbindet die statische Synthese mit dem dynamischen Jetzt des Users: 3 Taps (Lebenssituation + Gefühl + Bedürfnis) → Claude destilliert aus dem bereits gecachten Synthese-Text eine direkte Antwort für genau diese Situation + 1 konkreten Impuls + sanfter Report-Hinweis.
 
-- [ ] **Schritt 1:** Supabase Migration `signature_checkin_results` Tabelle
-- [ ] **Schritt 2:** `CheckinSelection` Model (Enums für 3 Fragen)
-- [ ] **Schritt 3:** `SignatureCheckinSection` Widget (3×4 Chip-Auswahl + CTA)
-- [ ] **Schritt 4:** `generateCheckinResponse()` in ClaudeApiService
-- [ ] **Schritt 5:** `checkinProvider` (FutureProvider.family, Cache-First)
-- [ ] **Schritt 6:** `CheckinResultWidget` (Ergebnis + Impuls + Report-Hinweis)
-- [ ] **Schritt 7:** Integration in SignatureScreen + i18n
-- [ ] **Offen:** Premium-Gating Entscheidung (sofort oder nach Launch?)
+- [x] **Schritt 1:** Supabase Migration `signature_checkin_results` + `signature_checkin_history`
+- [x] **Schritt 2:** `CheckinSelection` Model (Enums für 3 Fragen)
+- [x] **Schritt 3:** `SignatureCheckinSection` Widget (3×4 Chip-Auswahl + CTA)
+- [x] **Schritt 4:** `generateCheckinResponse()` in ClaudeApiService
+- [x] **Schritt 5:** `checkinProvider` (FutureProvider.family, Cache-First)
+- [x] **Schritt 6:** `CheckinResultWidget` (Ergebnis + Impuls + Report-Hinweis)
+- [x] **Schritt 7:** Integration in SignatureScreen + i18n
+- [x] **Premium-Gating:** Option A (Fragen frei, Ergebnis hinter Paywall) + isPremium in UserProfile
 - **Kosten:** ~$0.003-0.004 pro Call, gecacht per 64 Kombinationen
-- **Zeitaufwand:** ~6-8 Stunden
-- **Siehe:** `docs/glow/SIGNATURE_CHECKIN_SPEC.md` für vollständiges Konzept
+
+⚠️ **REVIEW NÖTIG: UX-Überarbeitung Check-In**
+- [ ] **Problem:** 3-Tap Chip-Auswahl wirkt "zu plump" / quiz-artig
+- [ ] **Prüfen:** Alternative UX-Ansätze (Freitext, Slider, Karten-Metapher, etc.)
+- [ ] **Ziel:** Key Insight organischer und wertiger an den User bringen
+- **Siehe:** Notizen unten für alternative Ansätze
 
 ### 🐉 Bazi UI Verbesserungen (2026-02-21)
 - [ ] **Deutsche Element-Namen in Vier Säulen Tabelle**
